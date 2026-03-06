@@ -69,11 +69,11 @@ const AvailableItems = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'disponibile': return 'bg-green-100 text-green-800';
-      case 'in_prestito': return 'bg-blue-100 text-blue-800';
-      case 'in_riparazione': return 'bg-orange-100 text-orange-800';
-      case 'non_disponibile': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'disponibile': return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+      case 'in_prestito': return 'bg-blue-50 text-blue-700 border border-blue-200';
+      case 'in_riparazione': return 'bg-amber-50 text-amber-700 border border-amber-200';
+      case 'non_disponibile': return 'bg-red-50 text-red-700 border border-red-200';
+      default: return 'bg-gray-50 text-gray-600 border border-gray-200';
     }
   };
 
@@ -120,7 +120,7 @@ const AvailableItems = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Cerca articoli</label>
@@ -165,78 +165,87 @@ const AvailableItems = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">{item.nome}</h3>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredItems.map((item) => {
+            const isAvailable = item.stato_effettivo === 'disponibile';
+            return (
+            <article
+              key={item.id}
+              className={`relative overflow-hidden rounded-xl border bg-white transition-all duration-200 hover:shadow-lg ${
+                isAvailable ? 'border-gray-200 shadow-sm' : 'border-gray-100 shadow-sm opacity-90'
+              }`}
+            >
+              {/* Accento superiore per stato */}
+              <div className={`h-1 w-full ${
+                isAvailable ? 'bg-emerald-500' : item.stato_effettivo === 'in_riparazione' ? 'bg-amber-500' : item.stato_effettivo === 'non_disponibile' ? 'bg-red-300' : 'bg-gray-300'
+              }`} />
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">{item.nome}</h3>
+                  <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
                     {getStatusText(item.stato_effettivo)}
                   </span>
                 </div>
 
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <span>{item.unita_disponibili || 0} {(item.unita_disponibili || 0) === 1 ? 'disponibile' : 'disponibili'}</span>
-                  </div>
-                  
-                  {item.posizione && item.posizione.trim() && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                      <span>{item.posizione}</span>
-                  </div>
+                <ul className="space-y-2 mb-5">
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="text-gray-400 font-medium tabular-nums">{item.unita_disponibili ?? 0}</span>
+                    <span>{(item.unita_disponibili ?? 0) === 1 ? 'disponibile' : 'disponibili'}</span>
+                  </li>
+                  {item.posizione?.trim() && (
+                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                      <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="truncate">{item.posizione}</span>
+                    </li>
                   )}
-
-                  <div className="flex items-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                     </svg>
-                    <span>{item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : 'N/A'}</span>
-                  </div>
-
+                    <span className="truncate">{item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : '—'}</span>
+                  </li>
                   {item.immagine_url && (
-                    <div className="flex items-center text-sm">
+                    <li>
                       <button
-                        onClick={() => window.open(item.immagine_url, '_blank')}
-                        className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); window.open(item.immagine_url, '_blank'); }}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
                         title="Visualizza immagine"
                       >
-                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Visualizza Immagine
+                        Immagine
                       </button>
-                    </div>
+                    </li>
                   )}
-                </div>
+                </ul>
 
                 {item.note && (
-                  <p className="text-sm text-gray-600 mb-6">{item.note}</p>
+                  <p className="text-sm text-gray-500 mb-5 line-clamp-2">{item.note}</p>
                 )}
 
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => handleRequestItem(item)}
-                    disabled={item.stato_effettivo !== 'disponibile'}
-                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      item.stato_effettivo === 'disponibile'
-                        ? 'btn-primary hover-lift'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    {item.stato_effettivo === 'disponibile' ? 'Richiedi' : 'Non disponibile'}
-                  </button>
+                <div className="pt-1">
+                  {isAvailable ? (
+                    <button
+                      type="button"
+                      onClick={() => handleRequestItem(item)}
+                      className="btn-primary w-full rounded-xl py-2.5 text-sm font-semibold"
+                    >
+                      Richiedi
+                    </button>
+                  ) : (
+                    <span className="block w-full rounded-xl py-2.5 text-sm font-medium text-center text-gray-400 bg-gray-50 border border-gray-100 cursor-not-allowed">
+                      Non disponibile
+                    </span>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            </article>
+          );})}
         </div>
       )}
 
