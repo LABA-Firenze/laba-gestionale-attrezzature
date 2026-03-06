@@ -362,10 +362,14 @@ const hasScadenze = hasScadenzeOggi || hasScadenzeDomani || true;
 
 return (
 <div className="min-h-screen bg-gray-50/80 space-y-8">
-  {/* Header - meno box, più aria */}
-  <div className="pb-6 border-b border-gray-200/80">
-    <h1 className="text-2xl font-bold text-gray-900">Dashboard {roleLabel}</h1>
-    <p className="text-gray-600 mt-1">Panoramica del sistema di gestione attrezzature</p>
+  {/* Header - stessa card delle altre sezioni (Prestiti, Inventario) */}
+  <div className="card">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6">
+      <div>
+        <h1 className="text-2xl font-bold text-primary">Dashboard {roleLabel}</h1>
+        <p className="text-secondary mt-1">Panoramica del sistema di gestione attrezzature</p>
+      </div>
+    </div>
   </div>
 
   {/* Statistics - riga compatta, senza scatole pesanti */}

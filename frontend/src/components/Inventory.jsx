@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PlusIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import { 
  exportInventoryToExcel, 
@@ -516,12 +517,33 @@ const Inventory = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8 mx-4 sm:mx-6 lg:mx-8">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestione Inventario</h1>
-            <p className="text-gray-600 text-lg">Gestisci e monitora tutti gli articoli del laboratorio</p>
+      {/* Header - stessa card di Prestiti (titolo, sottotitolo, azioni a destra) */}
+      <div className="card mx-4 sm:mx-6 lg:mx-8 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6">
+          <div>
+            <h1 className="text-2xl font-bold text-primary">Gestione Inventario</h1>
+            <p className="text-secondary mt-1">Gestisci e monitora tutti gli articoli del laboratorio</p>
+          </div>
+          <div className="flex flex-wrap gap-4 items-center">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+            >
+              <PlusIcon className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+              <span>Nuovo Articolo</span>
+            </button>
+            <button
+              onClick={() => setShowCategoryManager(true)}
+              className="group bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:bg-gray-50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+            >
+              <TagIcon className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+              <span>Gestisci Categorie</span>
+            </button>
+            <OperationsDropdown
+              onExport={handleExport}
+              onImport={handleImportExcel}
+              onTemplate={handleTemplate}
+            />
           </div>
         </div>
       </div>
@@ -597,44 +619,6 @@ const Inventory = () => {
 
       {/* Main Content */}
       <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Action Bar */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Articoli in Inventario</h2>
-              <p className="text-gray-600 text-lg">Gestisci e monitora tutti gli articoli del laboratorio</p>
-            </div>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-              >
-                <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>Nuovo Articolo</span>
-              </button>
-              
-              <button
-                onClick={() => setShowCategoryManager(true)}
-                className="group bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:bg-gray-50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-              >
-                <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                <span>Gestisci Categorie</span>
-              </button>
-              
-              <OperationsDropdown
-                onExport={handleExport}
-                onImport={handleImportExcel}
-                onTemplate={handleTemplate}
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Filters and Search */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <div className="flex flex-col lg:flex-row lg:items-end gap-6">
