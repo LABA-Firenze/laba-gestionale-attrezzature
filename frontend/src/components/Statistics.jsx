@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3 } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineChartBar } from 'react-icons/hi2';
 import BasicStats from './BasicStats';
 import AdvancedStats from './AdvancedStats';
 
@@ -34,7 +33,7 @@ const Statistics = () => {
               }`}
             >
               <div className="flex items-center space-x-2">
-                <IconFill as={BarChart3} className="w-5 h-5" />
+                <HiOutlineChartBar className="w-5 h-5" />
                 <span>Statistiche Base</span>
               </div>
             </button>
@@ -47,7 +46,7 @@ const Statistics = () => {
               }`}
             >
               <div className="flex items-center space-x-2">
-                <IconFill as={BarChart3} className="w-5 h-5" />
+                <HiOutlineChartBar className="w-5 h-5" />
                 <span>Statistiche Avanzate</span>
               </div>
             </button>

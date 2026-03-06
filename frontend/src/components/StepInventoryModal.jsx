@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Info, Image, ArrowLeftRight, BookOpen, Hash, X, AlertCircle } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineInformationCircle, HiOutlinePhoto, HiOutlineArrowsRightLeft, HiOutlineBookOpen, HiOutlineHashtag, HiOutlineXMark, HiOutlineExclamationCircle } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 
 const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) => {
@@ -272,7 +271,7 @@ const canProceed = () => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <IconFill as={X} className="icon" />
+ <HiOutlineXMark className="icon" />
  </button>
  </div>
  
@@ -281,11 +280,11 @@ const canProceed = () => {
  <div className="flex items-center justify-center">
  <div className="flex items-center space-x-4">
  {[
-   { num: 1, label: 'Info Base', icon: <IconFill as={Info} className="w-4 h-4" /> },
-   { num: 2, label: 'Descrizione', icon: <IconFill as={Image} className="w-4 h-4" /> },
-   { num: 3, label: 'Tipo Utilizzo', icon: <IconFill as={ArrowLeftRight} className="w-4 h-4" /> },
-   { num: 4, label: 'Corsi & Categoria', icon: <IconFill as={BookOpen} className="w-4 h-4" /> },
-   { num: 5, label: 'Codici Unità', icon: <IconFill as={Hash} className="w-4 h-4" /> }
+   { num: 1, label: 'Info Base', icon: <HiOutlineInformationCircle className="w-4 h-4" /> },
+   { num: 2, label: 'Descrizione', icon: <HiOutlinePhoto className="w-4 h-4" /> },
+   { num: 3, label: 'Tipo Utilizzo', icon: <HiOutlineArrowsRightLeft className="w-4 h-4" /> },
+   { num: 4, label: 'Corsi & Categoria', icon: <HiOutlineBookOpen className="w-4 h-4" /> },
+   { num: 5, label: 'Codici Unità', icon: <HiOutlineHashtag className="w-4 h-4" /> }
  ].map((stepData, index) => (
  <React.Fragment key={stepData.num}>
  <div className="flex flex-col items-center">
@@ -636,7 +635,7 @@ Tipo di Utilizzo
  {error && (
  <div className="alert-card alert-danger mt-4">
  <div className="flex items-center">
- <IconFill as={AlertCircle} className="icon text-red-500 mr-3" />
+ <HiOutlineExclamationCircle className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>

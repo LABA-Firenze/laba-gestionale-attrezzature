@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark } from 'react-icons/hi2';
 
 const AdvancedFilters = ({ 
  isOpen, 
@@ -88,7 +87,7 @@ const AdvancedFilters = ({
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600"
  >
- <IconFill as={X} className="w-6 h-6" />
+ <HiOutlineXMark className="w-6 h-6" />
  </button>
  </div>
 
@@ -235,7 +234,7 @@ const AdvancedFilters = ({
  onClick={() => onDeleteFilter(index)}
  className="text-red-500 hover:text-red-700"
  >
- <IconFill as={X} className="w-4 h-4" />
+ <HiOutlineXMark className="w-4 h-4" />
  </button>
  </div>
  ))}

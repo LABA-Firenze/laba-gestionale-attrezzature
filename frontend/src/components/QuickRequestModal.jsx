@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 
 const QuickRequestModal = ({ isOpen, onClose, request, onSuccess }) => {
@@ -63,7 +62,7 @@ const QuickRequestModal = ({ isOpen, onClose, request, onSuccess }) => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <IconFill as={X} className="icon" />
+ <HiOutlineXMark className="icon" />
  </button>
  </div>
 

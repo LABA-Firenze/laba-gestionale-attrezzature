@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TriangleAlert, Ban, Clock, CheckCircle, X, Pencil, Trash2 } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineExclamationTriangle, HiOutlineNoSymbol, HiOutlineClock, HiOutlineCheckCircle, HiOutlineXMark, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 import { TableSkeleton } from './SkeletonLoader';
 
@@ -205,7 +204,7 @@ const Penalties = () => {
                 <p className="text-sm text-gray-500">Totale utenti penalizzati</p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <IconFill as={TriangleAlert} className="w-6 h-6 text-yellow-600" />
+                <HiOutlineExclamationTriangle className="w-6 h-6 text-yellow-600" />
               </div>
             </div>
           </div>
@@ -218,7 +217,7 @@ const Penalties = () => {
                 <p className="text-sm text-gray-500">Bloccati per 3+ strike</p>
               </div>
               <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                <IconFill as={Ban} className="w-6 h-6 text-red-600" />
+                <HiOutlineNoSymbol className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
@@ -231,7 +230,7 @@ const Penalties = () => {
                 <p className="text-sm text-gray-500">Penalità assegnate</p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <IconFill as={Clock} className="w-6 h-6 text-orange-600" />
+                <HiOutlineClock className="w-6 h-6 text-orange-600" />
               </div>
             </div>
           </div>
@@ -312,7 +311,7 @@ const Penalties = () => {
                   <tr>
                     <td colSpan="5" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center">
-                        <IconFill as={CheckCircle} className="w-12 h-12 text-gray-400 mb-4" />
+                        <HiOutlineCheckCircle className="w-12 h-12 text-gray-400 mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-1">
                           Nessun utente trovato
                         </h3>
@@ -369,7 +368,7 @@ const Penalties = () => {
                           onClick={() => openPenaltyModal(user)}
                           className="inline-flex items-center px-3 py-2 text-xs font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
                         >
-                          <IconFill as={TriangleAlert} className="w-3 h-3 mr-1" />
+                          <HiOutlineExclamationTriangle className="w-3 h-3 mr-1" />
                           Dettagli
                         </button>
                       </td>
@@ -389,7 +388,7 @@ const Penalties = () => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center">
                 <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <IconFill as={TriangleAlert} className="w-6 h-6 text-purple-600" />
+                  <HiOutlineExclamationTriangle className="w-6 h-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-semibold text-gray-900">Dettagli Penalità</h3>
@@ -400,7 +399,7 @@ const Penalties = () => {
                 onClick={() => setShowPenaltyModal(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <IconFill as={X} className="w-6 h-6" />
+                <HiOutlineXMark className="w-6 h-6" />
               </button>
             </div>
 
@@ -438,7 +437,7 @@ const Penalties = () => {
                 <h4 className="text-md font-semibold text-gray-900 mb-3">Storico Penalità</h4>
                 {userPenalties.length === 0 ? (
                   <div className="text-center py-8">
-                    <IconFill as={CheckCircle} className="w-12 h-12 text-gray-400 mb-4 mx-auto" />
+                    <HiOutlineCheckCircle className="w-12 h-12 text-gray-400 mb-4 mx-auto" />
                     <p className="text-gray-500">Nessuna penalità registrata</p>
                   </div>
                 ) : (
@@ -465,14 +464,14 @@ const Penalties = () => {
                               className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                               title="Modifica"
                             >
-                              <IconFill as={Pencil} className="w-4 h-4" />
+                              <HiOutlinePencil className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeletePenalty(penalty.id)}
                               className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                               title="Elimina"
                             >
-                              <IconFill as={Trash2} className="w-4 h-4" />
+                              <HiOutlineTrash className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
@@ -537,7 +536,7 @@ const Penalties = () => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Modifica penalità</h3>
               <button onClick={() => setEditingPenalty(null)} className="text-gray-400 hover:text-gray-600">
-                <IconFill as={X} className="w-6 h-6" />
+                <HiOutlineXMark className="w-6 h-6" />
               </button>
             </div>
             <div className="p-6 space-y-4">

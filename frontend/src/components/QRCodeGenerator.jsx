@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark } from 'react-icons/hi2';
 import QRCode from 'qrcode';
 
 const QRCodeGenerator = ({ item, onClose, embedded = false }) => {
@@ -85,7 +84,7 @@ return (
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600"
         >
-          <IconFill as={X} className="w-5 h-5" />
+          <HiOutlineXMark className="w-5 h-5" />
         </button>
       </div>
 

@@ -360,21 +360,17 @@ const hasAvvisi = hasPendingRequests || hasScorteBasse;
 const hasScadenze = hasScadenzeOggi || hasScadenzeDomani || true;
 
 return (
-<div className="min-h-screen bg-gray-50 space-y-6">
-  {/* Header */}
-  <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard {roleLabel}</h1>
-        <p className="text-gray-600 text-lg">Panoramica del sistema di gestione attrezzature</p>
-      </div>
-    </div>
+<div className="min-h-screen bg-gray-50/80 space-y-8">
+  {/* Header - meno box, più aria */}
+  <div className="pb-6 border-b border-gray-200/80">
+    <h1 className="text-2xl font-bold text-gray-900">Dashboard {roleLabel}</h1>
+    <p className="text-gray-600 mt-1">Panoramica del sistema di gestione attrezzature</p>
   </div>
 
-  {/* Statistics Cards */}
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-      <div className="flex items-center justify-between">
+  {/* Statistics - riga compatta, senza scatole pesanti */}
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-2">
+    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/80 border border-gray-100 shadow-sm">
+      <div className="flex items-center justify-between flex-1">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Inventario</p>
           <p className="text-3xl font-bold text-gray-900">{stats.inventory}</p>
@@ -388,8 +384,8 @@ return (
       </div>
     </div>
     
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-      <div className="flex items-center justify-between">
+    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/80 border border-gray-100 shadow-sm">
+      <div className="flex items-center justify-between flex-1">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Richieste</p>
           <p className="text-3xl font-bold text-gray-900">{stats.requests}</p>
@@ -403,8 +399,8 @@ return (
       </div>
     </div>
     
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-      <div className="flex items-center justify-between">
+    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/80 border border-gray-100 shadow-sm">
+      <div className="flex items-center justify-between flex-1">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Riparazioni</p>
           <p className="text-3xl font-bold text-gray-900">{stats.repairs}</p>
@@ -419,8 +415,8 @@ return (
       </div>
     </div>
     
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-      <div className="flex items-center justify-between">
+    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/80 border border-gray-100 shadow-sm">
+      <div className="flex items-center justify-between flex-1">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Segnalazioni</p>
           <p className="text-3xl font-bold text-gray-900">{stats.reports}</p>
@@ -437,7 +433,7 @@ return (
 
   {/* Avvisi Section - Richieste da Approvare e Scorte Basse */}
  {hasAvvisi && (
- <div className="bg-white rounded-xl shadow-lg border border-red-200 overflow-hidden mb-8">
+ <div className="rounded-xl border border-red-200/60 bg-white/90 shadow-sm overflow-hidden mb-8">
  <div 
  className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4 cursor-pointer hover:from-red-600 hover:to-red-700 transition-colors"
  onClick={() => setAvvisiCollapsed(!avvisiCollapsed)}
@@ -576,7 +572,7 @@ return (
 
   {/* In Scadenza Section - Oggi e Domani */}
  {hasScadenze && (
- <div className="bg-white rounded-xl shadow-lg border border-purple-200 overflow-hidden mb-8">
+ <div className="rounded-xl border border-purple-200/60 bg-white/90 shadow-sm overflow-hidden mb-8">
  <div 
  className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4 cursor-pointer hover:from-purple-600 hover:to-purple-700 transition-colors"
  onClick={() => setScadenzeCollapsed(!scadenzeCollapsed)}
@@ -715,10 +711,10 @@ return (
  </div>
  )}
 
-    {/* Recent Activity */}
+    {/* Recent Activity - layout più aperto */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
     {/* Recent Requests */}
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="rounded-xl border border-gray-200/80 bg-white/90 shadow-sm p-6">
     <div className="flex items-center justify-between mb-6">
     <h2 className="text-xl font-bold text-gray-900">Richieste Recenti</h2>
     <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">{recentRequests.length} richieste</span>
@@ -772,7 +768,7 @@ return (
  </div>
 
  {/* Recent Reports */}
- <div className="bg-white rounded-2xl shadow-lg p-6">
+ <div className="rounded-xl border border-gray-200/80 bg-white/90 shadow-sm p-6">
  <div className="flex items-center justify-between mb-6">
  <h2 className="text-xl font-bold text-gray-900">Segnalazioni Recenti</h2>
  <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">{recentReports.length} segnalazioni</span>

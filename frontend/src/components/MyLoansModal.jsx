@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 import ReportBugModal from './ReportBugModal';
 
@@ -92,7 +91,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600 transition-colors"
  >
- <IconFill as={X} className="w-6 h-6" />
+ <HiOutlineXMark className="w-6 h-6" />
  </button>
  </div>
 

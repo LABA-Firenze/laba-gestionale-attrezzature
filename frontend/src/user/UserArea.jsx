@@ -183,8 +183,8 @@ const UserArea = () => {
           <UserBadge />
         </div>
 
-        {/* Main Content Area with Footer - margin-left quando sidebar desktop è visibile (evita che gli header vengano tagliati) */}
-        <div className="flex-1 flex flex-col lg:ml-64">
+        {/* Main Content Area with Footer */}
+        <div className="flex-1 flex flex-col">
           <main className="flex-1 pt-16 lg:pt-0">
             {renderActiveView()}
           </main>

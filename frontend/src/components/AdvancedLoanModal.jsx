@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Image, Check, List, TriangleAlert, Info } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark, HiOutlinePhoto, HiOutlineCheck, HiOutlineListBullet, HiOutlineExclamationTriangle, HiOutlineInformationCircle } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
 
@@ -291,7 +290,7 @@ body: JSON.stringify({
  onClick={handleClose}
  className="text-gray-400 hover:text-gray-600 "
  >
- <IconFill as={X} className="w-6 h-6" />
+ <HiOutlineXMark className="w-6 h-6" />
  </button>
  </div>
  
@@ -359,7 +358,7 @@ body: JSON.stringify({
                     className="mt-2 inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
                     title="Visualizza immagine"
                   >
-                    <IconFill as={Image} className="w-3 h-3 mr-1" />
+                    <HiOutlinePhoto className="w-3 h-3 mr-1" />
                     Immagine
                   </button>
                 )}
@@ -502,7 +501,7 @@ body: JSON.stringify({
  {unit.codice_univoco}
  </span>
  {selectedUnits.find(u => u.id === unit.id) && (
- <IconFill as={Check} className="w-5 h-5 text-blue-600" />
+ <HiOutlineCheck className="w-5 h-5 text-blue-600" />
  )}
  </div>
  {unit.note && (
@@ -541,7 +540,7 @@ body: JSON.stringify({
 
      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
        <div className="flex items-center mb-3">
-         <IconFill as={List} className="w-5 h-5 text-purple-600 mr-2" />
+         <HiOutlineListBullet className="w-5 h-5 text-purple-600 mr-2" />
          <div>
            <h4 className="text-sm font-medium text-purple-800">Come intendi utilizzare questo oggetto?</h4>
            <p className="text-xs text-purple-700 mt-1">
@@ -618,7 +617,7 @@ body: JSON.stringify({
  {selectedItem?.tipo_prestito === 'solo_interno' && (
    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
      <div className="flex items-center">
-       <IconFill as={TriangleAlert} className="w-5 h-5 text-orange-600 mr-2" />
+       <HiOutlineExclamationTriangle className="w-5 h-5 text-orange-600 mr-2" />
        <div>
          <h4 className="text-sm font-medium text-orange-800">Solo per uso interno</h4>
          <p className="text-xs text-orange-700 mt-1">
@@ -633,7 +632,7 @@ body: JSON.stringify({
  {selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo && (
    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
      <div className="flex items-center">
-       <IconFill as={Info} className="w-5 h-5 text-purple-600 mr-2" />
+       <HiOutlineInformationCircle className="w-5 h-5 text-purple-600 mr-2" />
        <div>
          <h4 className="text-sm font-medium text-purple-800">
            Tipo di utilizzo selezionato: {tipoUtilizzo === 'interno' ? '🏠 Uso Interno' : '📅 Prestito Esterno'}

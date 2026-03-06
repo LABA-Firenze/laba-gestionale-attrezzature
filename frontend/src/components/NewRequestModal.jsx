@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, AlertCircle, Layers, ArrowLeft, ArrowRight, List, TriangleAlert, Info } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark, HiOutlineExclamationCircle, HiOutlineSquaresPlus, HiOutlineArrowLeft, HiOutlineArrowRight, HiOutlineListBullet, HiOutlineExclamationTriangle, HiOutlineInformationCircle } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
 
@@ -255,7 +254,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
           setError(
             <div className="space-y-2">
               <div className="flex items-center">
-                <IconFill as={AlertCircle} className="w-5 h-5 text-red-600 mr-2" />
+                <HiOutlineExclamationCircle className="w-5 h-5 text-red-600 mr-2" />
                 <span className="font-semibold text-red-800">Account Bloccato</span>
               </div>
               <p className="text-red-700">{errorData.message}</p>
@@ -402,7 +401,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <IconFill as={X} className="w-6 h-6" />
+            <HiOutlineXMark className="w-6 h-6" />
           </button>
         </div>
 
@@ -474,7 +473,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                 return matchesSearch;
               }).length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  <IconFill as={Layers} className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                  <HiOutlineSquaresPlus className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                   <p>
                     {searchTerm 
                       ? 'Nessun oggetto trovato con i criteri di ricerca'
@@ -534,7 +533,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   onClick={() => setStep(1)}
                   className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
                 >
-                  <IconFill as={ArrowLeft} className="w-4 h-4" />
+                  <HiOutlineArrowLeft className="w-4 h-4" />
                   Indietro
                 </button>
                 <div className="flex space-x-3">
@@ -562,7 +561,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
                 <div className="flex items-center mb-3">
-                  <IconFill as={List} className="w-5 h-5 text-purple-600 mr-2" />
+                  <HiOutlineListBullet className="w-5 h-5 text-purple-600 mr-2" />
                   <div>
                     <h4 className="text-sm font-medium text-purple-800">Come intendi utilizzare questo oggetto?</h4>
                     <p className="text-xs text-purple-700 mt-1">
@@ -623,7 +622,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   onClick={() => setStep(2)}
                   className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
                 >
-                  <IconFill as={ArrowLeft} className="w-4 h-4" />
+                  <HiOutlineArrowLeft className="w-4 h-4" />
                   Indietro
                 </button>
                 <div className="flex space-x-3">
@@ -641,7 +640,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                     className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                 >
                     Continua
-                    <IconFill as={ArrowRight} className="w-4 h-4" />
+                    <HiOutlineArrowRight className="w-4 h-4" />
                 </button>
                 </div>
               </div>
@@ -662,7 +661,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
               {selectedObject.tipo_prestito === 'solo_interno' && (
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
                   <div className="flex items-center">
-                    <IconFill as={TriangleAlert} className="w-5 h-5 text-orange-600 mr-2" />
+                    <HiOutlineExclamationTriangle className="w-5 h-5 text-orange-600 mr-2" />
                     <div>
                       <h4 className="text-sm font-medium text-orange-800">Solo per uso interno</h4>
                       <p className="text-xs text-orange-700 mt-1">
@@ -677,7 +676,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
               {selectedObject.tipo_prestito === 'entrambi' && (
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
                   <div className="flex items-center">
-                    <IconFill as={Info} className="w-5 h-5 text-purple-600 mr-2" />
+                    <HiOutlineInformationCircle className="w-5 h-5 text-purple-600 mr-2" />
                     <div>
                       <h4 className="text-sm font-medium text-purple-800">
                         Tipo di utilizzo selezionato: {tipoUtilizzo === 'interno' ? '🏠 Uso Interno' : '📅 Prestito Esterno'}
@@ -774,7 +773,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   }}
                   className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
                 >
-                  <IconFill as={ArrowLeft} className="w-4 h-4" />
+                  <HiOutlineArrowLeft className="w-4 h-4" />
                   Indietro
                 </button>
                 <div className="flex space-x-3">

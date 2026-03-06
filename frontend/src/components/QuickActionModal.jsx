@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { User, BookOpen, Tag, X, AlertCircle, ClipboardList, Wrench } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineUser, HiOutlineBookOpen, HiOutlineTag, HiOutlineXMark, HiOutlineExclamationCircle, HiOutlineClipboardDocumentList, HiOutlineWrenchScrewdriver } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 
 const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
@@ -89,7 +88,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <IconFill as={X} className="icon" />
+ <HiOutlineXMark className="icon" />
  </button>
  </div>
 
@@ -99,9 +98,9 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {/* Progress Bar */}
  <div className="flex items-center justify-center mb-8">
  {[
-{ num: 1, icon: <IconFill as={User} className="w-4 h-4" /> },
-   { num: 2, icon: <IconFill as={BookOpen} className="w-4 h-4" /> },
-   { num: 3, icon: <IconFill as={Tag} className="w-4 h-4" /> }
+{ num: 1, icon: <HiOutlineUser className="w-4 h-4" /> },
+   { num: 2, icon: <HiOutlineBookOpen className="w-4 h-4" /> },
+   { num: 3, icon: <HiOutlineTag className="w-4 h-4" /> }
  ].map((stepData, index) => (
  <React.Fragment key={stepData.num}>
  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
@@ -126,7 +125,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  <div className="space-y-6">
  <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
  <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center">
- <IconFill as={User} className="w-4 h-4" />
+ <HiOutlineUser className="w-4 h-4" />
  </div>
  Informazioni Base
  </h3>
@@ -256,7 +255,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {error && (
  <div className="alert-card alert-danger mt-4">
  <div className="flex items-center">
- <IconFill as={AlertCircle} className="icon text-red-500 mr-3" />
+ <HiOutlineExclamationCircle className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>
@@ -286,7 +285,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {action === 'manage-requests' && (
  <div className="space-y-4">
  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
- <IconFill as={ClipboardList} className="icon-lg text-white" />
+ <HiOutlineClipboardDocumentList className="icon-lg text-white" />
  </div>
  <h3 className="text-lg font-semibold text-primary mb-2">Gestione Richieste</h3>
  <p className="text-secondary mb-4">Visualizza e gestisci tutte le richieste di prestito in attesa di approvazione.</p>
@@ -334,7 +333,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {action === 'manage-repairs' && (
  <div className="space-y-4">
  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
- <IconFill as={Wrench} className="icon-lg text-white" />
+ <HiOutlineWrenchScrewdriver className="icon-lg text-white" />
  </div>
  <h3 className="text-lg font-semibold text-primary mb-2">Gestione Riparazioni</h3>
  <p className="text-secondary mb-4">Visualizza e gestisci tutte le riparazioni in corso e completate.</p>
@@ -342,7 +341,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {/* Lista riparazioni */}
  <div className="space-y-2 max-h-60 overflow-y-auto">
  <div className="text-center py-8 text-secondary">
- <IconFill as={Wrench} className="w-12 h-12 mx-auto mb-4 text-muted" />
+ <HiOutlineWrenchScrewdriver className="w-12 h-12 mx-auto mb-4 text-muted" />
  <p>Nessuna riparazione in corso</p>
  <p className="text-sm text-muted">Le riparazioni appariranno qui quando saranno create</p>
  </div>

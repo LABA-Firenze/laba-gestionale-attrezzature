@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import IconFill from './IconFill.jsx';
+import { HiOutlineXMark } from 'react-icons/hi2';
 import { useAuth } from '../auth/AuthContext';
 
 const ActivityLog = ({ isOpen, onClose }) => {
@@ -98,7 +97,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600"
  >
- <IconFill as={X} className="w-6 h-6" />
+ <HiOutlineXMark className="w-6 h-6" />
  </button>
  </div>
 
