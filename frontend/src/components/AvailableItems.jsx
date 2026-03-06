@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPinIcon, PhotoIcon, CubeIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { MapPinIcon, PhotoIcon, CubeIcon, ArrowRightIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import NewRequestModal from './NewRequestModal';
 import { ItemListSkeleton } from './SkeletonLoader';
@@ -164,38 +164,48 @@ const AvailableItems = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredItems.map((item) => {
             const isAvailable = item.stato_effettivo === 'disponibile';
             const categoriaLabel = item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : '—';
             return (
             <article
               key={item.id}
-              className={`group relative overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-md ${
-                isAvailable ? 'border-gray-200' : 'border-gray-100 opacity-85'
+              className={`group relative overflow-hidden rounded-xl border bg-white transition-all duration-200 hover:shadow-lg ${
+                isAvailable ? 'border-gray-200 shadow-sm' : 'border-gray-100 shadow-sm opacity-90'
               }`}
             >
-              <div className={`h-0.5 ${
+              <div className={`h-1 ${
                 isAvailable ? 'bg-emerald-500' : item.stato_effettivo === 'in_riparazione' ? 'bg-amber-500' : item.stato_effettivo === 'non_disponibile' ? 'bg-red-300' : 'bg-gray-200'
               }`} />
               <div className="p-4">
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 min-w-0 flex-1">{item.nome}</h3>
-                  <span className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
-                    {getStatusText(item.stato_effettivo)}
-                  </span>
+                <div className="flex items-start gap-3 mb-3">
+                  <div className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                    isAvailable ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-400'
+                  }`}>
+                    <CubeIcon className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">{item.nome}</h3>
+                    <span className={`inline-flex mt-1.5 px-2 py-0.5 rounded-md text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
+                      {getStatusText(item.stato_effettivo)}
+                    </span>
+                  </div>
                 </div>
 
-                <p className="text-xs text-gray-500 mb-2">
+                <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
                   <span className="tabular-nums font-medium text-gray-600">{item.unita_disponibili ?? 0}</span>
-                  {' '}{(item.unita_disponibili ?? 0) === 1 ? 'disponibile' : 'disponibili'}
+                  <span>{(item.unita_disponibili ?? 0) === 1 ? 'disponibile' : 'disponibili'}</span>
                   {categoriaLabel !== '—' && (
                     <>
-                      <span className="text-gray-300 mx-1">·</span>
-                      <span className="truncate">{categoriaLabel}</span>
+                      <span className="text-gray-300">·</span>
+                      <span className="flex items-center gap-1 truncate">
+                        <TagIcon className="w-3.5 h-3.5 shrink-0 text-gray-400" />
+                        <span className="truncate">{categoriaLabel}</span>
+                      </span>
                     </>
                   )}
-                </p>
+                </div>
 
                 {item.posizione?.trim() && (
                   <p className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 truncate">
@@ -223,7 +233,7 @@ const AvailableItems = () => {
                     <button
                       type="button"
                       onClick={() => handleRequestItem(item)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white hover:bg-blue-700 transition-colors shadow-sm"
                     >
                       Richiedi
                       <ArrowRightIcon className="w-3.5 h-3.5" />
