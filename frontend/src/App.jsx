@@ -314,10 +314,10 @@ function AppInner() {
  <NavButton icon="📦" label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="📝" label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="🛠️" label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
-<NavButton icon={<TriangleAlert className="w-5 h-5" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
- <NavButton icon={<Users className="w-5 h-5" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
+<NavButton icon={<HiOutlineExclamationTriangle className="w-5 h-5" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
+ <NavButton icon={<HiOutlineUsers className="w-5 h-5" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="📈" label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Laptop className="w-5 h-5" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineComputerDesktop className="w-5 h-5" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
  </>
  ) : (
  <NavButton icon="👤" label="Area Utente" tab="utente" currentTab={tab} onClick={setTab} />
@@ -341,14 +341,14 @@ function AppInner() {
             </div>
             
             <nav className="flex-1 p-4 space-y-2">
- <NavButton icon={<LayoutDashboard className="icon" />} label="Dashboard" tab="dashboard" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Layers className="icon" />} label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<ArrowLeftRight className="icon" />} label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Wrench className="icon" />} label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
-<NavButton icon={<TriangleAlert className="icon" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
- <NavButton icon={<Users className="icon" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<BarChart3 className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Laptop className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineSquares2X2 className="icon" />} label="Dashboard" tab="dashboard" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineSquaresPlus className="icon" />} label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineArrowsRightLeft className="icon" />} label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineWrenchScrewdriver className="icon" />} label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
+<NavButton icon={<HiOutlineExclamationTriangle className="icon" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
+ <NavButton icon={<HiOutlineUsers className="icon" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineChartBar className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<HiOutlineComputerDesktop className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
 </nav>
  <UserBadge />
  </div>
