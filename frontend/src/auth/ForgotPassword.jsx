@@ -40,7 +40,7 @@ const ForgotPassword = ({ onBack }) => {
  return (
  <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
  <div className="max-w-md w-full">
- <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+ <div className="bg-white rounded-full shadow-xl p-8 text-center">
  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
  <svg className="w-8 h-8 text-green-600 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -55,7 +55,7 @@ const ForgotPassword = ({ onBack }) => {
  </p>
  <button
  onClick={onBack}
- className="w-full bg-gradient-to-r from-sky-400 to-[#033157] text-white py-3 px-4 rounded-lg hover:from-sky-500 hover:to-[#022a47] transition-all duration-200 font-medium"
+ className="w-full bg-gradient-to-r from-sky-400 to-[#033157] text-white py-3 px-4 rounded-full hover:from-sky-500 hover:to-[#022a47] transition-all duration-200 font-medium"
  >
  Torna al Login
  </button>
@@ -68,7 +68,7 @@ const ForgotPassword = ({ onBack }) => {
  return (
  <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
  <div className="max-w-md w-full">
- <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+ <div className="bg-white rounded-full shadow-xl border border-gray-100 p-8">
  <div className="text-center mb-8">
  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
 <svg className="w-8 h-8 text-orange-600 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@ const ForgotPassword = ({ onBack }) => {
  </div>
 
  {error && (
- <div className="mb-6 p-4 bg-red-50 /20 border border-red-200 rounded-lg">
+ <div className="mb-6 p-4 bg-red-50 /20 border border-red-200 rounded-full">
  <div className="flex items-center">
  <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -104,7 +104,7 @@ const ForgotPassword = ({ onBack }) => {
  value={email}
  onChange={(e) => setEmail(e.target.value)}
  required
- className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
+ className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
  placeholder="Inserisci la tua email"
  />
  </div>
@@ -112,7 +112,7 @@ const ForgotPassword = ({ onBack }) => {
  <button
  type="submit"
  disabled={loading}
- className="w-full bg-gradient-to-r from-sky-400 to-[#033157] text-white py-3 px-4 rounded-lg hover:from-sky-500 hover:to-[#022a47] focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
+ className="w-full bg-gradient-to-r from-sky-400 to-[#033157] text-white py-3 px-4 rounded-full hover:from-sky-500 hover:to-[#022a47] focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
  >
  {loading ? (
  <div className="flex items-center justify-center">

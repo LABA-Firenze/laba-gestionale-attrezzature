@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCircle, Loader2, ArrowRight, Info, ChevronRight } from 'lucide-react';
+import { ExclamationCircleIcon, ArrowPathIcon, ArrowRightIcon, InformationCircleIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useAuth } from './AuthContext';
 import ForgotPassword from './ForgotPassword';
 import InstructionsModal from '../components/InstructionsModal';
@@ -66,7 +66,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  <div className="relative max-w-md w-full space-y-6">
  {/* Header */}
  <div className="text-center pt-6 pb-2">
-   <div className="inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-white/95 shadow-xl shadow-blue-900/5 border border-white/80 p-5 mb-8">
+   <div className="inline-flex items-center justify-center w-28 h-28 rounded-full bg-white/95 shadow-xl shadow-blue-900/5 border border-white/80 p-5 mb-8">
      <img src="/logoSito.svg" alt="LABA Logo" className="h-14 w-auto" />
    </div>
  <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
@@ -81,7 +81,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  </div>
 
  {/* Form */}
- <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl shadow-blue-900/5 border border-gray-100/80 py-8 px-6 sm:px-10">
+ <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl shadow-blue-900/5 border border-gray-100/80 py-8 px-6 sm:px-10">
  <form className="space-y-6" onSubmit={handleSubmit}>
  {/* Username/Email */}
  <div>
@@ -97,7 +97,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  required
  value={isLogin ? formData.username : formData.email}
  onChange={handleInputChange}
- className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
+ className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
  placeholder={isLogin ? "Inserisci username o email" : "Inserisci email"}
  />
  </div>
@@ -117,7 +117,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  required
  value={formData.password}
  onChange={handleInputChange}
- className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
+ className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
  placeholder="Inserisci la password"
  />
  </div>
@@ -140,7 +140,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  required
  value={formData.name}
  onChange={handleInputChange}
- className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
+ className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
  placeholder="Nome"
  />
  </div>
@@ -158,7 +158,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  required
  value={formData.surname}
  onChange={handleInputChange}
- className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
+ className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
  placeholder="Cognome"
  />
  </div>
@@ -177,7 +177,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  required
  value={formData.matricola}
  onChange={handleInputChange}
- className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
+ className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
  placeholder="Numero di matricola"
  />
  </div>
@@ -194,7 +194,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  required
  value={formData.corso_accademico}
  onChange={handleInputChange}
- className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
+ className="appearance-none block w-full px-4 py-2.5 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50 text-gray-900 transition-all duration-200"
  >
  <option value="">Seleziona corso</option>
  <option value="Cinema e Audiovisivi">Cinema e Audiovisivi</option>
@@ -213,9 +213,9 @@ const Login = ({ branding = "LABA Gestione" }) => {
 
  {/* Error Message */}
  {error && (
- <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+ <div className="bg-red-50 border border-red-200 rounded-full p-4">
  <div className="flex">
- <AlertCircle className="w-5 h-5 text-red-400 mr-2" />
+ <ExclamationCircleIcon className="w-5 h-5 text-red-400 mr-2" />
  <p className="text-red-800 text-sm">{error}</p>
  </div>
  </div>
@@ -226,17 +226,17 @@ const Login = ({ branding = "LABA Gestione" }) => {
  <button
  type="submit"
  disabled={loading}
- className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
+ className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-full text-white bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
  >
  {loading ? (
  <div className="flex items-center">
- <Loader2 className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" />
+ <ArrowPathIcon className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" />
  {isLogin ? 'Accesso in corso...' : 'Registrazione in corso...'}
  </div>
  ) : (
  <div className="flex items-center">
  <span className="mr-2">{isLogin ? 'Accedi' : 'Registrati'}</span>
- <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+ <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
  </div>
  )}
  </button>
@@ -259,7 +259,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
        setError(null);
        setFormData({ email: '', password: '', name: '', surname: '', matricola: '', corso_accademico: '' });
      }}
-     className="w-full py-2.5 px-4 rounded-xl text-sm font-medium text-gray-700 bg-gray-100/80 hover:bg-gray-200/80 border border-gray-200/80 transition-colors"
+     className="w-full py-2.5 px-4 rounded-full text-sm font-medium text-gray-700 bg-gray-100/80 hover:bg-gray-200/80 border border-gray-200/80 transition-colors"
    >
      {isLogin ? 'Non hai un account? Registrati' : 'Hai già un account? Accedi'}
    </button>
@@ -271,16 +271,16 @@ const Login = ({ branding = "LABA Gestione" }) => {
  <button
    type="button"
    onClick={() => setShowInstructions(true)}
-   className="flex w-full items-center gap-3 rounded-2xl bg-white/95 backdrop-blur-sm px-5 py-4 text-left border border-gray-100/80 shadow-lg shadow-blue-900/5 hover:bg-gray-50/80 transition-colors"
+   className="flex w-full items-center gap-3 rounded-xl bg-white/95 backdrop-blur-sm px-5 py-4 text-left border border-gray-100/80 shadow-lg shadow-blue-900/5 hover:bg-gray-50/80 transition-colors"
  >
-   <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-     <Info className="w-5 h-5 text-blue-600" />
+   <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+     <InformationCircleIcon className="w-5 h-5 text-blue-600" />
    </div>
    <div>
      <h3 className="font-semibold text-gray-900">Istruzioni</h3>
      <p className="text-xs text-gray-500">Cos'è, come noleggiare, strike e penalità</p>
    </div>
-   <ChevronRight className="w-5 h-5 text-gray-400 ml-auto" />
+   <ChevronRightIcon className="w-5 h-5 text-gray-400 ml-auto" />
  </button>
 
  <InstructionsModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />

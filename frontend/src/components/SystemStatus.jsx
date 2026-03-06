@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../auth/AuthContext';
+import PageHeader from './PageHeader';
 
 const SystemStatus = () => {
   const [systemData, setSystemData] = useState({
@@ -28,7 +29,7 @@ const SystemStatus = () => {
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 max-w-md text-center">
+        <div className="bg-white rounded-xl shadow-xl border border-gray-200 p-8 max-w-md text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -40,7 +41,7 @@ const SystemStatus = () => {
           </p>
           <a
             href="/"
-            className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-block px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
           >
             Torna alla Dashboard
           </a>
@@ -194,25 +195,20 @@ const SystemStatus = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {systemData.overall === 'healthy' ? 'Sistema Online' : 'Sistema con Avvisi'}
-              </h1>
-              <p className="text-lg text-gray-600">Monitoraggio in tempo reale dello stato del sistema</p>
-              <div className="mt-2 flex items-center space-x-4">
-                <span className="text-sm text-gray-500">Build: 498</span>
-                <span className="text-sm text-gray-500">•</span>
-                <span className="text-sm text-gray-500">Versione: 2.1</span>
-                <span className="text-sm text-gray-500">•</span>
-                <span className="text-sm text-gray-500">
-                  Ultimo aggiornamento: {new Date().toLocaleTimeString('it-IT')}
-                </span>
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto space-y-6">
+        <PageHeader
+          title={systemData.overall === 'healthy' ? 'Sistema Online' : 'Sistema con Avvisi'}
+          subtitle="Monitoraggio in tempo reale dello stato del sistema"
+          meta={
+            <span className="flex items-center gap-4">
+              <span>Build: 498</span>
+              <span>•</span>
+              <span>Versione: 2.1</span>
+              <span>•</span>
+              <span>Ultimo aggiornamento: {new Date().toLocaleTimeString('it-IT')}</span>
+            </span>
+          }
+          action={
             <button
               onClick={refreshData}
               disabled={isRefreshing}
@@ -223,11 +219,11 @@ const SystemStatus = () => {
               </svg>
               <span>{isRefreshing ? 'Aggiornamento...' : 'Aggiorna'}</span>
             </button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Overall Status */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 mb-8">
+        <div className="bg-white rounded-xl shadow-xl border border-gray-200 p-8 mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Stato Generale</h2>
             <div className="flex items-center space-x-3">
@@ -265,7 +261,7 @@ const SystemStatus = () => {
         {/* Services Status */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Services List */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-200">
+          <div className="bg-white rounded-xl shadow-xl border border-gray-200">
             <div className="p-6 border-b border-gray-200">
               <h3 className="text-xl font-bold text-gray-900">Servizi</h3>
             </div>
@@ -296,7 +292,7 @@ const SystemStatus = () => {
           </div>
 
           {/* Recent Incidents */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-200">
+          <div className="bg-white rounded-xl shadow-xl border border-gray-200">
             <div className="p-6 border-b border-gray-200">
               <h3 className="text-xl font-bold text-gray-900">Incidenti Recenti</h3>
             </div>
@@ -313,7 +309,7 @@ const SystemStatus = () => {
               ) : (
                 <div className="space-y-4">
                   {systemData.recentIncidents.map((incident) => (
-                    <div key={incident.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                    <div key={incident.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-full">
                       <div className={`w-2 h-2 rounded-full mt-2 ${incident.severity === 'error' ? 'bg-red-500' : 'bg-yellow-500'} ${getPulseAnimation(incident.severity)}`}></div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
@@ -331,7 +327,7 @@ const SystemStatus = () => {
         </div>
 
         {/* Detailed Metrics */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200">
+        <div className="bg-white rounded-xl shadow-xl border border-gray-200">
           <div className="p-6 border-b border-gray-200">
             <button
               onClick={() => toggleSection('metrics')}
@@ -348,7 +344,7 @@ const SystemStatus = () => {
             <div className="p-6 border-t border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Total Requests */}
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-full p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Richieste Totali</h4>
                   </div>
@@ -357,7 +353,7 @@ const SystemStatus = () => {
                 </div>
 
                 {/* Active Users */}
-                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6">
+                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-full p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Utenti Attivi</h4>
                   </div>
@@ -366,7 +362,7 @@ const SystemStatus = () => {
                 </div>
 
                 {/* Total Inventory */}
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6">
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-full p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Inventario</h4>
                   </div>
@@ -375,7 +371,7 @@ const SystemStatus = () => {
                 </div>
 
                 {/* Active Loans */}
-                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6">
+                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-full p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Prestiti Attivi</h4>
                   </div>
@@ -388,7 +384,7 @@ const SystemStatus = () => {
         </div>
 
         {/* API Endpoints Status */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 mt-8">
+        <div className="bg-white rounded-xl shadow-xl border border-gray-200 mt-8">
           <div className="p-6 border-b border-gray-200">
             <button
               onClick={() => toggleSection('api')}
@@ -415,7 +411,7 @@ const SystemStatus = () => {
                   </div>
                 ) : (
                   systemData.apiEndpoints.map((api, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-full">
                     <div className="flex items-center space-x-4">
                       <div className={`relative w-3 h-3 rounded-full ${getStatusBg(api.status)} ${getPulseAnimation(api.status)}`}>
                         <div className={`w-full h-full rounded-full ${api.status === 'healthy' ? 'bg-green-500' : api.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
@@ -445,7 +441,7 @@ const SystemStatus = () => {
         </div>
 
         {/* Email Test Section */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 mt-8">
+        <div className="bg-white rounded-xl shadow-xl border border-gray-200 mt-8">
           <div className="p-6 border-b border-gray-200">
             <h3 className="text-xl font-bold text-gray-900">Test Configurazione Email</h3>
             <p className="text-sm text-gray-600 mt-2">Testa la connessione SMTP e invia email di prova</p>
@@ -556,7 +552,7 @@ const EmailTestSection = ({ token }) => {
         <button
           onClick={testConnection}
           disabled={testing}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {testing ? 'Test in corso...' : 'Test Connessione SMTP'}
         </button>
@@ -572,12 +568,12 @@ const EmailTestSection = ({ token }) => {
             value={testEmail}
             onChange={(e) => setTestEmail(e.target.value)}
             placeholder="tua-email@example.com"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={sendTestEmail}
             disabled={testing || !testEmail}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {testing ? 'Invio...' : 'Invia Test'}
           </button>
@@ -585,7 +581,7 @@ const EmailTestSection = ({ token }) => {
       </div>
 
       {result && (
-        <div className={`mt-4 p-4 rounded-lg ${
+        <div className={`mt-4 p-4 rounded-full ${
           result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
         }`}>
           <div className="flex items-start">

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { WrenchScrewdriverIcon, CheckCircleIcon, XCircleIcon, ClockIcon, CalendarIcon, Cog6ToothIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import { TableSkeleton } from './SkeletonLoader';
+import PageHeader from './PageHeader';
+import SectionTabs, { Tab } from './SectionTabs';
 
 const Repairs = () => {
  const [repairs, setRepairs] = useState([]);
@@ -245,46 +248,26 @@ const handleCancelRepair = async (repairId) => {
  
  const filteredRepairs = getFilteredRepairs();
 
- // Get status badge
- const getStatusBadge = (status) => {
- const statusConfig = {
- 'in_corso': { 
- className: 'alert-warning', 
- icon: (
- <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
- </svg>
- ), 
- label: 'In Corso' 
- },
- 'completata': { 
- className: 'status-available', 
- icon: (
- <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
- </svg>
- ), 
- label: 'Completata' 
- },
- 'annullata': { 
- className: 'status-unavailable', 
- icon: (
- <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
- </svg>
- ), 
- label: 'Annullata' 
- }
- };
- 
- const config = statusConfig[status] || statusConfig['in_corso'];
- 
- return (
- <span className={`status-badge ${config.className}`}>
- {config.icon}
- {config.label}
- </span>
- );
+ // Get status badge config
+ const getStatusConfig = (status) => {
+   const configs = {
+     in_corso: {
+       bg: 'bg-sky-100 text-sky-700 border border-sky-200',
+       icon: ClockIcon,
+       label: 'In Corso'
+     },
+     completata: {
+       bg: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+       icon: CheckCircleIcon,
+       label: 'Completata'
+     },
+     annullata: {
+       bg: 'bg-slate-100 text-slate-600 border border-slate-200',
+       icon: XCircleIcon,
+       label: 'Annullata'
+     }
+   };
+   return configs[status] || configs.in_corso;
  };
 
  if (loading) {
@@ -293,104 +276,70 @@ const handleCancelRepair = async (repairId) => {
 
  return (
  <div className="space-y-6">
- {/* Header */}
- <div className="card">
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
- <div>
- <h1 className="text-2xl font-bold text-primary">Gestione Riparazioni</h1>
- <p className="text-secondary mt-1">Gestisci le riparazioni delle attrezzature</p>
- </div>
- <div className="flex items-center">
-        <button
-          onClick={() => {
-            setShowAddModal(true);
-            resetModal();
-          }}
-          className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-        >
-          <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          <span>Nuova Riparazione</span>
-        </button>
- </div>
- </div>
- </div>
+  <PageHeader
+    title="Gestione Riparazioni"
+    subtitle="Gestisci le riparazioni delle attrezzature"
+    action={
+      <button
+        onClick={() => {
+          setShowAddModal(true);
+          resetModal();
+        }}
+        className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+      >
+        <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        <span>Nuova Riparazione</span>
+      </button>
+    }
+  />
 
     {/* Tabs for Repairs */}
-    <div className="border-b border-gray-200">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-        <nav className="flex space-x-8">
-        <button
-          onClick={() => setActiveTab('in_corso')}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'in_corso'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          In Corso
-          <span className="ml-2 bg-orange-100 text-orange-900 text-xs px-2 py-1 rounded-full">
-            {repairs.filter(r => r.stato === 'in_corso').length}
-          </span>
-        </button>
-        
-        <button
-          onClick={() => setActiveTab('completate')}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'completate'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Completate
-          <span className="ml-2 bg-green-100 text-green-900 text-xs px-2 py-1 rounded-full">
-            {repairs.filter(r => r.stato === 'completata').length}
-          </span>
-        </button>
-        
-        <button
-          onClick={() => setActiveTab('annullate')}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'annullate'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Annullate
-          <span className="ml-2 bg-red-100 text-red-900 text-xs px-2 py-1 rounded-full">
-            {repairs.filter(r => r.stato === 'annullata').length}
-          </span>
-        </button>
-        </nav>
-        
-        {/* Search - Desktop only */}
-        <div className="hidden lg:block mt-4 lg:mt-0">
+    <SectionTabs
+      rightContent={
+        <div className="hidden lg:block">
           <div className="relative">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cerca riparazioni..."
-              className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <svg className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           </div>
         </div>
-      </div>
-    </div>
+      }
+    >
+      <Tab isActive={activeTab === 'in_corso'} onClick={() => setActiveTab('in_corso')}>
+        <span className="inline-flex items-center gap-2">
+          <Cog6ToothIcon className="w-4 h-4" />
+          In Corso
+          <span className="bg-sky-100 text-sky-700 text-xs px-2 py-0.5 rounded-full font-medium border border-sky-200">
+            {repairs.filter(r => r.stato === 'in_corso').length}
+          </span>
+        </span>
+      </Tab>
+      <Tab isActive={activeTab === 'completate'} onClick={() => setActiveTab('completate')}>
+        <span className="inline-flex items-center gap-2">
+          <CheckCircleIcon className="w-4 h-4" />
+          Completate
+          <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-medium border border-emerald-200">
+            {repairs.filter(r => r.stato === 'completata').length}
+          </span>
+        </span>
+      </Tab>
+      <Tab isActive={activeTab === 'annullate'} onClick={() => setActiveTab('annullate')}>
+        <span className="inline-flex items-center gap-2">
+          <XCircleIcon className="w-4 h-4" />
+          Annullate
+          <span className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full font-medium border border-slate-200">
+            {repairs.filter(r => r.stato === 'annullata').length}
+          </span>
+        </span>
+      </Tab>
+    </SectionTabs>
 
     {/* Search - Mobile only */}
     <div className="lg:hidden">
@@ -417,12 +366,11 @@ const handleCancelRepair = async (repairId) => {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  {filteredRepairs.length === 0 ? (
  <div className="lg:col-span-2">
- <div className="card text-center py-12">
- <svg className="icon-lg mx-auto mb-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
- </svg>
- <p className="text-secondary">
+ <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-12 text-center">
+ <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+   <WrenchScrewdriverIcon className="w-8 h-8 text-gray-400" />
+ </div>
+ <p className="text-gray-600">
  {searchTerm 
  ? 'Nessuna riparazione trovata con i filtri selezionati' 
  : `Nessuna riparazione ${
@@ -435,74 +383,66 @@ const handleCancelRepair = async (repairId) => {
  </div>
  </div>
  ) : (
- filteredRepairs.map(repair => (
- <div
- key={repair.id}
- className="card card-clickable"
- onClick={() => {
-   setSelectedRepair(repair);
-   setShowDetailsModal(true);
- }}
- >
- <div className="flex flex-col gap-4">
- <div className="flex items-center justify-between">
- <h3 className="text-lg font-semibold text-primary">{repair.articolo_nome}</h3>
- {getStatusBadge(repair.stato)}
- </div>
- 
- <div className="grid grid-cols-2 gap-4 text-sm">
- <div>
- <span className="text-tertiary">Descrizione:</span>
- <span className="text-primary ml-1 font-medium">
-   {(() => {
-     if (!repair.note) return 'N/A';
-     // Estrai la prima riga come descrizione
-     const firstLine = repair.note.split('\n')[0];
-     return firstLine || 'N/A';
-   })()}
- </span>
- </div>
- <div>
- <span className="text-tertiary">Creata:</span>
- <span className="text-primary ml-1">{new Date(repair.created_at).toLocaleDateString('it-IT')}</span>
- </div>
- {repair.data_inizio && (
- <div>
- <span className="text-tertiary">Inizio:</span>
- <span className="text-primary ml-1">{new Date(repair.data_inizio).toLocaleDateString('it-IT')}</span>
- </div>
- )}
- {repair.data_fine && (
- <div>
- <span className="text-tertiary">Fine:</span>
- <span className="text-primary ml-1">{new Date(repair.data_fine).toLocaleDateString('it-IT')}</span>
- </div>
- )}
- </div>
- 
- {repair.descrizione && (
- <p className="text-sm text-tertiary">{repair.descrizione}</p>
- )}
+ filteredRepairs.map(repair => {
+   const statusCfg = getStatusConfig(repair.stato);
+   const StatusIcon = statusCfg.icon;
+   const descrizione = repair.note
+     ? repair.note.split('\n')[0] || 'N/A'
+     : 'N/A';
 
- <div className="flex justify-end items-center">
- {repair.stato === 'in_corso' && (
- <button
- onClick={(e) => {
- e.stopPropagation();
- handleCompleteRepair(repair.id);
- }}
- className="btn-success btn-small"
- >
- <svg className="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
- </svg>
- Completa
- </button>
- )}
- </div>
- </div>
- </div>
- ))
+   return (
+     <div
+       key={repair.id}
+       onClick={() => {
+         setSelectedRepair(repair);
+         setShowDetailsModal(true);
+       }}
+       className="group bg-white rounded-xl shadow-lg border border-gray-100 p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+     >
+       <div className="flex items-start gap-4">
+<div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center p-2.5">
+          <WrenchScrewdriverIcon className="w-6 h-6 text-orange-600" />
+         </div>
+         <div className="flex-1 min-w-0">
+           <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+             <h3 className="text-lg font-semibold text-gray-900 truncate">{repair.articolo_nome}</h3>
+             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusCfg.bg}`}>
+               <StatusIcon className="w-3.5 h-3.5" />
+               {statusCfg.label}
+             </span>
+           </div>
+           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{descrizione}</p>
+           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+             <span className="flex items-center gap-1.5">
+               <CalendarIcon className="w-3.5 h-3.5" />
+               Creata {new Date(repair.created_at).toLocaleDateString('it-IT')}
+             </span>
+             {repair.data_inizio && (
+               <span>Inizio {new Date(repair.data_inizio).toLocaleDateString('it-IT')}</span>
+             )}
+             {repair.data_fine && (
+               <span>Fine {new Date(repair.data_fine).toLocaleDateString('it-IT')}</span>
+             )}
+           </div>
+         </div>
+       </div>
+       {repair.stato === 'in_corso' && (
+         <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
+           <button
+             onClick={(e) => {
+               e.stopPropagation();
+               handleCompleteRepair(repair.id);
+             }}
+             className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white text-sm font-medium rounded-full hover:bg-emerald-600 transition-colors"
+           >
+             <CheckCircleIcon className="w-4 h-4" />
+             Completa
+           </button>
+         </div>
+       )}
+     </div>
+   );
+ })
  )}
  </div>
 
@@ -521,7 +461,7 @@ const handleCancelRepair = async (repairId) => {
  {/* Add/Edit Repair Modal */}
  {showAddModal && (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
- <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between p-6 border-b border-gray-200">
  <div>
    <h2 className="text-xl font-semibold text-gray-900">{getStepTitle()}</h2>
@@ -550,7 +490,7 @@ const handleCancelRepair = async (repairId) => {
                   <div
                     key={item.id}
                     onClick={() => handleObjectSelect(item)}
-                    className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md cursor-pointer transition-all"
+                    className="p-4 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-md cursor-pointer transition-all"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-medium text-gray-900">{item.nome}</h4>
@@ -595,7 +535,7 @@ const handleCancelRepair = async (repairId) => {
                   <div
                     key={unit.id}
                     onClick={() => handleUnitSelect(unit)}
-                    className="p-3 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md cursor-pointer transition-all"
+                    className="p-3 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-md cursor-pointer transition-all"
                   >
                     <div className="text-center">
                       <div className="font-medium text-gray-900 mb-1">{unit.codice_univoco}</div>
@@ -703,7 +643,7 @@ const handleCancelRepair = async (repairId) => {
 
               {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
                   {error}
                 </div>
               )}
@@ -713,7 +653,7 @@ const handleCancelRepair = async (repairId) => {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full border border-gray-300 transition-colors flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -724,13 +664,13 @@ const handleCancelRepair = async (repairId) => {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Annulla
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                 >
                   {editingRepair ? 'Aggiorna' : 'Crea Riparazione'}
                 </button>
@@ -746,7 +686,7 @@ const handleCancelRepair = async (repairId) => {
  {/* Repair Details Modal */}
  {showDetailsModal && selectedRepair && (
    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-     <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+     <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
        <div className="flex items-center justify-between p-6 border-b border-gray-200">
          <h2 className="text-xl font-semibold text-gray-900">Dettagli Riparazione</h2>
          <button
@@ -790,7 +730,7 @@ const handleCancelRepair = async (repairId) => {
            {selectedRepair.note && (
              <div>
                <label className="block text-sm font-medium text-gray-700">Dettagli Completi</label>
-               <div className="text-gray-600 whitespace-pre-wrap bg-gray-50 p-3 rounded-lg text-sm">
+               <div className="text-gray-600 whitespace-pre-wrap bg-gray-50 p-3 rounded-full text-sm">
                  {selectedRepair.note}
                </div>
              </div>

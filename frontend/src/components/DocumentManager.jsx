@@ -117,7 +117,7 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
 
  return (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-full p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between mb-6">
  <h3 className="text-lg font-semibold text-gray-900">
  Documenti per {item.nome}
@@ -134,7 +134,7 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
 
  {/* Upload Area */}
  <div
- className={`border-2 border-dashed rounded-lg p-8 text-center mb-6 ${
+ className={`border-2 border-dashed rounded-full p-8 text-center mb-6 ${
  dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
  }`}
  onDragOver={(e) => {
@@ -168,7 +168,7 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
  />
  <label
  htmlFor="file-upload"
- className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
+ className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 cursor-pointer"
  >
  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -202,7 +202,7 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {documents.map((doc) => (
- <div key={doc.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+ <div key={doc.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
  <div className="flex items-start justify-between">
  <div className="flex items-start space-x-3 flex-1">
  <div className="text-2xl">{getFileIcon(doc.mime_type)}</div>

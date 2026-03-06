@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LayoutDashboard, Layers, ArrowLeftRight, Wrench, TriangleAlert, Users, BarChart3, Laptop, X, Bell, Menu, LogOut } from "lucide-react";
+import { Squares2X2Icon, SquaresPlusIcon, ArrowsRightLeftIcon, WrenchScrewdriverIcon, ExclamationTriangleIcon, UsersIcon, ChartBarIcon, ComputerDesktopIcon, XMarkIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import AuthProvider, { useAuth } from "./auth/AuthContext";
 import { NotificationProvider } from "./components/NotificationSystem.jsx";
 import DesktopNotificationManager from "./components/DesktopNotificationManager.jsx";
@@ -63,14 +63,14 @@ function AppInner() {
   // Admin sidebar items for mobile menu
   const iconCls = "w-5 h-5";
   const adminSidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className={iconCls} /> },
-    { id: 'inventario', label: 'Inventario', icon: <Layers className={iconCls} /> },
-    { id: 'prestiti', label: 'Prestiti', icon: <ArrowLeftRight className={iconCls} /> },
-    { id: 'riparazioni', label: 'Riparazioni', icon: <Wrench className={iconCls} /> },
-    { id: 'penalita', label: 'Penalità', icon: <TriangleAlert className={iconCls} />, badge: penaltiesCount > 0 ? penaltiesCount : null },
-    { id: 'utenti', label: 'Utenti', icon: <Users className={iconCls} /> },
-    { id: 'statistiche', label: 'Statistiche', icon: <BarChart3 className={iconCls} /> },
-    { id: 'sistema', label: 'Stato del Sistema', icon: <Laptop className={iconCls} /> }
+    { id: 'dashboard', label: 'Dashboard', icon: <Squares2X2Icon className={iconCls} /> },
+    { id: 'inventario', label: 'Inventario', icon: <SquaresPlusIcon className={iconCls} /> },
+    { id: 'prestiti', label: 'Prestiti', icon: <ArrowsRightLeftIcon className={iconCls} /> },
+    { id: 'riparazioni', label: 'Riparazioni', icon: <WrenchScrewdriverIcon className={iconCls} /> },
+    { id: 'penalita', label: 'Penalità', icon: <ExclamationTriangleIcon className={iconCls} />, badge: penaltiesCount > 0 ? penaltiesCount : null },
+    { id: 'utenti', label: 'Utenti', icon: <UsersIcon className={iconCls} /> },
+    { id: 'statistiche', label: 'Statistiche', icon: <ChartBarIcon className={iconCls} /> },
+    { id: 'sistema', label: 'Stato del Sistema', icon: <ComputerDesktopIcon className={iconCls} /> }
   ];
   
   const [notifications, setNotifications] = useState([]);
@@ -302,9 +302,9 @@ function AppInner() {
  </div>
  <button 
  onClick={() => setSidebarOpen(false)}
- className="p-2 rounded-lg hover:bg-gray-100"
+ className="p-2 rounded-full hover:bg-gray-100"
  >
- <X className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
  <nav className="flex-1 p-4 space-y-2">
@@ -314,10 +314,10 @@ function AppInner() {
  <NavButton icon="📦" label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="📝" label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="🛠️" label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
-<NavButton icon={<TriangleAlert className="w-5 h-5" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
- <NavButton icon={<Users className="w-5 h-5" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
+<NavButton icon={<ExclamationTriangleIcon className="w-5 h-5" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
+ <NavButton icon={<UsersIcon className="w-5 h-5" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="📈" label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Laptop className="w-5 h-5" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<ComputerDesktopIcon className="w-5 h-5" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
  </>
  ) : (
  <NavButton icon="👤" label="Area Utente" tab="utente" currentTab={tab} onClick={setTab} />
@@ -341,21 +341,21 @@ function AppInner() {
             </div>
             
             <nav className="flex-1 p-4 space-y-2">
- <NavButton icon={<LayoutDashboard className="icon" />} label="Dashboard" tab="dashboard" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Layers className="icon" />} label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<ArrowLeftRight className="icon" />} label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Wrench className="icon" />} label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
-<NavButton icon={<TriangleAlert className="icon" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
- <NavButton icon={<Users className="icon" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<BarChart3 className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Laptop className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<Squares2X2Icon className="icon" />} label="Dashboard" tab="dashboard" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<SquaresPlusIcon className="icon" />} label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<ArrowsRightLeftIcon className="icon" />} label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<WrenchScrewdriverIcon className="icon" />} label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
+<NavButton icon={<ExclamationTriangleIcon className="icon" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
+ <NavButton icon={<UsersIcon className="icon" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<ChartBarIcon className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<ComputerDesktopIcon className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
 </nav>
  <UserBadge />
  </div>
  )}
 
-    {/* Main Content */}
-    <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
+    {/* Main Content - ml deve coincidere con larghezza sidebar (13.6rem) */}
+    <div className="flex-1 flex flex-col min-h-screen lg:ml-[13.6rem]">
       {/* Top Bar Mobile */}
       <div className="lg:hidden header px-4 py-3 flex items-center justify-between z-[100]">
         <div 
@@ -368,10 +368,10 @@ function AppInner() {
           {/* Notification Bell */}
           <button 
             onClick={() => setNotificationsOpen(true)}
-            className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors z-[101]"
+            className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
             type="button"
           >
-            <Bell className="w-6 h-6 text-gray-600" />
+            <BellIcon className="w-6 h-6 text-gray-600" />
             {notifications.filter(n => !n.isRead).length > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {notifications.filter(n => !n.isRead).length}
@@ -381,15 +381,15 @@ function AppInner() {
           {/* Hamburger Menu */}
           <button 
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105 z-[101]"
+            className="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105 z-[101]"
             type="button"
           >
-            <Menu className="w-6 h-6" />
+            <Bars3Icon className="w-6 h-6" />
           </button>
         </div>
       </div>
 
-      {/* Top Bar Desktop - For Users */}
+      {/* Top Bar Desktop - For UsersIcon */}
       {!isAdmin && (
         <div className="hidden lg:block bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
@@ -399,9 +399,9 @@ function AppInner() {
               {/* Notifications Bell */}
               <button 
                 onClick={() => setNotificationsOpen(true)}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
               >
-                <Bell className="w-6 h-6 text-gray-600" />
+                <BellIcon className="w-6 h-6 text-gray-600" />
                 {/* Notification Badge */}
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
@@ -426,9 +426,9 @@ function AppInner() {
            {/* Notifications Bell */}
            <button 
              onClick={() => setNotificationsOpen(true)}
-             className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+             className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
            >
-             <Bell className="w-6 h-6 text-gray-600" />
+             <BellIcon className="w-6 h-6 text-gray-600" />
              {/* Notification Badge */}
              {unreadCount > 0 && (
                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
@@ -441,7 +441,6 @@ function AppInner() {
      </div>
      
      <main className="flex-1 p-4 lg:p-6 main-content">
-       <div className="max-w-7xl mx-auto">
          {tab === 'dashboard' && <Dashboard onNavigate={handleTabChange} />}
          {tab === 'inventario' && <Inventory />}
          {tab === 'prestiti' && <Loans 
@@ -455,7 +454,6 @@ function AppInner() {
          {tab === 'utenti' && <UserManagement />}
          {tab === 'statistiche' && <Statistics />}
          {tab === 'sistema' && <SystemStatus />}
-       </div>
      </main>
      
            {/* Footer - Hidden when mobile menu is open */}
@@ -546,9 +544,9 @@ function UserBadge() {
  </div>
  <button 
  onClick={logout}
-        className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-200 ease border border-gray-200 "
+        className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-200 ease border border-gray-200 "
  >
- <LogOut className="w-4 h-4 mr-2" />
+ <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
  Esci
  </button>
  </div>

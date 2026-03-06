@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CubeIcon, ChevronRightIcon, QrCodeIcon, PencilIcon, TrashIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import { 
  exportInventoryToExcel, 
@@ -10,6 +11,7 @@ import OperationsDropdown from './OperationsDropdown';
 import QRCodeGenerator from './QRCodeGenerator';
 import { TableSkeleton } from './SkeletonLoader';
 import AdvancedFilters from './AdvancedFilters';
+import PageHeader from './PageHeader';
 
 const Inventory = () => {
  const [inventory, setInventory] = useState([]);
@@ -515,28 +517,50 @@ const Inventory = () => {
  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8 mx-4 sm:mx-6 lg:mx-8">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestione Inventario</h1>
-            <p className="text-gray-600 text-lg">Gestisci e monitora tutti gli articoli del laboratorio</p>
+    <div className="min-h-screen bg-gray-50 space-y-6">
+      <PageHeader
+        title="Gestione Inventario"
+        subtitle="Gestisci e monitora tutti gli articoli del laboratorio"
+        action={
+          <div className="flex flex-wrap gap-4 items-center">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+            >
+              <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              <span>Nuovo Articolo</span>
+            </button>
+            <button
+              onClick={() => setShowCategoryManager(true)}
+              className="group bg-white text-gray-700 px-6 py-3 rounded-full font-medium border border-gray-300 hover:bg-gray-50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+            >
+              <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              <span>Gestisci Categorie</span>
+            </button>
+            <OperationsDropdown
+              onExport={handleExport}
+              onImport={handleImportExcel}
+              onTemplate={handleTemplate}
+            />
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* Stats Cards */}
-      <div className="px-4 sm:px-6 lg:px-8 mb-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Totale Articoli</p>
                 <p className="text-3xl font-bold text-gray-900">{inventory.length}</p>
                 <p className="text-sm text-gray-500">Elementi in inventario</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
@@ -544,7 +568,7 @@ const Inventory = () => {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Oggetti Totali</p>
@@ -553,7 +577,7 @@ const Inventory = () => {
                 </p>
                 <p className="text-sm text-gray-500">Unità disponibili</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -561,7 +585,7 @@ const Inventory = () => {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">In Riparazione</p>
@@ -570,7 +594,7 @@ const Inventory = () => {
                 </p>
                 <p className="text-sm text-gray-500">Articoli in manutenzione</p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
@@ -578,14 +602,14 @@ const Inventory = () => {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Scorte Basse</p>
                 <p className="text-3xl font-bold text-gray-900">{lowStockItems.length}</p>
                 <p className="text-sm text-gray-500">Articoli da rifornire</p>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -596,47 +620,9 @@ const Inventory = () => {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Action Bar */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Articoli in Inventario</h2>
-              <p className="text-gray-600 text-lg">Gestisci e monitora tutti gli articoli del laboratorio</p>
-            </div>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-              >
-                <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>Nuovo Articolo</span>
-              </button>
-              
-              <button
-                onClick={() => setShowCategoryManager(true)}
-                className="group bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:bg-gray-50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-              >
-                <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                <span>Gestisci Categorie</span>
-              </button>
-              
-              <OperationsDropdown
-                onExport={handleExport}
-                onImport={handleImportExcel}
-                onTemplate={handleTemplate}
-              />
-            </div>
-          </div>
-        </div>
-
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
         {/* Filters and Search */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 py-5 px-6">
           <div className="flex flex-col lg:flex-row lg:items-end gap-6">
             {/* Search */}
             <div className="flex-1">
@@ -652,7 +638,7 @@ const Inventory = () => {
                   placeholder="Cerca per nome, seriale o note..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 />
               </div>
             </div>
@@ -664,7 +650,7 @@ const Inventory = () => {
                 <div className="relative">
                   <button
                     onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-left flex items-center justify-between hover:bg-gray-50"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-left flex items-center justify-between hover:bg-gray-50"
                   >
                     <span className={selectedCategoryFilter ? 'text-gray-900' : 'text-gray-500'}>
                       {selectedCategoryFilter || 'Tutte le categorie'}
@@ -727,7 +713,7 @@ const Inventory = () => {
                     setSearchTerm('');
                     setSelectedCategoryFilter('');
                   }}
-                  className="px-4 py-3 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 hover:scale-105"
+                  className="px-4 py-3 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-full hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 hover:scale-105"
                   title="Cancella filtri"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -742,7 +728,7 @@ const Inventory = () => {
 
         {/* Results Counter */}
         {(searchTerm || selectedCategoryFilter) && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -792,177 +778,92 @@ const Inventory = () => {
             </div>
           ) : (
             filteredInventory.map((item) => (
-            <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-              {/* Card Header */}
-              <div className="p-6 border-b border-gray-100">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
- <div className="flex items-center">
- {item.hasMultipleUnits && (
- <button
- onClick={() => toggleExpanded(item.id)}
-                          className="mr-3 p-1 hover:bg-gray-100 rounded transition-colors"
- title={expandedItems.has(item.id) ? "Chiudi dettagli" : "Mostra dettagli"}
- >
- <svg 
- className={`w-4 h-4 text-gray-500 transition-transform ${expandedItems.has(item.id) ? 'rotate-90' : ''}`} 
- fill="none" 
- stroke="currentColor" 
- viewBox="0 0 24 24"
- >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
- </svg>
- </button>
- )}
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
- {item.nome}
-                        </h3>
- {item.hasMultipleUnits && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
- {item.quantita_totale} unità
- </span>
- )}
-                      </div>
- </div>
- {item.note && (
-                      <p className="text-sm text-gray-600 mt-2 line-clamp-2">{item.note}</p>
- )}
- </div>
-                  
-                  {/* Status Badge */}
-         <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
-           item.tipo_prestito === 'solo_interno' 
-             ? 'bg-orange-100 text-orange-800 border-orange-200' 
-             : item.tipo_prestito === 'solo_esterno'
-             ? 'bg-orange-100 text-orange-800 border-orange-200'
-             : item.tipo_prestito === 'entrambi'
-             ? 'bg-orange-100 text-orange-800 border-orange-200'
-             : getStatusColor(item.stato_effettivo)
-         }`}>
-           {item.tipo_prestito === 'solo_interno' 
-             ? 'Lezione / Interno' 
-             : item.tipo_prestito === 'solo_esterno'
-             ? 'Prestito / Esterno'
-             : item.tipo_prestito === 'entrambi'
-             ? 'Lezione / Prestito'
-             : getStatusText(item.stato_effettivo)}
-         </span>
+            <div key={item.id} className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <CubeIcon className="w-6 h-6 text-blue-600" />
                 </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                  {/* Category */}
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Categoria</label>
-                    <p className="text-sm text-gray-900 mt-1">
-                      {item.categoria_figlia || 
-                       (item.categoria_nome ? item.categoria_nome.split(' - ')[1] : null) || 
-                       'Nessuna categoria'}
-                    </p>
-                  </div>
-
-                  {/* Course */}
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Corso Accademico</label>
-                    <div className="mt-1">
-                      {item.corsi_assegnati && item.corsi_assegnati.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {item.corsi_assegnati.map((corso, index) => (
-                            <span 
-                              key={index}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200"
-                              title={corso} // Mostra il nome completo al hover
-                            >
-                              {abbreviateCourse(corso)}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-500 italic">Non assegnato</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Quantity */}
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Quantità</label>
-                    <p className="text-lg font-semibold text-gray-900 mt-1">{item.quantita_totale}</p>
-                  </div>
-
-                  {/* Shelf */}
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Scaffale</label>
-                    <p className="text-sm text-gray-900 mt-1">{item.posizione || 'N/A'}</p>
-                  </div>
-
-                  {/* Image */}
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Immagine</label>
-                    <div className="mt-1">
-                      {item.immagine_url ? (
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      {item.hasMultipleUnits && (
                         <button
-                          onClick={() => window.open(item.immagine_url, '_blank')}
-                          className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
-                          title="Visualizza immagine"
+                          onClick={() => toggleExpanded(item.id)}
+                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                          title={expandedItems.has(item.id) ? "Chiudi dettagli" : "Mostra dettagli"}
                         >
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          Visualizza
+                          <ChevronRightIcon className={`w-4 h-4 text-gray-500 transition-transform ${expandedItems.has(item.id) ? 'rotate-90' : ''}`} />
                         </button>
-                      ) : (
-                        <span className="text-sm text-gray-400">Nessuna</span>
+                      )}
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">{item.nome}</h3>
+                      {item.hasMultipleUnits && (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {item.quantita_totale} unità
+                        </span>
                       )}
                     </div>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                      item.tipo_prestito === 'solo_interno' || item.tipo_prestito === 'solo_esterno' || item.tipo_prestito === 'entrambi'
+                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                        : getStatusColor(item.stato_effettivo)
+                    }`}>
+                      {item.tipo_prestito === 'solo_interno' ? 'Lezione / Interno' :
+                       item.tipo_prestito === 'solo_esterno' ? 'Prestito / Esterno' :
+                       item.tipo_prestito === 'entrambi' ? 'Lezione / Prestito' :
+                       getStatusText(item.stato_effettivo)}
+                    </span>
+                  </div>
+                  {item.note && (
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.note}</p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 mb-4">
+                    <span>{item.categoria_figlia || (item.categoria_nome ? item.categoria_nome.split(' - ')[1] : null) || 'Nessuna categoria'}</span>
+                    <span>•</span>
+                    <span>{item.corsi_assegnati?.length ? item.corsi_assegnati.map(c => abbreviateCourse(c)).join(', ') : 'Non assegnato'}</span>
+                    <span>•</span>
+                    <span>Q.tà {item.quantita_totale}</span>
+                    <span>•</span>
+                    <span>Scaffale {item.posizione || 'N/A'}</span>
+                    {item.immagine_url && (
+                      <>
+                        <span>•</span>
+                        <button onClick={() => window.open(item.immagine_url, '_blank')} className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800">
+                          <PhotoIcon className="w-3.5 h-3.5" /> Visualizza
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => setQrCodeItem(item)}
+                      className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                      title="Genera QR Code"
+                    >
+                      <QrCodeIcon className="w-4 h-4" /> QR Code
+                    </button>
+                    <button
+                      onClick={() => handleEditItem(item)}
+                      className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                      title="Modifica articolo"
+                    >
+                      <PencilIcon className="w-4 h-4" /> Modifica
+                    </button>
+                    <button
+                      onClick={() => handleDeleteItem(item.id)}
+                      className="inline-flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                      title="Elimina articolo"
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-              </div>
-
-              {/* Card Footer - Actions */}
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                <div className="flex items-center justify-between">
- <div className="flex space-x-2">
- <button
- onClick={() => setQrCodeItem(item)}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
- title="Genera QR Code"
- >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
- </svg>
-                      QR Code
-                      </button>
-                      <button
-                        onClick={() => handleEditItem(item)}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
- title="Modifica articolo"
- >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
- </svg>
-                      Modifica
- </button>
-                  </div>
- <button
- onClick={() => handleDeleteItem(item.id)}
-                    className="text-red-600 hover:text-red-900 p-2 rounded hover:bg-red-50 transition-colors"
- title="Elimina articolo"
- >
- <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
- </svg>
- </button>
- </div>
               </div>
 
               {/* Expanded Units Section */}
               {item.hasMultipleUnits && expandedItems.has(item.id) && (
-                <div className="border-t border-gray-200 bg-gray-50 p-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-4">
-                    Unità individuali ({itemUnits[item.id]?.length || 0}):
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <h4 className="text-sm font-medium text-gray-600 mb-3">
+                    Unità individuali ({itemUnits[item.id]?.length || 0})
                   </h4>
                   {!itemUnits[item.id] ? (
                     <div className="flex items-center justify-center py-8">
@@ -1010,7 +911,7 @@ const Inventory = () => {
                       return (
                         <div 
                           key={unit.id} 
-                          className={`bg-white p-3 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow flex-shrink-0 min-w-[120px] ${
+                          className={`bg-white p-3 rounded-xl border border-gray-200 hover:shadow-sm transition-shadow flex-shrink-0 min-w-[120px] ${
                             unit.stato === 'prestato' ? 'cursor-pointer hover:border-blue-500' : ''
                           }`}
                           onClick={() => handleUnitClick(unit)}
@@ -1105,7 +1006,7 @@ const Inventory = () => {
                     <h3 className="text-lg font-semibold mb-3">Categorie Esistenti</h3>
                     <div className="space-y-2">
                       {categories.map(cat => (
-                        <div key={cat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div key={cat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
                           {editingCategory && editingCategory.id === cat.id ? (
                             <div className="flex-1 flex items-center space-x-2">
                               <input
@@ -1208,7 +1109,7 @@ const Inventory = () => {
         {/* Unit Loan Details Modal */}
         {showUnitDetailModal && selectedUnit && unitLoanDetails && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-900">Dettagli Prestito</h2>
                 <button
@@ -1277,7 +1178,7 @@ const Inventory = () => {
         {/* Delete Category Confirmation Modal - Outside of other modals */}
         {showDeleteCategoryModal && categoryToDelete && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{zIndex: 999999}}>
-            <div className="bg-white rounded-lg shadow-xl max-w-lg w-full" style={{zIndex: 1000000}}>
+            <div className="bg-white rounded-xl shadow-xl max-w-lg w-full" style={{zIndex: 1000000}}>
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <div className="flex items-center">
                   <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -1307,7 +1208,7 @@ const Inventory = () => {
               <div className="p-6">
                 {itemsUsingCategory.length > 0 ? (
                   <div className="space-y-4">
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                       <div className="flex items-start">
                         <div className="flex-shrink-0">
                           <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1326,7 +1227,7 @@ const Inventory = () => {
                     
                     <div>
                       <h5 className="text-sm font-medium text-gray-900 mb-2">Elementi che utilizzano questa categoria:</h5>
-                      <div className="bg-gray-50 rounded-lg p-3 max-h-32 overflow-y-auto">
+                      <div className="bg-gray-50 rounded-xl p-3 max-h-32 overflow-y-auto">
                         <ul className="space-y-1">
                           {itemsUsingCategory.map(item => (
                             <li key={item.id} className="text-sm text-gray-700">
@@ -1356,7 +1257,7 @@ const Inventory = () => {
                   </button>
                   <button
                     onClick={confirmDeleteCategory}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
                   >
                     {itemsUsingCategory.length > 0 ? 'Elimina e Sposta' : 'Elimina'}
                   </button>
@@ -1369,7 +1270,7 @@ const Inventory = () => {
         {/* Modal di Avviso Eliminazione */}
         {showDeleteWarningModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <div className="flex-shrink-0">
@@ -1392,7 +1293,7 @@ const Inventory = () => {
                       setShowDeleteWarningModal(false);
                       setDeleteWarningMessage('');
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                   >
                     Ho Capito
                   </button>

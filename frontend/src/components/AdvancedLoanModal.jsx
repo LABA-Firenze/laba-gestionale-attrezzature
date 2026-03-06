@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Image, Check, List, TriangleAlert, Info } from 'lucide-react';
+import { XMarkIcon, PhotoIcon, CheckIcon, ListBulletIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
 
@@ -273,7 +273,7 @@ body: JSON.stringify({
 
  return (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[95vh] overflow-hidden">
+ <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full mx-4 max-h-[95vh] overflow-hidden">
  <div className="p-6 border-b ">
  <div className="flex items-center justify-between">
  <div>
@@ -288,7 +288,7 @@ body: JSON.stringify({
  onClick={handleClose}
  className="text-gray-400 hover:text-gray-600 "
  >
- <X className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
  
@@ -329,7 +329,7 @@ body: JSON.stringify({
  <div
  key={item.id}
  onClick={() => handleItemSelect(item)}
- className="p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+ className="p-4 border border-gray-300 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"
  >
                 <h4 className="font-semibold text-gray-900 ">{item.nome}</h4>
                 <p className="text-sm text-gray-600 ">
@@ -347,7 +347,7 @@ body: JSON.stringify({
                     className="mt-2 inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
                     title="Visualizza immagine"
                   >
-                    <Image className="w-3 h-3 mr-1" />
+                    <PhotoIcon className="w-3 h-3 mr-1" />
                     Immagine
                   </button>
                 )}
@@ -367,7 +367,7 @@ body: JSON.stringify({
  <div className="flex space-x-4 mb-6">
  <button
  onClick={() => setIsManualUser(false)}
- className={`px-4 py-2 rounded-lg ${
+ className={`px-4 py-2 rounded-full ${
  !isManualUser 
  ? 'bg-blue-600 text-white' 
  : 'bg-gray-200 text-gray-700 '
@@ -377,7 +377,7 @@ body: JSON.stringify({
  </button>
  <button
  onClick={() => setIsManualUser(true)}
- className={`px-4 py-2 rounded-lg ${
+ className={`px-4 py-2 rounded-full ${
  isManualUser 
  ? 'bg-blue-600 text-white' 
  : 'bg-gray-200 text-gray-700 '
@@ -393,7 +393,7 @@ body: JSON.stringify({
  <div
  key={user.id}
  onClick={() => handleUserSelect(user)}
- className="p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+ className="p-4 border border-gray-300 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"
  >
  <h4 className="font-semibold text-gray-900 ">
  {user.name} {user.surname}
@@ -412,40 +412,40 @@ body: JSON.stringify({
  placeholder="Nome *"
  value={manualUser.name}
  onChange={(e) => setManualUser(prev => ({ ...prev, name: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="text"
  placeholder="Cognome *"
  value={manualUser.surname}
  onChange={(e) => setManualUser(prev => ({ ...prev, surname: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="email"
  placeholder="Email (nome.cognome@labafirenze.com) *"
  value={manualUser.email}
  onChange={(e) => setManualUser(prev => ({ ...prev, email: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="text"
  placeholder="Matricola *"
  value={manualUser.matricola}
  onChange={(e) => setManualUser(prev => ({ ...prev, matricola: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="tel"
  placeholder="Telefono"
  value={manualUser.phone}
  onChange={(e) => setManualUser(prev => ({ ...prev, phone: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
  />
  <select
  value={manualUser.corso_accademico}
  onChange={(e) => setManualUser(prev => ({ ...prev, corso_accademico: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
  >
  <option value="">Seleziona corso *</option>
  <option value="Graphic Design & Multimedia">Graphic Design & Multimedia</option>
@@ -479,7 +479,7 @@ body: JSON.stringify({
  <div
  key={unit.id}
  onClick={() => handleUnitToggle(unit)}
- className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+ className={`p-4 border rounded-full cursor-pointer transition-colors ${
  selectedUnits.find(u => u.id === unit.id)
  ? 'border-blue-500 bg-blue-50 '
  : 'border-gray-300 hover:bg-gray-50 '
@@ -490,7 +490,7 @@ body: JSON.stringify({
  {unit.codice_univoco}
  </span>
  {selectedUnits.find(u => u.id === unit.id) && (
- <Check className="w-5 h-5 text-blue-600" />
+ <CheckIcon className="w-5 h-5 text-blue-600" />
  )}
  </div>
  {unit.note && (
@@ -527,9 +527,9 @@ body: JSON.stringify({
        </button>
      </div>
 
-     <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+     <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
        <div className="flex items-center mb-3">
-         <List className="w-5 h-5 text-purple-600 mr-2" />
+         <ListBulletIcon className="w-5 h-5 text-purple-600 mr-2" />
          <div>
            <h4 className="text-sm font-medium text-purple-800">Come intendi utilizzare questo oggetto?</h4>
            <p className="text-xs text-purple-700 mt-1">
@@ -539,7 +539,7 @@ body: JSON.stringify({
        </div>
        
        <div className="space-y-3">
-         <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+         <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
            <input
              type="radio"
              name="tipo_utilizzo_admin"
@@ -559,7 +559,7 @@ body: JSON.stringify({
            </div>
          </label>
          
-         <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+         <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
            <input
              type="radio"
              name="tipo_utilizzo_admin"
@@ -592,7 +592,7 @@ body: JSON.stringify({
  Date del prestito
  </h3>
  
- <div className="bg-gray-50 rounded-lg p-4 mb-6">
+ <div className="bg-gray-50 rounded-full p-4 mb-6">
  <h4 className="font-medium text-gray-900 mb-2">Riepilogo:</h4>
  <p><strong>Oggetto:</strong> {selectedItem?.nome}</p>
  <p><strong>Utente:</strong> {selectedUser ? `${selectedUser.name} ${selectedUser.surname}` : `${manualUser.name} ${manualUser.surname}`}</p>
@@ -604,9 +604,9 @@ body: JSON.stringify({
 
  {/* Info Tipo Prestito */}
  {selectedItem?.tipo_prestito === 'solo_interno' && (
-   <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+   <div className="bg-orange-50 border border-orange-200 rounded-full p-4 mb-4">
      <div className="flex items-center">
-       <TriangleAlert className="w-5 h-5 text-orange-600 mr-2" />
+       <ExclamationTriangleIcon className="w-5 h-5 text-orange-600 mr-2" />
        <div>
          <h4 className="text-sm font-medium text-orange-800">Solo per uso interno</h4>
          <p className="text-xs text-orange-700 mt-1">
@@ -619,9 +619,9 @@ body: JSON.stringify({
 
  {/* Info Tipo Utilizzo per oggetti "entrambi" */}
  {selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo && (
-   <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+   <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
      <div className="flex items-center">
-       <Info className="w-5 h-5 text-purple-600 mr-2" />
+       <InformationCircleIcon className="w-5 h-5 text-purple-600 mr-2" />
        <div>
          <h4 className="text-sm font-medium text-purple-800">
            Tipo di utilizzo selezionato: {tipoUtilizzo === 'interno' ? '🏠 Uso Interno' : '📅 Prestito Esterno'}
@@ -761,7 +761,7 @@ onChange={(val) => {
  )}
 
  {error && (
- <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
+ <div className="bg-red-50 border border-red-200 rounded-full p-3 mt-4">
  <p className="text-red-800 text-sm">{error}</p>
  </div>
  )}
@@ -780,7 +780,7 @@ onChange={(val) => {
             handleClose();
           }
         }}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 "
+        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 "
       >
         {step > 1 ? 'Indietro' : 'Annulla'}
       </button>
@@ -813,7 +813,7 @@ onChange={(val) => {
             (step === 3 && selectedUnits.length === 0) ||
             (step === 4 && selectedItem?.tipo_prestito === 'entrambi' && !tipoUtilizzo)
           }
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Avanti
         </button>
@@ -821,7 +821,7 @@ onChange={(val) => {
  <button
  onClick={handleCreateLoan}
  disabled={loading || !dateRange.dal || (!dateRange.al && !(selectedItem?.tipo_prestito === 'solo_interno' || (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')))}
- className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-full hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {loading ? 'Creazione...' : 'Crea Prestito'}
  </button>

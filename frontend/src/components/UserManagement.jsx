@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '../auth/AuthContext';
+import PageHeader from './PageHeader';
+import SectionTabs, { Tab } from './SectionTabs';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
@@ -498,102 +500,72 @@ setError(err.message);
  }
 
 return (
-  <div className="min-h-screen bg-gray-50">
-    {/* Header */}
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8 mx-4 sm:mx-6 lg:mx-8">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestione Utenti</h1>
-          <p className="text-gray-600 text-lg">Gestisci gli utenti del sistema</p>
-        </div>
-        <div className="flex items-center">
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-          >
-            <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            <span>Nuovo Utente</span>
-          </button>
-        </div>
-      </div>
-    </div>
+  <div className="min-h-screen bg-gray-50 space-y-6">
+    <PageHeader
+      title="Gestione Utenti"
+      subtitle="Gestisci gli utenti del sistema"
+      action={
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+        >
+          <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span>Nuovo Utente</span>
+        </button>
+      }
+    />
 
     <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
 
  {/* Error Message */}
  {error && (
-   <div className="bg-red-50 /20 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+   <div className="bg-red-50 /20 border border-red-200 text-red-700 px-4 py-3 rounded-full">
      {error}
    </div>
  )}
 
     {/* Tabs */}
-    <div className="border-b border-gray-200 mb-8">
-      <nav className="flex space-x-8">
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'users'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <div className="flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span>Utenti</span>
-            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-              {regularUsers.length}
-            </span>
-          </div>
-        </button>
-        
-        <button
-          onClick={() => setActiveTab('supervisors')}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'supervisors'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <div className="flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            <span>Supervisori</span>
-            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-              {supervisorUsers.length}
-            </span>
-          </div>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('admins')}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'admins'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <div className="flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7M16 3v4M8 3v4m-5 4h18" />
-            </svg>
-            <span>Amministratori</span>
-            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-              {adminUsers.length}
-            </span>
-          </div>
-        </button>
-      </nav>
-    </div>
+    <SectionTabs>
+      <Tab isActive={activeTab === 'users'} onClick={() => setActiveTab('users')}>
+        <span className="inline-flex items-center gap-2">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          Utenti
+          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-medium">
+            {regularUsers.length}
+          </span>
+        </span>
+      </Tab>
+      <Tab isActive={activeTab === 'supervisors'} onClick={() => setActiveTab('supervisors')}>
+        <span className="inline-flex items-center gap-2">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          Supervisori
+          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-medium">
+            {supervisorUsers.length}
+          </span>
+        </span>
+      </Tab>
+      <Tab isActive={activeTab === 'admins'} onClick={() => setActiveTab('admins')}>
+        <span className="inline-flex items-center gap-2">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7M16 3v4M8 3v4m-5 4h18" />
+          </svg>
+          Amministratori
+          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-medium">
+            {adminUsers.length}
+          </span>
+        </span>
+      </Tab>
+    </SectionTabs>
 
     {/* Desktop Table View */}
-    <div className="hidden lg:block bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="overflow-x-auto shadow-sm ring-1 ring-black ring-opacity-5 rounded-lg">
+    <div className="hidden lg:block bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="overflow-x-auto shadow-sm ring-1 ring-black ring-opacity-5 rounded-xl">
         <table className="min-w-full divide-y divide-gray-200 ">
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100 ">
             <tr>
@@ -687,7 +659,7 @@ return (
                   <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
                     <button
                       onClick={() => openEditModal(user)}
-                      className="inline-flex items-center px-3 py-2 text-xs font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 hover:shadow-md transition-all duration-200 hover:scale-105"
+                      className="inline-flex items-center px-3 py-2 text-xs font-medium text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 hover:shadow-md transition-all duration-200 hover:scale-105"
                     >
                       <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -696,7 +668,7 @@ return (
                     </button>
                     <button
                       onClick={() => openPasswordReset(user)}
-                      className="inline-flex items-center px-3 py-2 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 hover:shadow-md transition-all duration-200 hover:scale-105"
+                      className="inline-flex items-center px-3 py-2 text-xs font-medium text-orange-700 bg-orange-100 rounded-full hover:bg-orange-200 hover:shadow-md transition-all duration-200 hover:scale-105"
                     >
                       <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -706,7 +678,7 @@ return (
                     {canManagePenalties(user) && (
                       <button
                         onClick={() => openPenaltyModal(user)}
-                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-purple-700 bg-purple-100 rounded-md hover:bg-purple-200 transition-colors duration-200"
+                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-purple-700 bg-purple-100 rounded-full hover:bg-purple-200 transition-colors duration-200"
                       >
                         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -717,7 +689,7 @@ return (
                     {canDeleteUser(user) && (
                       <button
                         onClick={() => handleDeleteUser(user.id)}
-                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors duration-200"
+                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-full hover:bg-red-200 transition-colors duration-200"
                       >
                         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -737,7 +709,7 @@ return (
     {/* Mobile Card View */}
     <div className="lg:hidden space-y-4">
       {filteredUsers.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8 text-center">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 text-center">
           <svg className="w-12 h-12 text-gray-400 mb-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
@@ -755,7 +727,7 @@ return (
         </div>
       ) : (
         filteredUsers.map((user) => (
-        <div key={user.id} className="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+        <div key={user.id} className="bg-white rounded-xl shadow-lg border border-gray-200 p-4">
           {/* User Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
@@ -843,7 +815,7 @@ return (
             {/* Row 1: Modifica + Reset */}
             <button
               onClick={() => openEditModal(user)}
-              className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 hover:shadow-md transition-all duration-200 hover:scale-105"
+              className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 hover:shadow-md transition-all duration-200 hover:scale-105"
             >
               <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -852,7 +824,7 @@ return (
             </button>
             <button
               onClick={() => openPasswordReset(user)}
-              className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 hover:shadow-md transition-all duration-200 hover:scale-105"
+              className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-orange-700 bg-orange-100 rounded-full hover:bg-orange-200 hover:shadow-md transition-all duration-200 hover:scale-105"
             >
               <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -864,7 +836,7 @@ return (
             {canManagePenalties(user) && (
               <button
                 onClick={() => openPenaltyModal(user)}
-                className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-purple-700 bg-purple-100 rounded-md hover:bg-purple-200 transition-colors duration-200"
+                className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-purple-700 bg-purple-100 rounded-full hover:bg-purple-200 transition-colors duration-200"
               >
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -875,7 +847,7 @@ return (
             {canDeleteUser(user) && (
               <button
                 onClick={() => handleDeleteUser(user.id)}
-                className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors duration-200"
+                className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-red-700 bg-red-100 rounded-full hover:bg-red-200 transition-colors duration-200"
               >
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -900,7 +872,7 @@ return (
  {/* Add User Modal */}
  {showAddModal && (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
  <div className="p-6">
  <div className="flex justify-between items-center mb-4">
  <h3 className="text-lg font-semibold text-gray-900 ">Nuovo Utente</h3>
@@ -926,7 +898,7 @@ return (
  required
  value={formData.name}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  <div>
@@ -939,7 +911,7 @@ return (
  required
  value={formData.surname}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  </div>
@@ -954,7 +926,7 @@ return (
  required
  value={formData.email}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
 
@@ -969,7 +941,7 @@ return (
  required
  value={formData.matricola}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  <div>
@@ -981,7 +953,7 @@ return (
  name="phone"
  value={formData.phone}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  </div>
@@ -994,7 +966,7 @@ return (
  name="corso_accademico"
  value={formData.corso_accademico}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  >
  <option value="">Seleziona corso</option>
  {corsiAccademici.map(corso => (
@@ -1013,7 +985,7 @@ return (
  required
  value={formData.password}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
 
@@ -1025,7 +997,7 @@ return (
  name="ruolo"
  value={formData.ruolo}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400"
  >
  <option value="user">Utente</option>
  <option value="supervisor">Supervisore</option>
@@ -1039,13 +1011,13 @@ return (
  <button
  type="button"
  onClick={() => setShowAddModal(false)}
- className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+ className="px-4 py-2 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
  >
  Annulla
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
+ className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
  >
  Crea Utente
  </button>
@@ -1059,7 +1031,7 @@ return (
  {/* Edit User Modal */}
  {showEditModal && editingUser && (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
  <div className="p-6">
  <div className="flex justify-between items-center mb-4">
  <h3 className="text-lg font-semibold text-gray-900 ">
@@ -1087,7 +1059,7 @@ return (
  required
  value={formData.name}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  <div>
@@ -1100,7 +1072,7 @@ return (
  required
  value={formData.surname}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  </div>
@@ -1115,7 +1087,7 @@ return (
  required
  value={formData.email}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
 
@@ -1130,7 +1102,7 @@ return (
  required
  value={formData.matricola}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  <div>
@@ -1142,7 +1114,7 @@ return (
  name="phone"
  value={formData.phone}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
  </div>
@@ -1155,7 +1127,7 @@ return (
  name="corso_accademico"
  value={formData.corso_accademico}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  >
  <option value="">Seleziona corso</option>
  {corsiAccademici.map(corso => (
@@ -1172,7 +1144,7 @@ return (
   name="ruolo"
   value={formData.ruolo}
   onChange={handleInputChange}
-  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
   disabled={normalizeRole(editingUser?.ruolo) === 'admin'}
   >
   <option value="user">Utente</option>
@@ -1194,13 +1166,13 @@ return (
  <button
  type="button"
  onClick={() => setShowEditModal(false)}
- className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+ className="px-4 py-2 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
  >
  Annulla
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
+ className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
  >
  Salva Modifiche
  </button>
@@ -1214,7 +1186,7 @@ return (
  {/* Password Reset Modal */}
  {showPasswordResetModal && resetUser && (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+ <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
  <div className="p-6">
  <div className="flex justify-between items-center mb-4">
  <h3 className="text-lg font-semibold text-gray-900 ">
@@ -1241,7 +1213,7 @@ return (
  required
  value={resetData.newPassword}
  onChange={handleResetInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
 
@@ -1255,7 +1227,7 @@ return (
  required
  value={resetData.confirmPassword}
  onChange={handleResetInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 "
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 "
  />
  </div>
 
@@ -1263,13 +1235,13 @@ return (
  <button
  type="button"
  onClick={() => setShowPasswordResetModal(false)}
- className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+ className="px-4 py-2 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
  >
  Annulla
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-200"
+ className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full hover:from-orange-600 hover:to-red-600 transition-all duration-200"
  >
  Reset Password
  </button>
@@ -1283,7 +1255,7 @@ return (
 {/* Penalty Management Modal */}
 {showPenaltyModal && selectedUserForPenalty && (
 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+<div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 <div className="flex items-center justify-between p-6 border-b border-gray-200">
 <div className="flex items-center">
 <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
@@ -1308,7 +1280,7 @@ className="text-gray-400 hover:text-gray-600 transition-colors"
 
 <div className="p-6">
 {/* User Status */}
-<div className="mb-6 p-4 bg-gray-50 rounded-lg">
+<div className="mb-6 p-4 bg-gray-50 rounded-full">
 <div className="flex items-center justify-between mb-2">
 <span className="text-sm font-medium text-gray-700">Stato Attuale:</span>
 <div className="flex items-center gap-2">
@@ -1362,7 +1334,7 @@ Nessuna Penalità
 ) : (
 <div className="space-y-3 max-h-64 overflow-y-auto">
 {userPenalties.map((penalty) => (
-<div key={penalty.id} className="bg-white border border-gray-200 rounded-lg p-4">
+<div key={penalty.id} className="bg-white border border-gray-200 rounded-xl p-4">
 <div className="flex items-start justify-between mb-2">
 <div className="flex-1">
 <p className="font-medium text-gray-900">
@@ -1408,7 +1380,7 @@ Assegnata da: {penalty.created_by_name} {penalty.created_by_surname}
 
 {/* Assign Manual Penalty */}
 {!selectedUserForPenalty.is_blocked && (
-<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+<div className="bg-blue-50 border border-blue-200 rounded-full p-4 mb-6">
 <h4 className="text-md font-semibold text-blue-900 mb-3">Assegna Penalità Manuale</h4>
 <div className="space-y-3">
 <div>
@@ -1418,7 +1390,7 @@ Numero di Strike (1-3)
 <select
 value={manualPenaltyStrikes}
 onChange={(e) => setManualPenaltyStrikes(parseInt(e.target.value))}
-className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 >
 <option value={1}>1 Strike</option>
 <option value={2}>2 Strike</option>
@@ -1442,12 +1414,12 @@ value={manualPenaltyMotivo}
 onChange={(e) => setManualPenaltyMotivo(e.target.value)}
 placeholder="Inserisci il motivo della penalità..."
 rows={3}
-className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 />
 </div>
 <button
 onClick={handleAssignManualPenalty}
-className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+className="w-full px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium"
 >
 Assegna Penalità
 </button>
@@ -1457,18 +1429,18 @@ Assegna Penalità
 
 {/* Actions */}
 {selectedUserForPenalty.is_blocked && (
-<div className="bg-red-50 border border-red-200 rounded-lg p-4">
+<div className="bg-red-50 border border-red-200 rounded-full p-4">
 <h4 className="text-md font-semibold text-red-900 mb-3">Azioni di Sblocco</h4>
 <div className="space-y-2">
 <button
 onClick={() => handleUnblockUser(selectedUserForPenalty.id, false)}
-className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+className="w-full px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors"
 >
 Sblocca Utente (Mantieni Strike)
 </button>
 <button
 onClick={() => handleUnblockUser(selectedUserForPenalty.id, true)}
-className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+className="w-full px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
 >
 Sblocca Utente e Azzera Strike
 </button>
@@ -1483,7 +1455,7 @@ Sblocca Utente e Azzera Strike
 <div className="flex justify-end p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
 <button
 onClick={() => setShowPenaltyModal(false)}
-className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors font-medium"
 >
 Chiudi
 </button>

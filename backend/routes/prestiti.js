@@ -315,27 +315,28 @@ r.put('/:id/approva', requireAuth, requireRole('admin'), async (req, res) => {
       RETURNING id
     `, [requestData.inventario_id, userFullName, requestData.dal, dataRientroAdjusted, requestData.note, id]);
     
-    // Update inventory units status to 'prestato'
+    // Collega le unità al prestito (stato 'prestato'); restano "disponibili" in lista fino a data_uscita
+    const loanId = loanResult[0].id;
     if (requestData.unit_id) {
-      // Se c'è un'unità specifica riservata, marcala come prestata
       await query(`
         UPDATE inventario_unita 
-        SET stato = 'prestato', richiesta_riservata_id = NULL
-        WHERE id = $1 AND richiesta_riservata_id = $2
-      `, [requestData.unit_id, id]);
+        SET stato = 'prestato', prestito_corrente_id = $1, richiesta_riservata_id = NULL
+        WHERE id = $2 AND richiesta_riservata_id = $3
+      `, [loanId, requestData.unit_id, id]);
     } else {
-      // Altrimenti marca le prime unità disponibili come prestate
+      const limit = requestData.quantita || 1;
       await query(`
         UPDATE inventario_unita 
-        SET stato = 'prestato' 
-        WHERE inventario_id = $1 
+        SET stato = 'prestato', prestito_corrente_id = $1
+        WHERE inventario_id = $2 
         AND stato = 'disponibile' 
+        AND prestito_corrente_id IS NULL
         AND id IN (
           SELECT id FROM inventario_unita 
-          WHERE inventario_id = $1 AND stato = 'disponibile' 
-          LIMIT $2
+          WHERE inventario_id = $2 AND stato = 'disponibile' AND prestito_corrente_id IS NULL
+          LIMIT $3
         )
-      `, [requestData.inventario_id, requestData.quantita || 1]);
+      `, [loanId, requestData.inventario_id, limit]);
     }
     
     // Invia email di notifica allo studente (non blocca l'approvazione se fallisce)
@@ -477,12 +478,12 @@ r.put('/:id/restituisci', requireAuth, requireRole('admin'), async (req, res) =>
       return res.status(404).json({ error: 'Prestito non trovato' });
     }
     
-    // Set inventory units back to available
+    // Libera solo le unità assegnate a questo prestito
     await query(`
       UPDATE inventario_unita 
-      SET stato = 'disponibile' 
-      WHERE inventario_id = $1 AND stato = 'prestato'
-    `, [loanDetails[0].inventario_id]);
+      SET stato = 'disponibile', prestito_corrente_id = NULL
+      WHERE prestito_corrente_id = $1
+    `, [id]);
     
     res.json({ message: 'Prestito terminato con successo' });
   } catch (error) {

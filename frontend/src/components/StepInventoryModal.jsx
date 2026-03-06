@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Info, Image, ArrowLeftRight, BookOpen, Hash, X, AlertCircle } from 'lucide-react';
+import { InformationCircleIcon, PhotoIcon, ArrowsRightLeftIcon, BookOpenIcon, HashtagIcon, XMarkIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 
 const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) => {
@@ -271,7 +271,7 @@ const canProceed = () => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <X className="icon" />
+ <XMarkIcon className="icon" />
  </button>
  </div>
  
@@ -280,11 +280,11 @@ const canProceed = () => {
  <div className="flex items-center justify-center">
  <div className="flex items-center space-x-4">
  {[
-   { num: 1, label: 'Info Base', icon: <Info className="w-4 h-4" /> },
-   { num: 2, label: 'Descrizione', icon: <Image className="w-4 h-4" /> },
-   { num: 3, label: 'Tipo Utilizzo', icon: <ArrowLeftRight className="w-4 h-4" /> },
-   { num: 4, label: 'Corsi & Categoria', icon: <BookOpen className="w-4 h-4" /> },
-   { num: 5, label: 'Codici Unità', icon: <Hash className="w-4 h-4" /> }
+   { num: 1, label: 'Info Base', icon: <InformationCircleIcon className="w-4 h-4" /> },
+   { num: 2, label: 'Descrizione', icon: <PhotoIcon className="w-4 h-4" /> },
+   { num: 3, label: 'Tipo Utilizzo', icon: <ArrowsRightLeftIcon className="w-4 h-4" /> },
+   { num: 4, label: 'Corsi & Categoria', icon: <BookOpenIcon className="w-4 h-4" /> },
+   { num: 5, label: 'Codici Unità', icon: <HashtagIcon className="w-4 h-4" /> }
  ].map((stepData, index) => (
  <React.Fragment key={stepData.num}>
  <div className="flex flex-col items-center">
@@ -429,7 +429,7 @@ Tipo di Utilizzo
 <div className="form-group">
   <label className="form-label">Seleziona il tipo di utilizzo</label>
   <div className="space-y-2">
-    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+    <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
       <input
         type="radio"
         name="tipo_prestito"
@@ -444,7 +444,7 @@ Tipo di Utilizzo
       </div>
     </label>
     
-    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+    <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
       <input
         type="radio"
         name="tipo_prestito"
@@ -459,7 +459,7 @@ Tipo di Utilizzo
       </div>
     </label>
     
-    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+    <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
       <input
         type="radio"
         name="tipo_prestito"
@@ -474,7 +474,7 @@ Tipo di Utilizzo
       </div>
     </label>
   </div>
-  <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+  <div className="mt-2 p-3 bg-blue-50 rounded-full border border-blue-200">
     <p className="text-xs text-blue-700">
       {formData.tipo_prestito === 'solo_esterno' && (
         <>📅 <strong>Solo Prestito Esterno:</strong> Gli studenti possono richiedere prestiti per più giorni e portare l'oggetto fuori dall'accademia</>
@@ -501,7 +501,7 @@ Tipo di Utilizzo
  {/* Multiple Course Selection */}
  <div className="form-group">
  <label className="form-label">Corsi Accademici *</label>
- <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+ <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-full p-3">
  {courses.map(course => (
  <label key={course.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 cursor-pointer rounded">
  <input
@@ -593,7 +593,7 @@ Tipo di Utilizzo
 
  <div className="form-group">
  <label className="form-label">Codici Univoci ({formData.unita.length})</label>
- <div className="bg-gray-50 rounded-lg p-3 max-h-60 overflow-y-auto border border-gray-200">
+ <div className="bg-gray-50 rounded-full p-3 max-h-60 overflow-y-auto border border-gray-200">
  <div className="space-y-2">
  {formData.unita.map((unit, index) => (
  <div key={index} className="flex items-center space-x-2 p-2 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors">
@@ -635,7 +635,7 @@ Tipo di Utilizzo
  {error && (
  <div className="alert-card alert-danger mt-4">
  <div className="flex items-center">
- <AlertCircle className="icon text-red-500 mr-3" />
+ <ExclamationCircleIcon className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>

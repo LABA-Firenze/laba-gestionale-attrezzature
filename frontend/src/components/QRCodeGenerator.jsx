@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import QRCode from 'qrcode';
 
 const QRCodeGenerator = ({ item, onClose, embedded = false }) => {
@@ -64,7 +64,7 @@ if (embedded) {
           <div className="mt-4">
             <button
               onClick={downloadQRCode}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors text-sm"
             >
               Scarica QR Code
             </button>
@@ -77,14 +77,14 @@ if (embedded) {
 
 return (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-    <div className="bg-white rounded-lg p-4 w-full mx-4" style={{ maxWidth: '30rem' }}>
+    <div className="bg-white rounded-full p-4 w-full mx-4" style={{ maxWidth: '30rem' }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-semibold text-gray-900">QR Code - {item.nome}</h3>
         <button
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600"
         >
-          <X className="w-5 h-5" />
+          <XMarkIcon className="w-5 h-5" />
         </button>
       </div>
 
@@ -95,7 +95,7 @@ return (
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="bg-white p-2 rounded-lg border border-gray-200 inline-block">
+            <div className="bg-white p-2 rounded-full border border-gray-200 inline-block">
               <img src={qrCodeUrl} alt={`QR Code per ${item.nome}`} className="w-32 h-32" />
             </div>
             
@@ -107,7 +107,7 @@ return (
 
             <button
               onClick={downloadQRCode}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors text-sm"
             >
               Scarica QR Code
             </button>

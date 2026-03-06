@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { CubeIcon, ClipboardDocumentListIcon, WrenchScrewdriverIcon, ExclamationTriangleIcon, ChevronDownIcon, ArrowTrendingDownIcon, CalendarIcon, XMarkIcon, InformationCircleIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import StepInventoryModal from './StepInventoryModal';
 import QuickRequestModal from './QuickRequestModal';
 import { DashboardSkeleton } from './SkeletonLoader';
+import PageHeader from './PageHeader';
 
 const Dashboard = ({ onNavigate }) => {
  const [stats, setStats] = useState({
@@ -361,75 +363,61 @@ const hasScadenze = hasScadenzeOggi || hasScadenzeDomani || true;
 
 return (
 <div className="min-h-screen bg-gray-50 space-y-6">
-  {/* Header */}
-  <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard {roleLabel}</h1>
-        <p className="text-gray-600 text-lg">Panoramica del sistema di gestione attrezzature</p>
-      </div>
-    </div>
-  </div>
+  <PageHeader
+    title={`Dashboard ${roleLabel}`}
+    subtitle="Panoramica del sistema di gestione attrezzature"
+  />
 
   {/* Statistics Cards */}
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Inventario</p>
           <p className="text-3xl font-bold text-gray-900">{stats.inventory}</p>
           <p className="text-sm text-gray-500">Elementi totali</p>
         </div>
-        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
+        <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center p-2.5">
+          <CubeIcon className="w-6 h-6 text-blue-600" />
         </div>
       </div>
     </div>
     
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Richieste</p>
           <p className="text-3xl font-bold text-gray-900">{stats.requests}</p>
           <p className="text-sm text-gray-500">Richieste di prestito</p>
         </div>
-        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
+        <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center p-2.5">
+          <ClipboardDocumentListIcon className="w-6 h-6 text-purple-600" />
         </div>
       </div>
     </div>
     
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Riparazioni</p>
           <p className="text-3xl font-bold text-gray-900">{stats.repairs}</p>
           <p className="text-sm text-gray-500">In riparazione</p>
         </div>
-        <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+        <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center p-2.5">
+          <WrenchScrewdriverIcon className="w-6 h-6 text-orange-600" />
         </div>
       </div>
     </div>
     
-    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600 mb-1">Segnalazioni</p>
           <p className="text-3xl font-bold text-gray-900">{stats.reports}</p>
           <p className="text-sm text-gray-500">Segnalazioni attive</p>
         </div>
-        <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
+        <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center p-2.5">
+          <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
         </div>
       </div>
     </div>
@@ -478,7 +466,7 @@ return (
  {/* Richieste da Approvare */}
  {hasPendingRequests && (
  <div 
- className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 cursor-pointer hover:bg-yellow-100 transition-colors"
+ className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 cursor-pointer hover:bg-yellow-100 transition-colors"
  onClick={() => {
    if (onNavigate) {
      onNavigate('prestiti', { initialTab: 'pending' });
@@ -499,7 +487,7 @@ return (
  {stats.pendingRequestsData && stats.pendingRequestsData.slice(0, 3).map(request => (
  <div 
  key={request.id} 
- className="bg-white rounded-lg p-3 border border-yellow-200 hover:bg-yellow-50 cursor-pointer transition-colors"
+ className="bg-white rounded-full px-5 py-3 border border-yellow-200 hover:bg-yellow-50 cursor-pointer transition-colors"
  onClick={(e) => {
    e.stopPropagation();
    setSelectedLoan(request);
@@ -528,7 +516,7 @@ return (
  {/* Scorte Basse */}
  {hasScorteBasse && (
  <div 
- className="bg-red-50 border border-red-200 rounded-lg p-4 cursor-pointer hover:bg-red-100 transition-colors"
+ className="bg-red-50 border border-red-200 rounded-xl p-4 cursor-pointer hover:bg-red-100 transition-colors"
  onClick={() => setSelectedAlert({ type: 'scorte', data: alerts.scorte_basse })}
  >
  <div className="flex items-center mb-3">
@@ -543,7 +531,7 @@ return (
  </div>
  <div className="space-y-2">
  {alerts.scorte_basse.slice(0, 3).map(item => (
- <div key={item.id} className={`bg-white rounded-lg p-3 border ${
+ <div key={item.id} className={`bg-white rounded-full px-5 py-3 border ${
  item.stato_scorte === 'esaurito' ? 'border-red-500' :
  item.stato_scorte === 'attenzione' ? 'border-orange-500' :
  item.stato_scorte === 'scarseggia' ? 'border-yellow-500' :
@@ -616,7 +604,7 @@ return (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {/* Oggi - Viola */}
  <div 
- className={`bg-purple-50 border border-purple-200 rounded-lg p-4 transition-colors ${hasScadenzeOggi ? 'cursor-pointer hover:bg-purple-100' : 'opacity-60 cursor-not-allowed'}`}
+ className={`bg-purple-50 border border-purple-200 rounded-xl p-4 transition-colors ${hasScadenzeOggi ? 'cursor-pointer hover:bg-purple-100' : 'opacity-60 cursor-not-allowed'}`}
  onClick={hasScadenzeOggi ? () => setSelectedAlert({ type: 'oggi', data: alerts.scadenze_oggi || [] }) : undefined}
  >
  <div className="flex items-center mb-3">
@@ -633,7 +621,7 @@ return (
  {hasScadenzeOggi && alerts.scadenze_oggi.length > 0 ? alerts.scadenze_oggi.slice(0, 3).map(prestito => (
  <div 
  key={prestito.id} 
- className="bg-white rounded-lg p-3 border border-purple-200 hover:bg-purple-50 cursor-pointer transition-colors"
+ className="bg-white rounded-full px-5 py-3 border border-purple-200 hover:bg-purple-50 cursor-pointer transition-colors"
  onClick={(e) => {
    e.stopPropagation();
    setSelectedLoan(prestito);
@@ -664,7 +652,7 @@ return (
 
  {/* Domani - Viola */}
  <div 
- className={`bg-purple-50 border border-purple-200 rounded-lg p-4 transition-colors ${hasScadenzeDomani ? 'cursor-pointer hover:bg-purple-100' : 'opacity-60 cursor-not-allowed'}`}
+ className={`bg-purple-50 border border-purple-200 rounded-xl p-4 transition-colors ${hasScadenzeDomani ? 'cursor-pointer hover:bg-purple-100' : 'opacity-60 cursor-not-allowed'}`}
  onClick={hasScadenzeDomani ? () => setSelectedAlert({ type: 'domani', data: alerts.scadenze_domani || [] }) : undefined}
  >
  <div className="flex items-center mb-3">
@@ -681,7 +669,7 @@ return (
  {hasScadenzeDomani && alerts.scadenze_domani.length > 0 ? alerts.scadenze_domani.slice(0, 3).map(prestito => (
  <div 
  key={prestito.id} 
- className="bg-white rounded-lg p-3 border border-purple-200 hover:bg-purple-50 cursor-pointer transition-colors"
+ className="bg-white rounded-full px-5 py-3 border border-purple-200 hover:bg-purple-50 cursor-pointer transition-colors"
  onClick={(e) => {
    e.stopPropagation();
    setSelectedLoan(prestito);
@@ -718,7 +706,7 @@ return (
     {/* Recent Activity */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
     {/* Recent Requests */}
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-white rounded-xl shadow-lg p-6">
     <div className="flex items-center justify-between mb-6">
     <h2 className="text-xl font-bold text-gray-900">Richieste Recenti</h2>
     <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">{recentRequests.length} richieste</span>
@@ -737,7 +725,7 @@ return (
  recentRequests.map((request, index) => (
  <div 
  key={index} 
- className={`flex items-center py-4 px-4 rounded-xl transition-all duration-200 ${
+ className={`flex items-center py-4 px-4 rounded-full transition-all duration-200 ${
  request.stato === 'in_attesa' 
  ? 'bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:shadow-md cursor-pointer' 
  : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
@@ -772,7 +760,7 @@ return (
  </div>
 
  {/* Recent Reports */}
- <div className="bg-white rounded-2xl shadow-lg p-6">
+ <div className="bg-white rounded-xl shadow-lg p-6">
  <div className="flex items-center justify-between mb-6">
  <h2 className="text-xl font-bold text-gray-900">Segnalazioni Recenti</h2>
  <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">{recentReports.length} segnalazioni</span>
@@ -1161,9 +1149,9 @@ function StatCard({ title, value, description }) {
  };
 
  return (
- <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:scale-105 transition-transform p-6">
+ <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:scale-105 transition-transform p-6">
  <div className="flex items-center">
- <div className={`w-12 h-12 ${colorMap[title]} rounded-lg flex items-center justify-center ${
+ <div className={`w-12 h-12 ${colorMap[title]} rounded-full flex items-center justify-center ${
  title === 'Inventario' ? 'text-blue-600' :
  title === 'Richieste' ? 'text-purple-600' :
  title === 'Riparazioni' ? 'text-orange-600' :
@@ -1197,7 +1185,7 @@ function QuickActionButton({ title, description, icon, onClick, color = 'blue' }
  className="card card-clickable text-left w-full hover:scale-105 transition-transform"
  >
  <div className="flex items-center">
- <div className={`w-12 h-12 ${colorClasses[color]} rounded-lg flex items-center justify-center text-white mr-4 shadow-lg`}>
+ <div className={`w-12 h-12 ${colorClasses[color]} rounded-full flex items-center justify-center text-white mr-4 shadow-lg`}>
  {icon}
  </div>
  <div>

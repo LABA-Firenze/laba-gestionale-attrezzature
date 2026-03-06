@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, Clock, CheckCircle, XCircle, Check, Plus, ChevronDown, Search, ClipboardList, User, LogOut, Info, AlertCircle, TriangleAlert } from 'lucide-react';
+import { XMarkIcon, ClockIcon, CheckCircleIcon, XCircleIcon, CheckIcon, PlusIcon, ChevronDownIcon, MagnifyingGlassIcon, ClipboardDocumentListIcon, UserIcon, ArrowRightOnRectangleIcon, InformationCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import AdvancedLoanModal from './AdvancedLoanModal';
 import { TableSkeleton } from './SkeletonLoader';
+import PageHeader from './PageHeader';
+import SectionTabs, { Tab } from './SectionTabs';
 
 const Loans = ({ selectedRequestFromNotification, onRequestHandled, initialTab, onTabSet }) => {
  const [requests, setRequests] = useState([]);
@@ -411,12 +413,12 @@ const getTerminateButtonTooltip = (loan) => {
 
 const getStatusBadge = (status) => {
  const statusConfig = {
- 'in_attesa': { className: 'alert-warning', icon: <Clock className="icon-sm" />, label: 'In Attesa' },
- 'approvata': { className: 'status-available', icon: <CheckCircle className="icon-sm" />, label: 'Approvata' },
- 'rifiutata': { className: 'status-unavailable', icon: <XCircle className="icon-sm" />, label: 'Rifiutata' },
- 'attivo': { className: 'status-repair', icon: <Check className="icon-sm" />, label: 'Attivo' },
- 'completato': { className: 'alert-info', icon: <CheckCircle className="icon-sm" />, label: 'Completato' },
- 'restituito': { className: 'alert-info', icon: <CheckCircle className="icon-sm" />, label: 'Completato' }
+ 'in_attesa': { className: 'alert-warning', icon: <ClockIcon className="icon-sm" />, label: 'In Attesa' },
+ 'approvata': { className: 'status-available', icon: <CheckCircleIcon className="icon-sm" />, label: 'Approvata' },
+ 'rifiutata': { className: 'status-unavailable', icon: <XCircleIcon className="icon-sm" />, label: 'Rifiutata' },
+ 'attivo': { className: 'status-repair', icon: <CheckIcon className="icon-sm" />, label: 'Attivo' },
+ 'completato': { className: 'alert-info', icon: <CheckCircleIcon className="icon-sm" />, label: 'Completato' },
+ 'restituito': { className: 'alert-info', icon: <CheckCircleIcon className="icon-sm" />, label: 'Completato' }
  };
  
  const config = statusConfig[status] || statusConfig['in_attesa'];
@@ -435,31 +437,26 @@ const getStatusBadge = (status) => {
 
  return (
  <div className="space-y-6">
- {/* Header */}
- <div className="card">
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
- <div>
- <h1 className="text-2xl font-bold text-primary">Gestione Prestiti</h1>
- <p className="text-secondary mt-1">Gestisci richieste, approvazioni e prestiti attivi</p>
- </div>
- <div className="flex items-center space-x-4">
-        <button
-          onClick={() => setShowLoanModal(true)}
-          className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
-        >
-          <Plus className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-          <span>Nuovo Prestito</span>
-        </button>
- </div>
- </div>
- </div>
+  <PageHeader
+    title="Gestione Prestiti"
+    subtitle="Gestisci richieste, approvazioni e prestiti attivi"
+    action={
+      <button
+        onClick={() => setShowLoanModal(true)}
+        className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+      >
+        <PlusIcon className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+        <span>Nuovo Prestito</span>
+      </button>
+    }
+  />
 
     {/* Pending Requests Alert */}
     {requests.filter(r => r.stato === 'in_attesa').length > 0 && (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+      <div className="bg-yellow-50 border border-yellow-200 rounded-full p-4 mb-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <Clock className="h-5 w-5 text-yellow-400" />
+            <ClockIcon className="h-5 w-5 text-yellow-400" />
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-yellow-800">
@@ -472,7 +469,7 @@ const getStatusBadge = (status) => {
           <div className="ml-auto">
             <button
               onClick={() => setActiveTab('pending')}
-              className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-md text-sm font-medium hover:bg-yellow-200 transition-colors"
+              className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors"
             >
               Visualizza
             </button>
@@ -482,72 +479,15 @@ const getStatusBadge = (status) => {
     )}
 
     {/* Tabs for Requests/Loans */}
-    <div className="border-b border-gray-200">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-        <nav className="flex space-x-8">
-        <button
-          onClick={() => {
-            setActiveTab('active');
-            setSelectedUserId(''); // Reset user filter when changing tab
-          }}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'active'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <Check className="w-5 h-5 inline mr-2" />
-          Prestiti Attivi
-          <span className="ml-2 bg-green-100 text-green-900 text-xs px-2 py-1 rounded-full">
-            {loans.filter(l => l.stato === 'attivo').length}
-          </span>
-        </button>
-        
-        <button
-          onClick={() => {
-            setActiveTab('pending');
-            setSelectedUserId(''); // Reset user filter when changing tab
-          }}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'pending'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <Clock className="w-5 h-5 inline mr-2" />
-          In Attesa
-          <span className="ml-2 bg-orange-100 text-orange-900 text-xs px-2 py-1 rounded-full">
-            {requests.filter(r => r.stato === 'in_attesa').length}
-          </span>
-        </button>
-        
-        <button
-          onClick={() => {
-            setActiveTab('processed');
-            setSelectedUserId(''); // Reset user filter when changing tab
-          }}
-          className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-            activeTab === 'processed'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <CheckCircle className="w-5 h-5 inline mr-2" />
-          Completati
-          <span className="ml-2 bg-blue-100 text-blue-900 text-xs px-2 py-1 rounded-full">
-            {loans.filter(l => l.stato === 'restituito').length}
-          </span>
-        </button>
-        </nav>
-        
-        {/* Search and User Filter - Desktop only */}
-        <div className="hidden lg:flex items-center gap-3 mt-4 lg:mt-0">
+    <SectionTabs
+      rightContent={
+        <div className="hidden lg:flex items-center gap-3">
           {/* User Filter */}
           <div className="relative">
             <select
               value={selectedUserId}
               onChange={(e) => setSelectedUserId(e.target.value)}
-              className="px-3 py-2 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-sm appearance-none cursor-pointer min-w-[200px]"
+              className="px-3 py-2 pr-8 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-sm appearance-none cursor-pointer min-w-[200px]"
             >
               <option value="">Tutti gli utenti</option>
               {uniqueUsers.map(user => (
@@ -556,7 +496,7 @@ const getStatusBadge = (status) => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
+            <ChevronDownIcon className="absolute right-2 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
           </div>
           
           {/* Search */}
@@ -566,13 +506,50 @@ const getStatusBadge = (status) => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cerca prestiti..."
-              className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           </div>
         </div>
-      </div>
-    </div>
+      }
+    >
+      <Tab
+        isActive={activeTab === 'active'}
+        onClick={() => { setActiveTab('active'); setSelectedUserId(''); }}
+      >
+        <span className="inline-flex items-center gap-2">
+          <CheckIcon className="w-4 h-4" />
+          Prestiti Attivi
+          <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-medium">
+            {loans.filter(l => l.stato === 'attivo').length}
+          </span>
+        </span>
+      </Tab>
+      <Tab
+        isActive={activeTab === 'pending'}
+        onClick={() => { setActiveTab('pending'); setSelectedUserId(''); }}
+      >
+        <span className="inline-flex items-center gap-2">
+          <ClockIcon className="w-4 h-4" />
+          In Attesa
+          <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-medium">
+            {requests.filter(r => r.stato === 'in_attesa').length}
+          </span>
+        </span>
+      </Tab>
+      <Tab
+        isActive={activeTab === 'processed'}
+        onClick={() => { setActiveTab('processed'); setSelectedUserId(''); }}
+      >
+        <span className="inline-flex items-center gap-2">
+          <CheckCircleIcon className="w-4 h-4" />
+          Completati
+          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-medium">
+            {loans.filter(l => l.stato === 'restituito').length}
+          </span>
+        </span>
+      </Tab>
+    </SectionTabs>
 
     {/* Search and User Filter - Mobile only */}
     <div className="lg:hidden space-y-4">
@@ -605,19 +582,20 @@ const getStatusBadge = (status) => {
               placeholder="Cerca per oggetto, utente o email..."
               className="input-field pl-10"
             />
-            <Search className="search-icon icon-sm text-muted" />
+            <MagnifyingGlassIcon className="search-icon icon-sm text-muted" />
           </div>
         </div>
       </div>
     </div>
 
     {/* Desktop Grid View */}
-    <div className="hidden lg:block space-y-4">
+    <div className="hidden lg:block">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {filteredData.length === 0 ? (
-        <div>
-          <div className="card text-center py-12">
+        <div className="col-span-full">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-12 text-center">
             <div className="text-muted text-lg mb-2">
-              <ClipboardList className="icon-lg mx-auto mb-4" />
+              <ClipboardDocumentListIcon className="icon-lg mx-auto mb-4" />
             </div>
             <p className="text-secondary">
               {searchTerm || selectedUserId
@@ -630,9 +608,9 @@ const getStatusBadge = (status) => {
       ) : groupedData ? (
         // Grouped view when user filter is active
         groupedData.map(group => (
-          <div key={group.user.id} className="space-y-4">
-            {/* User Header */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+          <React.Fragment key={group.user.id}>
+            {/* User Header - spans full grid */}
+            <div className="col-span-full bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
@@ -651,371 +629,198 @@ const getStatusBadge = (status) => {
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                   title="Rimuovi filtro utente"
                 >
-                  <X className="w-5 h-5" />
+                  <XMarkIcon className="w-5 h-5" />
                 </button>
               </div>
             </div>
             
             {/* User's Loans */}
             {group.items.map(item => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-            {/* Card Header */}
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                            {item.articolo_nome || item.oggetto_nome}
-                            {item.unita && item.unita.length > 0 && (
-                              <span className="text-gray-500"> - {Array.isArray(item.unita) ? item.unita.join(', ') : item.unita}</span>
-                            )}
-                          </h3>
-                          {item.inventario_id && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              ID: {item.inventario_id}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Status Badge */}
-                    <div className="flex items-center gap-2 ml-4">
-                      {item.penalty_strikes > 0 && (
-                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                          item.is_blocked ? 'bg-red-100 text-red-800' :
-                          item.penalty_strikes >= 2 ? 'bg-orange-100 text-orange-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          <TriangleAlert className="w-3 h-3" />
-                          {item.is_blocked ? 'BLOCCATO' : `${item.penalty_strikes} Strike`}
-                        </div>
-                      )}
-                      {getStatusBadge(item.stato)}
-                    </div>
-                  </div>
-                </div>
+          <div
+            key={item.id}
+            onClick={() => setSelectedLoan(item)}
+            className="group bg-white rounded-xl shadow-lg border border-gray-100 p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center p-2.5">
+                <ClipboardDocumentListIcon className="w-6 h-6 text-blue-600" />
               </div>
-            </div>
-
-            {/* Card Body */}
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* User Info */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <User className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {`${item.utente_nome || ''} ${item.utente_cognome || ''}`.trim() || item.chi || 'Utente sconosciuto'}
-                    </p>
-                    <p className="text-sm text-gray-500">{item.utente_email || (item.chi && !item.utente_email ? item.chi : '')}</p>
-                  </div>
-                </div>
-
-                {/* Date Info */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Dal</p>
-                    <p className="text-sm font-semibold text-gray-900">{formatDate(item.dal || item.data_uscita)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Al</p>
-                    <p className="text-sm font-semibold text-gray-900">{formatDate(item.al || item.data_rientro)}</p>
-                  </div>
-                </div>
-
-                {/* Return Info */}
-                <div>
-                  {item.stato === 'restituito' && item.data_rientro && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Restituito</p>
-                      <p className="text-sm font-semibold text-green-600">{formatDate(item.data_rientro)}</p>
-                    </div>
-                  )}
-                  {item.stato === 'attivo' && (item.al || item.data_rientro) && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Restituirà il</p>
-                      <p className="text-sm font-semibold text-orange-600">{formatDate(item.al || item.data_rientro)}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Card Footer - Actions */}
-            {(activeTab === 'pending' || (activeTab === 'active' && item.stato === 'attivo')) && (
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => setSelectedLoan(item)}
-                    className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                  >
-                    Visualizza Dettagli
-                  </button>
-                  
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 truncate">
+                    {item.articolo_nome || item.oggetto_nome}
+                    {item.unita && item.unita.length > 0 && (
+                      <span className="text-gray-500 font-normal"> ID: {Array.isArray(item.unita) ? item.unita.join(', ') : item.unita}</span>
+                    )}
+                  </h3>
                   <div className="flex items-center gap-2">
-                    {activeTab === 'pending' && (
-                      <>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleApprove(item.id);
-                          }}
-                          disabled={approvingRequestId === item.id || approvingRequestId !== null}
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {approvingRequestId === item.id ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                              Approvazione...
-                            </>
-                          ) : (
-                            <>
-                              <Check className="w-3 h-3 mr-1" />
-                              Approva
-                            </>
-                          )}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openRejectModal(item.id);
-                          }}
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
-                        >
-                          <X className="w-3 h-3 mr-1" />
-                          Rifiuta
-                        </button>
-                      </>
+                    {item.penalty_strikes > 0 && (
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                        item.is_blocked ? 'bg-red-100 text-red-800' :
+                        item.penalty_strikes >= 2 ? 'bg-orange-100 text-orange-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        <ExclamationTriangleIcon className="w-3 h-3" />
+                        {item.is_blocked ? 'BLOCCATO' : `${item.penalty_strikes} Strike`}
+                      </span>
                     )}
-                    
-                    {activeTab === 'active' && item.stato === 'attivo' && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (canTerminateLoan(item)) {
-                            handleReturn(item.id);
-                          }
-                        }}
-                        disabled={!canTerminateLoan(item)}
-                        className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md transition-colors ${
-                          canTerminateLoan(item) 
-                            ? 'text-white bg-green-600 hover:bg-green-700' 
-                            : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                        }`}
-                        title={getTerminateButtonTooltip(item)}
-                      >
-                        <LogOut className="w-3 h-3 mr-1" />
-                        Termina prestito
-                      </button>
-                    )}
+                    {getStatusBadge(item.stato)}
                   </div>
                 </div>
-              </div>
-            )}
-            
-            {/* For completed loans, just show details button */}
-            {activeTab === 'processed' && (
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                <div className="flex justify-center">
+                <p className="text-gray-600 text-sm mb-2">
+                  {`${item.utente_nome || ''} ${item.utente_cognome || ''}`.trim() || item.chi || 'Utente'} • {item.utente_email || ''}
+                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 mb-4">
+                  <span>Dal {formatDate(item.dal || item.data_uscita)}</span>
+                  <span>Al {formatDate(item.al || item.data_rientro)}</span>
+                  {item.stato === 'attivo' && (item.al || item.data_rientro) && (
+                    <span className="text-orange-600 font-medium">Restituirà il {formatDate(item.al || item.data_rientro)}</span>
+                  )}
+                  {item.stato === 'restituito' && item.data_rientro && (
+                    <span className="text-green-600 font-medium">Restituito {formatDate(item.data_rientro)}</span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => setSelectedLoan(item)}
-                    className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                    onClick={(e) => { e.stopPropagation(); setSelectedLoan(item); }}
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                   >
-                    Visualizza Dettagli
+                    <InformationCircleIcon className="w-4 h-4" /> Visualizza Dettagli
                   </button>
+                  {activeTab === 'pending' && (
+                    <>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleApprove(item.id); }}
+                        disabled={approvingRequestId === item.id || approvingRequestId !== null}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white text-sm font-medium rounded-full hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                      >
+                        {approvingRequestId === item.id ? (
+                          <><div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div> Approvazione...</>
+                        ) : (
+                          <><CheckIcon className="w-4 h-4" /> Approva</>
+                        )}
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openRejectModal(item.id); }}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-full hover:bg-red-50 transition-colors"
+                      >
+                        <XMarkIcon className="w-4 h-4" /> Rifiuta
+                      </button>
+                    </>
+                  )}
+                  {activeTab === 'active' && item.stato === 'attivo' && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleReturn(item.id); }}
+                      disabled={!canTerminateLoan(item)}
+                      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                        canTerminateLoan(item) ? 'bg-emerald-500 text-white hover:bg-emerald-600' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
+                      title={getTerminateButtonTooltip(item)}
+                    >
+                      <ArrowRightOnRectangleIcon className="w-4 h-4" /> Termina prestito
+                    </button>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
           </div>
             ))}
-          </div>
+          </React.Fragment>
         ))
       ) : (
         // Normal view when no user filter
         filteredData.map(item => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-            {/* Card Header */}
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                            {item.articolo_nome || item.oggetto_nome}
-                            {item.unita && item.unita.length > 0 && (
-                              <span className="text-gray-500"> - {Array.isArray(item.unita) ? item.unita.join(', ') : item.unita}</span>
-                            )}
-                          </h3>
-                          {item.inventario_id && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              ID: {item.inventario_id}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Status Badge */}
-                    <div className="flex items-center gap-2 ml-4">
-                      {item.penalty_strikes > 0 && (
-                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                          item.is_blocked ? 'bg-red-100 text-red-800' :
-                          item.penalty_strikes >= 2 ? 'bg-orange-100 text-orange-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          <TriangleAlert className="w-3 h-3" />
-                          {item.is_blocked ? 'BLOCCATO' : `${item.penalty_strikes} Strike`}
-                        </div>
-                      )}
-                      {getStatusBadge(item.stato)}
-                    </div>
-                  </div>
-                </div>
+          <div
+            key={item.id}
+            onClick={() => setSelectedLoan(item)}
+            className="group bg-white rounded-xl shadow-lg border border-gray-100 p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center p-2.5">
+                <ClipboardDocumentListIcon className="w-6 h-6 text-blue-600" />
               </div>
-            </div>
-
-            {/* Card Body */}
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* User Info */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <User className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {`${item.utente_nome || ''} ${item.utente_cognome || ''}`.trim() || item.chi || 'Utente sconosciuto'}
-                    </p>
-                    <p className="text-sm text-gray-500">{item.utente_email || (item.chi && !item.utente_email ? item.chi : '')}</p>
-                  </div>
-                </div>
-
-                {/* Date Info */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Dal</p>
-                    <p className="text-sm font-semibold text-gray-900">{formatDate(item.dal || item.data_uscita)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Al</p>
-                    <p className="text-sm font-semibold text-gray-900">{formatDate(item.al || item.data_rientro)}</p>
-                  </div>
-                </div>
-
-                {/* Return Info */}
-                <div>
-                  {item.stato === 'restituito' && item.data_rientro && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Restituito</p>
-                      <p className="text-sm font-semibold text-green-600">{formatDate(item.data_rientro)}</p>
-                    </div>
-                  )}
-                  {item.stato === 'attivo' && (item.al || item.data_rientro) && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Restituirà il</p>
-                      <p className="text-sm font-semibold text-orange-600">{formatDate(item.al || item.data_rientro)}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Card Footer - Actions */}
-            {(activeTab === 'pending' || (activeTab === 'active' && item.stato === 'attivo')) && (
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => setSelectedLoan(item)}
-                    className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                  >
-                    Visualizza Dettagli
-                  </button>
-                  
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 truncate">
+                    {item.articolo_nome || item.oggetto_nome}
+                    {item.unita && item.unita.length > 0 && (
+                      <span className="text-gray-500 font-normal"> ID: {Array.isArray(item.unita) ? item.unita.join(', ') : item.unita}</span>
+                    )}
+                  </h3>
                   <div className="flex items-center gap-2">
-                    {activeTab === 'pending' && (
-                      <>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleApprove(item.id);
-                          }}
-                          disabled={approvingRequestId === item.id || approvingRequestId !== null}
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {approvingRequestId === item.id ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                              Approvazione...
-                            </>
-                          ) : (
-                            <>
-                              <Check className="w-3 h-3 mr-1" />
-                              Approva
-                            </>
-                          )}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openRejectModal(item.id);
-                          }}
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
-                        >
-                          <X className="w-3 h-3 mr-1" />
-                          Rifiuta
-                        </button>
-                      </>
+                    {item.penalty_strikes > 0 && (
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                        item.is_blocked ? 'bg-red-100 text-red-800' :
+                        item.penalty_strikes >= 2 ? 'bg-orange-100 text-orange-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        <ExclamationTriangleIcon className="w-3 h-3" />
+                        {item.is_blocked ? 'BLOCCATO' : `${item.penalty_strikes} Strike`}
+                      </span>
                     )}
-                    
-                    {activeTab === 'active' && item.stato === 'attivo' && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (canTerminateLoan(item)) {
-                            handleReturn(item.id);
-                          }
-                        }}
-                        disabled={!canTerminateLoan(item)}
-                        className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md transition-colors ${
-                          canTerminateLoan(item) 
-                            ? 'text-white bg-green-600 hover:bg-green-700' 
-                            : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                        }`}
-                        title={getTerminateButtonTooltip(item)}
-                      >
-                        <LogOut className="w-3 h-3 mr-1" />
-                        Termina prestito
-                      </button>
-                    )}
+                    {getStatusBadge(item.stato)}
                   </div>
                 </div>
-              </div>
-            )}
-            
-            {/* For completed loans, just show details button */}
-            {activeTab === 'processed' && (
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                <div className="flex justify-center">
+                <p className="text-gray-600 text-sm mb-2">
+                  {`${item.utente_nome || ''} ${item.utente_cognome || ''}`.trim() || item.chi || 'Utente'} • {item.utente_email || ''}
+                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 mb-4">
+                  <span>Dal {formatDate(item.dal || item.data_uscita)}</span>
+                  <span>Al {formatDate(item.al || item.data_rientro)}</span>
+                  {item.stato === 'attivo' && (item.al || item.data_rientro) && (
+                    <span className="text-orange-600 font-medium">Restituirà il {formatDate(item.al || item.data_rientro)}</span>
+                  )}
+                  {item.stato === 'restituito' && item.data_rientro && (
+                    <span className="text-green-600 font-medium">Restituito {formatDate(item.data_rientro)}</span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => setSelectedLoan(item)}
-                    className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                    onClick={(e) => { e.stopPropagation(); setSelectedLoan(item); }}
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                   >
-                    Visualizza Dettagli
+                    <InformationCircleIcon className="w-4 h-4" /> Visualizza Dettagli
                   </button>
+                  {activeTab === 'pending' && (
+                    <>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleApprove(item.id); }}
+                        disabled={approvingRequestId === item.id || approvingRequestId !== null}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white text-sm font-medium rounded-full hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                      >
+                        {approvingRequestId === item.id ? (
+                          <><div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div> Approvazione...</>
+                        ) : (
+                          <><CheckIcon className="w-4 h-4" /> Approva</>
+                        )}
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openRejectModal(item.id); }}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-full hover:bg-red-50 transition-colors"
+                      >
+                        <XMarkIcon className="w-4 h-4" /> Rifiuta
+                      </button>
+                    </>
+                  )}
+                  {activeTab === 'active' && item.stato === 'attivo' && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleReturn(item.id); }}
+                      disabled={!canTerminateLoan(item)}
+                      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                        canTerminateLoan(item) ? 'bg-emerald-500 text-white hover:bg-emerald-600' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
+                      title={getTerminateButtonTooltip(item)}
+                    >
+                      <ArrowRightOnRectangleIcon className="w-4 h-4" /> Termina prestito
+                    </button>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
           </div>
         ))
      )}
+    </div>
     </div>
 
     {/* Mobile Card View */}
@@ -1023,7 +828,7 @@ const getStatusBadge = (status) => {
       {filteredData.length === 0 ? (
         <div className="card text-center py-12">
           <div className="text-muted text-lg mb-2">
-            <ClipboardList className="icon-lg mx-auto mb-4" />
+            <ClipboardDocumentListIcon className="icon-lg mx-auto mb-4" />
           </div>
           <p className="text-secondary">
             {searchTerm || selectedUserId
@@ -1056,7 +861,7 @@ const getStatusBadge = (status) => {
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                   title="Rimuovi filtro utente"
                 >
-                  <X className="w-5 h-5" />
+                  <XMarkIcon className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -1101,7 +906,7 @@ const getStatusBadge = (status) => {
             </div>
 
             {/* Dates */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-gray-50 rounded-full p-4 mb-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex flex-col">
                   <span className="text-tertiary text-xs uppercase tracking-wide mb-1">Data Inizio</span>
@@ -1142,16 +947,16 @@ const getStatusBadge = (status) => {
                       </>
                     ) : (
                       <>
-                        <Check className="w-4 h-4 inline mr-2" />
+                        <CheckIcon className="w-4 h-4 inline mr-2" />
                         Approva Richiesta
                       </>
                     )}
                   </button>
                   <button
                     onClick={() => openRejectModal(item.id)}
-                    className="w-full bg-red-500 hover:bg-red-600 text-white rounded-lg py-2 transition-colors duration-200"
+                    className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full py-2 transition-colors duration-200"
                   >
-                    <X className="w-4 h-4 inline mr-2" />
+                    <XMarkIcon className="w-4 h-4 inline mr-2" />
                     Rifiuta Richiesta
                   </button>
                 </>
@@ -1162,7 +967,7 @@ const getStatusBadge = (status) => {
                   onClick={() => handleReturn(item.id)}
                   className="w-full btn-success text-center py-2"
                 >
-                  <LogOut className="w-4 h-4 inline mr-2" />
+                  <ArrowRightOnRectangleIcon className="w-4 h-4 inline mr-2" />
                   Termina Prestito
                 </button>
               )}
@@ -1171,7 +976,7 @@ const getStatusBadge = (status) => {
                 onClick={() => setSelectedLoan(item)}
                 className="w-full btn-secondary text-center py-2"
               >
-                <Info className="w-4 h-4 inline mr-2" />
+                <InformationCircleIcon className="w-4 h-4 inline mr-2" />
                 Visualizza Dettagli
               </button>
             </div>
@@ -1220,7 +1025,7 @@ const getStatusBadge = (status) => {
             </div>
 
             {/* Dates */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-gray-50 rounded-full p-4 mb-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex flex-col">
                   <span className="text-tertiary text-xs uppercase tracking-wide mb-1">Data Inizio</span>
@@ -1261,16 +1066,16 @@ const getStatusBadge = (status) => {
                       </>
                     ) : (
                       <>
-                        <Check className="w-4 h-4 inline mr-2" />
+                        <CheckIcon className="w-4 h-4 inline mr-2" />
                         Approva Richiesta
                       </>
                     )}
                   </button>
                   <button
                     onClick={() => openRejectModal(item.id)}
-                    className="w-full bg-red-500 hover:bg-red-600 text-white rounded-lg py-2 transition-colors duration-200"
+                    className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full py-2 transition-colors duration-200"
                   >
-                    <X className="w-4 h-4 inline mr-2" />
+                    <XMarkIcon className="w-4 h-4 inline mr-2" />
                     Rifiuta Richiesta
                   </button>
                 </>
@@ -1281,7 +1086,7 @@ const getStatusBadge = (status) => {
                   onClick={() => handleReturn(item.id)}
                   className="w-full btn-success text-center py-2"
                 >
-                  <LogOut className="w-4 h-4 inline mr-2" />
+                  <ArrowRightOnRectangleIcon className="w-4 h-4 inline mr-2" />
                   Termina Prestito
                 </button>
               )}
@@ -1290,7 +1095,7 @@ const getStatusBadge = (status) => {
                 onClick={() => setSelectedLoan(item)}
                 className="w-full btn-secondary text-center py-2"
               >
-                <Info className="w-4 h-4 inline mr-2" />
+                <InformationCircleIcon className="w-4 h-4 inline mr-2" />
                 Visualizza Dettagli
               </button>
             </div>
@@ -1322,7 +1127,7 @@ const getStatusBadge = (status) => {
  onClick={() => setSelectedLoan(null)}
  className="text-muted hover:text-primary"
  >
- <X className="icon" />
+ <XMarkIcon className="icon" />
  </button>
  </div>
  <div className="modal-body">
@@ -1346,7 +1151,7 @@ const getStatusBadge = (status) => {
  <label className="form-label">Richiedente</label>
  <div className="flex items-center gap-2">
  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
- <User className="w-4 h-4 text-blue-600" />
+ <UserIcon className="w-4 h-4 text-blue-600" />
  </div>
                   <div>
                     <p className="text-primary font-medium">
@@ -1388,7 +1193,7 @@ const getStatusBadge = (status) => {
  {/* Reject Modal */}
  {showRejectModal && (
    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-     <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+     <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
        <div className="flex items-center justify-between p-6 border-b border-gray-200">
          <h2 className="text-xl font-semibold text-gray-900">Rifiuta Richiesta</h2>
          <button
@@ -1398,7 +1203,7 @@ const getStatusBadge = (status) => {
            }}
            className="text-gray-400 hover:text-gray-600 transition-colors"
          >
-           <X className="w-6 h-6" />
+           <XMarkIcon className="w-6 h-6" />
          </button>
        </div>
        
@@ -1407,7 +1212,7 @@ const getStatusBadge = (status) => {
          <textarea
            value={rejectReason}
            onChange={(e) => setRejectReason(e.target.value)}
-           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+           className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
            rows={4}
            placeholder="Motivo del rifiuto..."
            required
@@ -1423,14 +1228,14 @@ const getStatusBadge = (status) => {
              setShowRejectModal(false);
              setError(null);
            }}
-           className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+           className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
          >
            Annulla
          </button>
          <button
            onClick={confirmReject}
            disabled={!rejectReason.trim()}
-           className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+           className="px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
          >
            Conferma Rifiuto
          </button>
@@ -1443,7 +1248,7 @@ const getStatusBadge = (status) => {
  {error && (
  <div className="alert-card alert-danger">
  <div className="flex items-center">
- <AlertCircle className="icon text-red-500 mr-3" />
+ <ExclamationCircleIcon className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>

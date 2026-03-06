@@ -143,7 +143,7 @@ const NotificationItem = ({ notification, onRemove }) => {
 
  return (
  <div
- className={`max-w-sm w-full shadow-lg rounded-lg border p-4 ${getTypeStyles()} transform transition-all duration-300 ease-in-out`}
+ className={`max-w-sm w-full shadow-lg rounded-xl border p-4 ${getTypeStyles()} transform transition-all duration-300 ease-in-out`}
  style={{
  animation: 'slideInRight 0.3s ease-out'
  }}

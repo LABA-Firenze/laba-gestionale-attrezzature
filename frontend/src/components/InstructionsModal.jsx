@@ -67,17 +67,17 @@ const InstructionsModal = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onClose={onClose} className="relative z-[9999]">
       <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <Dialog.Panel className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl">📖</div>
+                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">📖</div>
                 <div>
                   <Dialog.Title className="text-xl font-bold text-white">Istruzioni</Dialog.Title>
                   <p className="text-blue-100 text-sm">Service Attrezzatura LABA</p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/20 text-white transition-colors" aria-label="Chiudi">
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-white/20 text-white transition-colors" aria-label="Chiudi">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -86,8 +86,8 @@ const InstructionsModal = ({ isOpen, onClose }) => {
           </div>
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {sections.map((s, i) => (
-              <div key={i} className={`flex items-start gap-4 p-4 rounded-xl ${s.bg} border border-white/50`}>
-                <div className={`w-12 h-12 rounded-xl bg-white flex items-center justify-center flex-shrink-0 ${s.color}`}>
+              <div key={i} className={`flex items-start gap-4 p-4 rounded-full ${s.bg} border border-white/50`}>
+                <div className={`w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 ${s.color}`}>
                   {s.icon}
                 </div>
                 <div>
@@ -98,7 +98,7 @@ const InstructionsModal = ({ isOpen, onClose }) => {
             ))}
           </div>
           <div className="p-4 border-t bg-gray-50">
-            <button onClick={onClose} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors">
+            <button onClick={onClose} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition-colors">
               Ho capito
             </button>
           </div>

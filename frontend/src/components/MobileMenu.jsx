@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, LogOut } from 'lucide-react';
+import { XMarkIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 
 const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, user, logout }) => {
   if (!isOpen) return null;
@@ -46,7 +46,7 @@ const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, use
               onClick={onClose}
               className="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105"
             >
-              <X className="w-6 h-6 transition-transform duration-200 ease-in-out" />
+              <XMarkIcon className="w-6 h-6 transition-transform duration-200 ease-in-out" />
             </button>
           </div>
         </div>
@@ -61,7 +61,7 @@ const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, use
                   onNavigate(item.id);
                   onClose();
                 }}
-                className={`w-full flex items-center px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center px-4 py-3 rounded-full text-left transition-colors ${
                   activeView === item.id 
                     ? 'bg-blue-50 text-blue-700 border border-blue-200' 
                     : 'text-gray-700 hover:bg-gray-50'
@@ -108,9 +108,9 @@ const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, use
               logout();
               onClose();
             }}
-            className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-100 transition-colors border border-gray-200"
+            className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-full hover:bg-gray-100 transition-colors border border-gray-200"
           >
-            <LogOut className="w-4 h-4 mr-2" />
+            <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
             Esci
           </button>
         </div>

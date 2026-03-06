@@ -34,7 +34,7 @@ function UserBadge() {
       </div>
       <button 
         onClick={logout}
-        className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-200 ease border border-gray-200"
+        className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-200 ease border border-gray-200"
       >
         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -134,7 +134,7 @@ const UserArea = () => {
               {/* Notification Bell */}
               <button
                 onClick={() => setNotificationsOpen(true)}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors z-[101]"
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
                 type="button"
               >
                 <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@ const UserArea = () => {
               {/* Hamburger Menu */}
               <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105 z-[101]"
+                className="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105 z-[101]"
                 type="button"
               >
                 <svg className="w-6 h-6 transition-transform duration-200 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">

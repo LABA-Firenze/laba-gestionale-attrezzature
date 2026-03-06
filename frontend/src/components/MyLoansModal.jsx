@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import ReportBugModal from './ReportBugModal';
 
@@ -83,7 +83,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
 
  return (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
- <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
  {/* Header */}
  <div className="flex items-center justify-between p-6 border-b border-gray-200">
  <h2 className="text-xl font-semibold text-gray-900">I Miei Prestiti</h2>
@@ -91,7 +91,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600 transition-colors"
  >
- <X className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
 
@@ -129,7 +129,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  <span className="ml-2 text-gray-600">Caricamento prestiti...</span>
  </div>
  ) : error ? (
- <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+ <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
  {error}
  </div>
  ) : filteredLoans.length === 0 ? (
@@ -148,7 +148,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  ) : (
  <div className="space-y-3">
  {filteredLoans.map((loan) => (
- <div key={loan.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+ <div key={loan.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
  <div className="flex items-start justify-between">
  <div className="flex-1">
  <div className="flex items-center justify-between mb-2">
@@ -182,7 +182,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  {loan.stato === 'attivo' && (
  <button
  onClick={() => handleReportIssue(loan)}
- className="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+ className="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-full hover:bg-red-100 transition-colors"
  >
  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />

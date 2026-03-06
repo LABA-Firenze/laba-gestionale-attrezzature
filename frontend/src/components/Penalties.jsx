@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TriangleAlert, Ban, Clock, CheckCircle, X, Pencil, Trash2 } from 'lucide-react';
+import { ExclamationTriangleIcon, NoSymbolIcon, ClockIcon, CheckCircleIcon, XMarkIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import { TableSkeleton } from './SkeletonLoader';
+import PageHeader from './PageHeader';
+import SectionTabs, { Tab } from './SectionTabs';
 
 const Penalties = () => {
   const [users, setUsers] = useState([]);
@@ -175,116 +177,87 @@ const Penalties = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestione Penalità</h1>
-            <p className="text-gray-600 text-lg">Visualizza e gestisci le penalità degli utenti</p>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-50 space-y-6">
+      <PageHeader
+        title="Gestione Penalità"
+        subtitle="Visualizza e gestisci le penalità degli utenti"
+      />
 
       <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
             {error}
           </div>
         )}
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Utenti con Penalità</p>
                 <p className="text-3xl font-bold text-gray-900">{users.length}</p>
                 <p className="text-sm text-gray-500">Totale utenti penalizzati</p>
               </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <TriangleAlert className="w-6 h-6 text-yellow-600" />
+              <div className="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center p-2.5">
+                <ExclamationTriangleIcon className="w-6 h-6 text-yellow-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Utenti Bloccati</p>
                 <p className="text-3xl font-bold text-red-900">{blockedCount}</p>
                 <p className="text-sm text-gray-500">Bloccati per 3+ strike</p>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                <Ban className="w-6 h-6 text-red-600" />
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center p-2.5">
+                <NoSymbolIcon className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Strike Totali</p>
                 <p className="text-3xl font-bold text-orange-900">{totalPenalties}</p>
                 <p className="text-sm text-gray-500">Penalità assegnate</p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-orange-600" />
+              <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center p-2.5">
+                <ClockIcon className="w-6 h-6 text-orange-600" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 mb-8">
-          <nav className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'all'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Tutti ({users.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('blocked')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'blocked'
-                  ? 'border-red-500 text-red-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Bloccati ({blockedCount})
-            </button>
-            <button
-              onClick={() => setActiveTab('with-penalties')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'with-penalties'
-                  ? 'border-yellow-500 text-yellow-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Con Penalità ({withPenaltiesCount})
-            </button>
-          </nav>
-        </div>
-
-        {/* Search */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Cerca utenti..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+        <SectionTabs
+          rightContent={
+            <input
+              type="text"
+              placeholder="Cerca utenti..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-64 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            />
+          }
+        >
+          <Tab isActive={activeTab === 'all'} onClick={() => setActiveTab('all')}>
+            Tutti ({users.length})
+          </Tab>
+          <Tab isActive={activeTab === 'blocked'} onClick={() => setActiveTab('blocked')}>
+            Bloccati ({blockedCount})
+          </Tab>
+          <Tab isActive={activeTab === 'with-penalties'} onClick={() => setActiveTab('with-penalties')}>
+            Con Penalità ({withPenaltiesCount})
+          </Tab>
+        </SectionTabs>
 
         {/* Users Table */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -311,7 +284,7 @@ const Penalties = () => {
                   <tr>
                     <td colSpan="5" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center">
-                        <CheckCircle className="w-12 h-12 text-gray-400 mb-4" />
+                        <CheckCircleIcon className="w-12 h-12 text-gray-400 mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-1">
                           Nessun utente trovato
                         </h3>
@@ -366,9 +339,9 @@ const Penalties = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <button
                           onClick={() => openPenaltyModal(user)}
-                          className="inline-flex items-center px-3 py-2 text-xs font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
+                          className="inline-flex items-center px-3 py-2 text-xs font-medium text-purple-700 bg-purple-100 rounded-full hover:bg-purple-200 transition-colors"
                         >
-                          <TriangleAlert className="w-3 h-3 mr-1" />
+                          <ExclamationTriangleIcon className="w-3 h-3 mr-1" />
                           Dettagli
                         </button>
                       </td>
@@ -384,11 +357,11 @@ const Penalties = () => {
       {/* Penalty Details Modal */}
       {showPenaltyModal && selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center">
                 <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <TriangleAlert className="w-6 h-6 text-purple-600" />
+                  <ExclamationTriangleIcon className="w-6 h-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-semibold text-gray-900">Dettagli Penalità</h3>
@@ -399,13 +372,13 @@ const Penalties = () => {
                 onClick={() => setShowPenaltyModal(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <X className="w-6 h-6" />
+                <XMarkIcon className="w-6 h-6" />
               </button>
             </div>
 
             <div className="p-6">
               {/* User Status */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="mb-6 p-4 bg-gray-50 rounded-full">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Stato Attuale:</span>
                   <div className="flex items-center gap-2">
@@ -437,13 +410,13 @@ const Penalties = () => {
                 <h4 className="text-md font-semibold text-gray-900 mb-3">Storico Penalità</h4>
                 {userPenalties.length === 0 ? (
                   <div className="text-center py-8">
-                    <CheckCircle className="w-12 h-12 text-gray-400 mb-4 mx-auto" />
+                    <CheckCircleIcon className="w-12 h-12 text-gray-400 mb-4 mx-auto" />
                     <p className="text-gray-500">Nessuna penalità registrata</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-64 overflow-y-auto">
                     {userPenalties.map((penalty) => (
-                      <div key={penalty.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div key={penalty.id} className="bg-white border border-gray-200 rounded-xl p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <p className="font-medium text-gray-900">
@@ -461,17 +434,17 @@ const Penalties = () => {
                             </span>
                             <button
                               onClick={() => handleEditPenalty(penalty)}
-                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
                               title="Modifica"
                             >
-                              <Pencil className="w-4 h-4" />
+                              <PencilIcon className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeletePenalty(penalty.id)}
-                              className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded-full transition-colors"
                               title="Elimina"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <TrashIcon className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
@@ -494,18 +467,18 @@ const Penalties = () => {
 
               {/* Actions */}
               {selectedUser.is_blocked && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="bg-red-50 border border-red-200 rounded-full p-4">
                   <h4 className="text-md font-semibold text-red-900 mb-3">Azioni di Sblocco</h4>
                   <div className="space-y-2">
                     <button
                       onClick={() => handleUnblockUser(selectedUser.id, false)}
-                      className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                      className="w-full px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors"
                     >
                       Sblocca Utente (Mantieni Strike)
                     </button>
                     <button
                       onClick={() => handleUnblockUser(selectedUser.id, true)}
-                      className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      className="w-full px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
                     >
                       Sblocca Utente e Azzera Strike
                     </button>
@@ -520,7 +493,7 @@ const Penalties = () => {
             <div className="flex justify-end p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
               <button
                 onClick={() => setShowPenaltyModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors font-medium"
               >
                 Chiudi
               </button>
@@ -536,7 +509,7 @@ const Penalties = () => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Modifica penalità</h3>
               <button onClick={() => setEditingPenalty(null)} className="text-gray-400 hover:text-gray-600">
-                <X className="w-6 h-6" />
+                <XMarkIcon className="w-6 h-6" />
               </button>
             </div>
             <div className="p-6 space-y-4">
@@ -545,7 +518,7 @@ const Penalties = () => {
                 <select
                   value={editStrikes}
                   onChange={(e) => setEditStrikes(parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value={1}>1</option>
                   <option value={2}>2</option>
@@ -558,7 +531,7 @@ const Penalties = () => {
                   value={editMotivo}
                   onChange={(e) => setEditMotivo(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Motivo della penalità"
                 />
               </div>
@@ -566,13 +539,13 @@ const Penalties = () => {
             <div className="flex justify-end gap-2 p-6 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={() => setEditingPenalty(null)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
               >
                 Annulla
               </button>
               <button
                 onClick={handleSavePenaltyEdit}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
               >
                 Salva
               </button>

@@ -24,11 +24,11 @@ r.get('/inventario/export', requireAuth, requireRole('admin'), async (req, res) 
         i.*,
         cs.nome as categoria_nome,
         STRING_AGG(ic.corso, ',') as corsi_assegnati,
-        (SELECT COUNT(*) FROM inventario_unita iu 
-         WHERE iu.inventario_id = i.id 
-         AND iu.stato = 'disponibile' 
-         AND iu.prestito_corrente_id IS NULL 
-         AND iu.richiesta_riservata_id IS NULL) as unita_disponibili
+        (SELECT COUNT(*) FROM inventario_unita iu
+         LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
+         WHERE iu.inventario_id = i.id
+         AND ((iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL AND iu.richiesta_riservata_id IS NULL)
+              OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE))) as unita_disponibili
       FROM inventario i
       LEFT JOIN categorie_semplici cs ON cs.id = i.categoria_id
       LEFT JOIN inventario_corsi ic ON ic.inventario_id = i.id

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, AlertCircle, Layers, ArrowLeft, ArrowRight, List, TriangleAlert, Info } from 'lucide-react';
+import { XMarkIcon, ExclamationCircleIcon, RectangleStackIcon, ArrowLeftIcon, ArrowRightIcon, ListBulletIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
 
@@ -254,7 +254,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
           setError(
             <div className="space-y-2">
               <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+                <ExclamationCircleIcon className="w-5 h-5 text-red-600 mr-2" />
                 <span className="font-semibold text-red-800">Account Bloccato</span>
               </div>
               <p className="text-red-700">{errorData.message}</p>
@@ -390,7 +390,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -401,7 +401,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X className="w-6 h-6" />
+            <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
 
@@ -420,7 +420,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Cerca per nome, categoria o note..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               
@@ -436,7 +436,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   <div
                     key={item.id}
                     onClick={() => handleObjectSelect(item)}
-                    className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md cursor-pointer transition-all flex flex-col"
+                    className="p-4 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-md cursor-pointer transition-all flex flex-col"
                   >
                     {/* Titolo e disponibilità */}
                     <div className="mb-2">
@@ -473,7 +473,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                 return matchesSearch;
               }).length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  <Layers className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                  <RectangleStackIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                   <p>
                     {searchTerm 
                       ? 'Nessun oggetto trovato con i criteri di ricerca'
@@ -501,7 +501,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   <div
                     key={unit.id}
                     onClick={() => handleUnitSelect(unit)}
-                    className="p-3 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md cursor-pointer transition-all"
+                    className="p-3 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-md cursor-pointer transition-all"
                   >
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between mb-1">
@@ -531,16 +531,16 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full border border-gray-300 transition-colors flex items-center gap-2"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeftIcon className="w-4 h-4" />
                   Indietro
                 </button>
                 <div className="flex space-x-3">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     Annulla
                   </button>
@@ -559,9 +559,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   </p>
               </div>
 
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+              <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
                 <div className="flex items-center mb-3">
-                  <List className="w-5 h-5 text-purple-600 mr-2" />
+                  <ListBulletIcon className="w-5 h-5 text-purple-600 mr-2" />
                   <div>
                     <h4 className="text-sm font-medium text-purple-800">Come intendi utilizzare questo oggetto?</h4>
                     <p className="text-xs text-purple-700 mt-1">
@@ -571,7 +571,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                 </div>
                 
                 <div className="space-y-3">
-                  <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+                  <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
                     <input
                       type="radio"
                       name="tipo_utilizzo"
@@ -593,7 +593,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                     </div>
                   </label>
                   
-                  <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+                  <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
                     <input
                       type="radio"
                       name="tipo_utilizzo"
@@ -620,16 +620,16 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full border border-gray-300 transition-colors flex items-center gap-2"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeftIcon className="w-4 h-4" />
                   Indietro
                 </button>
                 <div className="flex space-x-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Annulla
                 </button>
@@ -637,10 +637,10 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   type="button"
                   onClick={() => setStep(4)}
                   disabled={!tipoUtilizzo}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                 >
                     Continua
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRightIcon className="w-4 h-4" />
                 </button>
                 </div>
               </div>
@@ -659,9 +659,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
               {/* Tipo Prestito Info */}
               {selectedObject.tipo_prestito === 'solo_interno' && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                <div className="bg-orange-50 border border-orange-200 rounded-full p-4 mb-4">
                   <div className="flex items-center">
-                    <TriangleAlert className="w-5 h-5 text-orange-600 mr-2" />
+                    <ExclamationTriangleIcon className="w-5 h-5 text-orange-600 mr-2" />
                     <div>
                       <h4 className="text-sm font-medium text-orange-800">Solo per uso interno</h4>
                       <p className="text-xs text-orange-700 mt-1">
@@ -674,9 +674,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
               {/* Info Tipo Utilizzo per oggetti "entrambi" */}
               {selectedObject.tipo_prestito === 'entrambi' && (
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
                   <div className="flex items-center">
-                    <Info className="w-5 h-5 text-purple-600 mr-2" />
+                    <InformationCircleIcon className="w-5 h-5 text-purple-600 mr-2" />
                     <div>
                       <h4 className="text-sm font-medium text-purple-800">
                         Tipo di utilizzo selezionato: {tipoUtilizzo === 'interno' ? '🏠 Uso Interno' : '📅 Prestito Esterno'}
@@ -748,13 +748,13 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   value={note}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Note aggiuntive (opzionale)"
                 />
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
                   {error}
                 </div>
               )}
@@ -771,23 +771,23 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                       setStep(2);
                     }
                   }}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full border border-gray-300 transition-colors flex items-center gap-2"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeftIcon className="w-4 h-4" />
                   Indietro
                 </button>
                 <div className="flex space-x-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Annulla
                 </button>
                 <button
                   type="submit"
                   disabled={loading || (selectedObject.tipo_prestito === 'entrambi' && !tipoUtilizzo)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>

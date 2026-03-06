@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, BookOpen, Tag, X, AlertCircle, ClipboardList, Wrench } from 'lucide-react';
+import { UserIcon, BookOpenIcon, TagIcon, XMarkIcon, ExclamationCircleIcon, ClipboardDocumentListIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 
 const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
@@ -88,7 +88,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <X className="icon" />
+ <XMarkIcon className="icon" />
  </button>
  </div>
 
@@ -98,9 +98,9 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {/* Progress Bar */}
  <div className="flex items-center justify-center mb-8">
  {[
- { num: 1, icon: <User className="w-4 h-4" /> },
- { num: 2, icon: <BookOpen className="w-4 h-4" /> },
- { num: 3, icon: <Tag className="w-4 h-4" /> }
+ { num: 1, icon: <UserIcon className="w-4 h-4" /> },
+ { num: 2, icon: <BookOpenIcon className="w-4 h-4" /> },
+ { num: 3, icon: <TagIcon className="w-4 h-4" /> }
  ].map((stepData, index) => (
  <React.Fragment key={stepData.num}>
  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
@@ -125,7 +125,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  <div className="space-y-6">
  <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
  <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center">
- <User className="w-4 h-4" />
+ <UserIcon className="w-4 h-4" />
  </div>
  Informazioni Base
  </h3>
@@ -191,7 +191,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
      Tipo di Utilizzo
    </label>
    <div className="space-y-2">
-     <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+     <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
        <input
          type="radio"
          name="tipo_prestito_quick"
@@ -206,7 +206,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
        </div>
      </label>
      
-     <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+     <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
        <input
          type="radio"
          name="tipo_prestito_quick"
@@ -221,7 +221,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
        </div>
      </label>
      
-     <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+     <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
        <input
          type="radio"
          name="tipo_prestito_quick"
@@ -236,7 +236,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
        </div>
      </label>
    </div>
-   <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+   <div className="mt-2 p-3 bg-blue-50 rounded-full border border-blue-200">
      <p className="text-xs text-blue-700">
        {formData.tipo_prestito === 'solo_esterno' && (
          <>📅 <strong>Solo Prestito Esterno:</strong> Gli studenti possono richiedere prestiti per più giorni e portare l'oggetto fuori dall'accademia</>
@@ -255,7 +255,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {error && (
  <div className="alert-card alert-danger mt-4">
  <div className="flex items-center">
- <AlertCircle className="icon text-red-500 mr-3" />
+ <ExclamationCircleIcon className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>
@@ -285,7 +285,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {action === 'manage-requests' && (
  <div className="space-y-4">
  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
- <ClipboardList className="icon-lg text-white" />
+ <ClipboardDocumentListIcon className="icon-lg text-white" />
  </div>
  <h3 className="text-lg font-semibold text-primary mb-2">Gestione Richieste</h3>
  <p className="text-secondary mb-4">Visualizza e gestisci tutte le richieste di prestito in attesa di approvazione.</p>
@@ -333,7 +333,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {action === 'manage-repairs' && (
  <div className="space-y-4">
  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
- <Wrench className="icon-lg text-white" />
+ <WrenchScrewdriverIcon className="icon-lg text-white" />
  </div>
  <h3 className="text-lg font-semibold text-primary mb-2">Gestione Riparazioni</h3>
  <p className="text-secondary mb-4">Visualizza e gestisci tutte le riparazioni in corso e completate.</p>
@@ -341,7 +341,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  {/* Lista riparazioni */}
  <div className="space-y-2 max-h-60 overflow-y-auto">
  <div className="text-center py-8 text-secondary">
- <Wrench className="w-12 h-12 mx-auto mb-4 text-muted" />
+ <WrenchScrewdriverIcon className="w-12 h-12 mx-auto mb-4 text-muted" />
  <p>Nessuna riparazione in corso</p>
  <p className="text-sm text-muted">Le riparazioni appariranno qui quando saranno create</p>
  </div>

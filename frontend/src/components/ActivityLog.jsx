@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 
 const ActivityLog = ({ isOpen, onClose }) => {
@@ -90,25 +90,25 @@ const ActivityLog = ({ isOpen, onClose }) => {
 
  return (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg p-6 max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-full p-6 max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between mb-6">
  <h3 className="text-lg font-semibold text-gray-900">Log Attività</h3>
  <button
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600"
  >
- <X className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
 
  {/* Filters */}
- <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+ <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-full">
  <div>
  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
  <select
  value={filters.type}
  onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
  >
  <option value="all">Tutti i tipi</option>
  <option value="create">Creazione</option>
@@ -130,7 +130,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  <select
  value={filters.user}
  onChange={(e) => setFilters(prev => ({ ...prev, user: e.target.value }))}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
  >
  <option value="all">Tutti gli utenti</option>
  {/* Qui potresti caricare la lista degli utenti */}
@@ -143,7 +143,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  type="date"
  value={filters.dateFrom}
  onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
  />
  </div>
 
@@ -153,7 +153,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  type="date"
  value={filters.dateTo}
  onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
  />
  </div>
  </div>
@@ -175,7 +175,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  {activities.map((activity, index) => {
  const { date, time } = formatTimestamp(activity.timestamp);
  return (
- <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+ <div key={index} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
  <div className="flex items-start space-x-4">
  <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg ${getActivityColor(activity.type)}`}>
  {getActivityIcon(activity.type)}
@@ -218,7 +218,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  <div className="mt-6 flex justify-center">
  <button
  onClick={fetchActivities}
- className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100"
+ className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-full hover:bg-blue-100"
  >
  Carica altre attività
  </button>

@@ -14,8 +14,13 @@ r.get('/', async (req, res) => {
         cs.nome as figlia,
         COUNT(*) as count,
         SUM(CASE 
-          WHEN EXISTS(SELECT 1 FROM inventario_unita iu WHERE iu.inventario_id = i.id AND iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) 
-          THEN 1 ELSE 0 
+          WHEN EXISTS(
+          SELECT 1 FROM inventario_unita iu
+          LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
+          WHERE iu.inventario_id = i.id
+          AND ((iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL)
+               OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE))
+        ) THEN 1 ELSE 0 
         END) as available_count
       FROM inventario i
       LEFT JOIN categorie_semplici cs ON cs.id = i.categoria_id

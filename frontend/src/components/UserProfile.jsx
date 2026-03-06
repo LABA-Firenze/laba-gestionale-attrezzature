@@ -160,7 +160,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
 
  return (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
- <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
  {/* Header */}
  <div className="flex items-center justify-between p-6 border-b border-gray-200">
  <h2 className="text-xl font-semibold text-gray-900">Profilo Personale</h2>
@@ -225,7 +225,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  type="text"
  value={user?.name || ''}
  disabled
- className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-500"
  />
  <p className="text-xs text-gray-500 mt-1">Non modificabile</p>
  </div>
@@ -238,7 +238,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  type="text"
  value={user?.surname || ''}
  disabled
- className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-500"
  />
  <p className="text-xs text-gray-500 mt-1">Non modificabile</p>
  </div>
@@ -251,7 +251,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  type="email"
  value={user?.email || ''}
  disabled
- className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-500"
  />
  <p className="text-xs text-gray-500 mt-1">Non modificabile</p>
  </div>
@@ -264,7 +264,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  type="text"
  value={user?.matricola || ''}
  disabled
- className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-500"
  />
  <p className="text-xs text-gray-500 mt-1">Non modificabile</p>
  </div>
@@ -279,20 +279,20 @@ const UserProfile = ({ onClose, onUpdate }) => {
  name="phone"
  value={formData.phone}
  onChange={handleInputChange}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400"
  placeholder="Inserisci il tuo numero di telefono"
  />
  </div>
  </div>
 
  {error && (
- <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+ <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
  {error}
  </div>
  )}
 
  {success && (
- <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+ <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-full">
  {success}
  </div>
  )}
@@ -301,14 +301,14 @@ const UserProfile = ({ onClose, onUpdate }) => {
  <button
  type="button"
  onClick={onClose}
- className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+ className="px-4 py-2 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
  >
  Annulla
  </button>
  <button
  type="submit"
  disabled={loading}
- className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+ className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50"
  >
  {loading ? 'Salvataggio...' : 'Salva Modifiche'}
  </button>
@@ -319,7 +319,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  {/* Password Tab */}
  {activeTab === 'password' && (
  <div className="space-y-6">
- <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+ <div className="bg-blue-50 border border-blue-200 rounded-full p-4">
  <div className="flex">
  <div className="flex-shrink-0">
  <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
@@ -341,20 +341,20 @@ const UserProfile = ({ onClose, onUpdate }) => {
  <button
  onClick={handlePasswordResetRequest}
  disabled={loading}
- className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 font-medium"
+ className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 font-medium"
  >
  {loading ? 'Invio in corso...' : 'Richiedi Reset Password'}
  </button>
  </div>
 
  {error && (
- <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+ <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
  {error}
  </div>
  )}
 
  {success && (
- <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+ <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-full">
  {success}
  </div>
  )}
@@ -382,7 +382,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  </label>
  </div>
 
- <div className="bg-gray-50 rounded-lg p-4">
+ <div className="bg-gray-50 rounded-full p-4">
  <h4 className="text-sm font-medium text-gray-900 mb-2">Tipi di notifiche:</h4>
  <ul className="text-sm text-gray-600 space-y-1">
  <li>• Conferma prenotazioni</li>
@@ -396,14 +396,14 @@ const UserProfile = ({ onClose, onUpdate }) => {
  <div className="flex justify-end space-x-3">
  <button
  onClick={onClose}
- className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+ className="px-4 py-2 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
  >
  Chiudi
  </button>
  <button
  onClick={handleProfileUpdate}
  disabled={loading}
- className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+ className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50"
  >
  {loading ? 'Salvataggio...' : 'Salva Impostazioni'}
  </button>

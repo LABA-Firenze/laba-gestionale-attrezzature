@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const AdvancedFilters = ({ 
  isOpen, 
@@ -80,14 +80,14 @@ const AdvancedFilters = ({
 
  return (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
- <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+ <div className="bg-white rounded-full p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between mb-6">
  <h3 className="text-lg font-semibold text-gray-900">Filtri Avanzati</h3>
  <button
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600"
  >
- <X className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
 
@@ -101,7 +101,7 @@ const AdvancedFilters = ({
  type="text"
  value={filters.search}
  onChange={(e) => handleFilterChange('search', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  placeholder="Cerca per nome, seriale..."
  />
  </div>
@@ -114,7 +114,7 @@ const AdvancedFilters = ({
  <select
  value={filters.category}
  onChange={(e) => handleFilterChange('category', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  >
  <option value="">Tutte le categorie</option>
  {categories.map(cat => (
@@ -131,7 +131,7 @@ const AdvancedFilters = ({
  <select
  value={filters.course}
  onChange={(e) => handleFilterChange('course', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  >
  <option value="">Tutti i corsi</option>
  {courses.map(course => (
@@ -148,7 +148,7 @@ const AdvancedFilters = ({
  <select
  value={filters.status}
  onChange={(e) => handleFilterChange('status', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  >
  <option value="all">Tutti gli stati</option>
  <option value="disponibile">Disponibile</option>
@@ -167,7 +167,7 @@ const AdvancedFilters = ({
  type="date"
  value={filters.dateFrom}
  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  />
  </div>
 
@@ -180,7 +180,7 @@ const AdvancedFilters = ({
  type="date"
  value={filters.dateTo}
  onChange={(e) => handleFilterChange('dateTo', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  />
  </div>
 
@@ -192,7 +192,7 @@ const AdvancedFilters = ({
  <select
  value={filters.sortBy}
  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  >
  <option value="nome">Nome</option>
  <option value="seriale">Seriale</option>
@@ -209,7 +209,7 @@ const AdvancedFilters = ({
  <select
  value={filters.sortOrder}
  onChange={(e) => handleFilterChange('sortOrder', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  >
  <option value="asc">Crescente</option>
  <option value="desc">Decrescente</option>
@@ -223,7 +223,7 @@ const AdvancedFilters = ({
  <h4 className="text-sm font-medium text-gray-700 mb-3">Filtri Salvati</h4>
  <div className="flex flex-wrap gap-2">
  {savedFilters.map((savedFilter, index) => (
- <div key={index} className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
+ <div key={index} className="flex items-center bg-gray-100 rounded-full px-3 py-2">
  <button
  onClick={() => handleLoadFilter(savedFilter)}
  className="text-sm text-blue-600 hover:text-blue-800 mr-2"
@@ -234,7 +234,7 @@ const AdvancedFilters = ({
  onClick={() => onDeleteFilter(index)}
  className="text-red-500 hover:text-red-700"
  >
- <X className="w-4 h-4" />
+ <XMarkIcon className="w-4 h-4" />
  </button>
  </div>
  ))}
@@ -247,13 +247,13 @@ const AdvancedFilters = ({
  <div className="flex space-x-2">
  <button
  onClick={() => setShowSaveDialog(true)}
- className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200"
+ className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200"
  >
  💾 Salva Filtro
  </button>
  <button
  onClick={handleReset}
- className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200"
+ className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200"
  >
  🔄 Reset
  </button>
@@ -261,13 +261,13 @@ const AdvancedFilters = ({
  <div className="flex space-x-2">
  <button
  onClick={onClose}
- className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200"
+ className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200"
  >
  Annulla
  </button>
  <button
  onClick={handleApply}
- className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700"
+ className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-full hover:bg-blue-700"
  >
  Applica Filtri
  </button>
@@ -277,25 +277,25 @@ const AdvancedFilters = ({
  {/* Save Filter Dialog */}
  {showSaveDialog && (
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
- <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+ <div className="bg-white rounded-full p-6 max-w-md w-full mx-4">
  <h4 className="text-lg font-semibold text-gray-900 mb-4">Salva Filtro</h4>
  <input
  type="text"
  value={filterName}
  onChange={(e) => setFilterName(e.target.value)}
  placeholder="Nome del filtro..."
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 mb-4"
+ className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400 mb-4"
  />
  <div className="flex justify-end space-x-2">
  <button
  onClick={() => setShowSaveDialog(false)}
- className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200"
+ className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200"
  >
  Annulla
  </button>
  <button
  onClick={handleSaveFilter}
- className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700"
+ className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-full hover:bg-blue-700"
  >
  Salva
  </button>

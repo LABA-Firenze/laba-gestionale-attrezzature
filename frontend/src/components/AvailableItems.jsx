@@ -120,7 +120,7 @@ const AvailableItems = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Cerca articoli</label>
@@ -167,7 +167,7 @@ const AvailableItems = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">{item.nome}</h3>
@@ -225,7 +225,7 @@ const AvailableItems = () => {
                   <button
                     onClick={() => handleRequestItem(item)}
                     disabled={item.stato_effettivo !== 'disponibile'}
-                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                       item.stato_effettivo === 'disponibile'
                         ? 'btn-primary hover-lift'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'

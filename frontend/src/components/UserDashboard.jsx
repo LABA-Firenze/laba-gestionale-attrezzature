@@ -182,7 +182,7 @@ const UserDashboard = () => {
 
       {/* Welcome/Info Section for new users */}
       {recentData.activeLoans.length === 0 && !welcomeSectionDismissed && (
-        <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm border border-blue-200 p-6 relative">
+        <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-200 p-6 relative">
           <button
             onClick={handleDismissWelcome}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
@@ -204,21 +204,21 @@ const UserDashboard = () => {
                 Inizia a noleggiare le attrezzature per il tuo corso. Ecco come funziona:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-full p-4 border border-blue-100">
                   <div className="flex items-center mb-2">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm mr-2">1</div>
                     <h4 className="font-semibold text-gray-900">Sfoglia</h4>
                   </div>
                   <p className="text-xs text-gray-600">Vai su "Articoli Disponibili" per vedere tutte le attrezzature disponibili per il tuo corso.</p>
                 </div>
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-full p-4 border border-blue-100">
                   <div className="flex items-center mb-2">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm mr-2">2</div>
                     <h4 className="font-semibold text-gray-900">Richiedi</h4>
                   </div>
                   <p className="text-xs text-gray-600">Clicca su "Richiedi" per selezionare l'ID specifico e le date di utilizzo.</p>
                 </div>
-                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="bg-white rounded-full p-4 border border-blue-100">
                   <div className="flex items-center mb-2">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm mr-2">3</div>
                     <h4 className="font-semibold text-gray-900">Ritira</h4>
@@ -232,7 +232,7 @@ const UserDashboard = () => {
       )}
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Azioni Rapide</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
@@ -258,7 +258,7 @@ const UserDashboard = () => {
 
       {/* Penalty Warning */}
       {(userPenalties.strikes > 0 || userPenalties.isBlocked) && (
-        <div className={`rounded-lg shadow-sm border p-6 mb-8 ${
+        <div className={`rounded-xl shadow-sm border p-6 mb-8 ${
           userPenalties.isBlocked ? 'bg-red-50 border-red-200' :
           userPenalties.strikes >= 2 ? 'bg-orange-50 border-orange-200' :
           'bg-yellow-50 border-yellow-200'
@@ -297,7 +297,7 @@ const UserDashboard = () => {
                     <p className="font-medium">Non puoi effettuare nuove richieste di noleggio.</p>
                     <p><strong>Motivo:</strong> {userPenalties.blockedReason}</p>
                     <p><strong>Penalità accumulate:</strong> {userPenalties.strikes} strike</p>
-                    <div className="mt-3 p-3 bg-red-100 rounded-lg">
+                    <div className="mt-3 p-3 bg-red-100 rounded-full">
                       <p className="font-medium text-red-900">Per sbloccare il tuo account:</p>
                       <p className="text-red-800">Recati di persona presso l'ufficio amministrativo per discutere della situazione.</p>
                     </div>
@@ -306,7 +306,7 @@ const UserDashboard = () => {
                   <div className="space-y-2">
                     <p>Hai accumulato <strong>{userPenalties.strikes} strike</strong> per ritardi nella restituzione.</p>
                     {userPenalties.strikes >= 2 && (
-                      <div className="mt-2 p-3 bg-orange-100 rounded-lg">
+                      <div className="mt-2 p-3 bg-orange-100 rounded-full">
                         <p className="font-medium text-orange-900">⚠️ Un altro ritardo comporterà il blocco automatico dell'account!</p>
                         <p className="text-orange-800">Assicurati di restituire i futuri prestiti entro la data stabilita.</p>
                       </div>
@@ -342,7 +342,7 @@ const UserDashboard = () => {
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Active Loans */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -352,7 +352,7 @@ const UserDashboard = () => {
           {recentData.activeLoans.length > 0 ? (
             <div className="space-y-3">
               {recentData.activeLoans.map((loan, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200 shadow-md shadow-green-100/30">
+                <div key={index} className="flex items-center justify-between p-3 bg-green-50 rounded-xl border border-green-200 shadow-md shadow-green-100/30">
                   <div>
                     <p className="font-medium text-gray-900">{loan.articolo_nome || loan.oggetto_nome || 'Oggetto'}</p>
                     <p className="text-sm text-gray-600">Scadenza: {formatDate(loan.data_rientro || loan.data_fine)}</p>
@@ -375,7 +375,7 @@ const UserDashboard = () => {
         </div>
 
         {/* Recent Requests */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -416,7 +416,7 @@ const UserDashboard = () => {
                 return (
                   <div 
                     key={index} 
-                    className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-white"
+                    className="flex items-center justify-between p-3 rounded-full border border-gray-200 bg-white"
                   >
                     <div>
                       <p className="font-medium text-gray-900">{request.oggetto_nome || request.articolo_nome || 'Oggetto'}</p>
@@ -513,9 +513,9 @@ function StatCard({ title, value }) {
   };
 
   return (
-    <div className="kpi-card bg-white rounded-lg shadow-sm border border-gray-200 hover:scale-105 transition-transform">
+    <div className="kpi-card bg-white rounded-xl shadow-sm border border-gray-200 hover:scale-105 transition-transform">
       <div className="flex items-center w-full">
-        <div className={`w-12 h-12 ${colorMap[title]} rounded-lg flex items-center justify-center ${
+        <div className={`w-12 h-12 ${colorMap[title]} rounded-full flex items-center justify-center ${
           title === 'Articoli Disponibili' ? 'text-blue-600' :
           title === 'Le Mie Richieste' ? 'text-green-600' :
           title === 'Le Mie Segnalazioni' ? 'text-red-600' :

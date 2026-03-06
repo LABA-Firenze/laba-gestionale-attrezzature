@@ -216,13 +216,13 @@ const NotificationManager = () => {
  {permission === 'default' && (
  <button
  onClick={requestNotificationPermission}
- className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-colors"
+ className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
  >
  Attiva Notifiche
  </button>
  )}
  {permission === 'denied' && (
- <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg shadow-lg">
+ <div className="bg-red-100 text-red-800 px-4 py-2 rounded-full shadow-lg">
  Notifiche bloccate dal browser
  </div>
  )}
