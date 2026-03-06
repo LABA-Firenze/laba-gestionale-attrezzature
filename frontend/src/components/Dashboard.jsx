@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { CubeIcon, ClipboardDocumentListIcon, Cog6ToothIcon, ExclamationTriangleIcon, CalendarDaysIcon, ChevronDownIcon, XMarkIcon, UserIcon, InformationCircleIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import StepInventoryModal from './StepInventoryModal';
 import QuickRequestModal from './QuickRequestModal';
@@ -377,9 +378,7 @@ return (
           <p className="text-sm text-gray-500">Elementi totali</p>
         </div>
         <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
+          <CubeIcon className="w-6 h-6 text-blue-600" />
         </div>
       </div>
     </div>
@@ -392,9 +391,7 @@ return (
           <p className="text-sm text-gray-500">Richieste di prestito</p>
         </div>
         <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
+          <ClipboardDocumentListIcon className="w-6 h-6 text-purple-600" />
         </div>
       </div>
     </div>
@@ -407,10 +404,7 @@ return (
           <p className="text-sm text-gray-500">In riparazione</p>
         </div>
         <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+          <Cog6ToothIcon className="w-6 h-6 text-orange-600" />
         </div>
       </div>
     </div>
@@ -423,9 +417,7 @@ return (
           <p className="text-sm text-gray-500">Segnalazioni attive</p>
         </div>
         <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
+          <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
         </div>
       </div>
     </div>
@@ -441,9 +433,7 @@ return (
  <div className="flex items-center justify-between">
  <div className="flex items-center">
  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
- <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
- </svg>
+ <ExclamationTriangleIcon className="w-6 h-6 text-white" />
  </div>
  <div>
  <h2 className="text-2xl font-bold text-white">Avvisi</h2>
@@ -455,14 +445,9 @@ return (
  <span className="text-white font-bold text-lg">{totaleAvvisi}</span>
  <span className="text-red-100 ml-1">avvisi</span>
  </div>
- <svg 
+ <ChevronDownIcon 
  className={`w-6 h-6 text-white transition-transform duration-300 ${avvisiCollapsed ? 'rotate-180' : ''}`}
- fill="none" 
- stroke="currentColor" 
- viewBox="0 0 24 24"
- >
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
- </svg>
+ />
  </div>
  </div>
  </div>
@@ -483,9 +468,7 @@ return (
  >
  <div className="flex items-center mb-3">
  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
- <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
- </svg>
+ <ClipboardDocumentListIcon className="w-4 h-4 text-white" />
  </div>
  <h3 className="text-lg font-bold text-yellow-800">
  Richieste da Approvare ({stats.pendingRequests})
@@ -529,9 +512,7 @@ return (
  >
  <div className="flex items-center mb-3">
  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3">
- <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
- </svg>
+ <ChartBarIcon className="w-4 h-4 text-white" />
  </div>
  <h3 className="text-lg font-bold text-red-800">
  Scorte Basse ({alerts.scorte_basse.length})
@@ -580,9 +561,7 @@ return (
  <div className="flex items-center justify-between">
  <div className="flex items-center">
  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
- <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
- </svg>
+ <CalendarDaysIcon className="w-6 h-6 text-white" />
  </div>
  <div>
  <h2 className="text-2xl font-bold text-white">In Scadenza</h2>
@@ -594,14 +573,9 @@ return (
  <span className="text-white font-bold text-lg">{(alerts.scadenze_oggi?.length || 0) + (alerts.scadenze_domani?.length || 0)}</span>
  <span className="text-purple-100 ml-1">prestiti</span>
  </div>
- <svg 
+ <ChevronDownIcon 
  className={`w-6 h-6 text-white transition-transform duration-300 ${scadenzeCollapsed ? 'rotate-180' : ''}`}
- fill="none" 
- stroke="currentColor" 
- viewBox="0 0 24 24"
- >
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
- </svg>
+ />
  </div>
  </div>
  </div>
@@ -617,9 +591,7 @@ return (
  >
  <div className="flex items-center mb-3">
  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
- <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
- </svg>
+ <CalendarDaysIcon className="w-4 h-4 text-white" />
  </div>
  <h3 className="text-lg font-bold text-purple-800">
  Oggi ({(alerts.scadenze_oggi?.length || 0)})
@@ -665,9 +637,7 @@ return (
  >
  <div className="flex items-center mb-3">
  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
- <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
- </svg>
+ <CalendarDaysIcon className="w-4 h-4 text-white" />
  </div>
  <h3 className="text-lg font-bold text-purple-800">
  Domani ({(alerts.scadenze_domani?.length || 0)})
@@ -723,9 +693,7 @@ return (
  {recentRequests.length === 0 ? (
  <div className="text-center py-12">
  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
- <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
- </svg>
+ <ClipboardDocumentListIcon className="w-8 h-8 text-gray-400" />
  </div>
  <p className="text-gray-500 font-medium">Nessuna richiesta recente</p>
  </div>
@@ -777,9 +745,7 @@ return (
  {recentReports.length === 0 ? (
  <div className="text-center py-12">
  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
- <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
- </svg>
+ <ExclamationTriangleIcon className="w-8 h-8 text-gray-400" />
  </div>
  <p className="text-gray-500 font-medium">Nessuna segnalazione recente</p>
  </div>
@@ -813,9 +779,7 @@ return (
  {error && (
  <div className="alert-card alert-danger">
  <div className="flex items-center">
- <svg className="icon text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
- </svg>
+ <InformationCircleIcon className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>
@@ -840,9 +804,7 @@ return (
  onClick={() => setSelectedAlert(null)}
  className="text-muted hover:text-primary"
  >
- <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
- </svg>
+ <XMarkIcon className="icon" />
  </button>
  </div>
  
@@ -982,9 +944,7 @@ return (
  onClick={() => setSelectedLoan(null)}
  className="text-muted hover:text-primary"
  >
- <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
- </svg>
+ <XMarkIcon className="icon" />
  </button>
  </div>
  <div className="modal-body">
@@ -1013,9 +973,7 @@ return (
  <label className="form-label">Richiedente</label>
  <div className="flex items-center gap-2">
    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-     <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-     </svg>
+     <UserIcon className="w-4 h-4 text-blue-600" />
    </div>
    <div>
      <p className="text-primary font-medium">
@@ -1126,27 +1084,10 @@ return (
 // Stat Card Component
 function StatCard({ title, value, description }) {
  const iconMap = {
- 'Inventario': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
- </svg>
- ),
- 'Richieste': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
- </svg>
- ),
- 'Riparazioni': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
- </svg>
- ),
- 'Segnalazioni': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
- </svg>
- )
+ 'Inventario': <CubeIcon className="w-6 h-6" />,
+ 'Richieste': <ClipboardDocumentListIcon className="w-6 h-6" />,
+ 'Riparazioni': <Cog6ToothIcon className="w-6 h-6" />,
+ 'Segnalazioni': <ExclamationTriangleIcon className="w-6 h-6" />
  };
 
  const colorMap = {
