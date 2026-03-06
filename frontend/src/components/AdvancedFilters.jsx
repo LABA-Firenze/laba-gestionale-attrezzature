@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HiOutlineXMark } from 'react-icons/hi2';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const AdvancedFilters = ({ 
  isOpen, 
@@ -87,7 +87,7 @@ const AdvancedFilters = ({
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600"
  >
- <HiOutlineXMark className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
 
@@ -234,7 +234,7 @@ const AdvancedFilters = ({
  onClick={() => onDeleteFilter(index)}
  className="text-red-500 hover:text-red-700"
  >
- <HiOutlineXMark className="w-4 h-4" />
+ <XMarkIcon className="w-4 h-4" />
  </button>
  </div>
  ))}

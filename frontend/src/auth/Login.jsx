@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HiOutlineExclamationCircle, HiOutlineArrowPath, HiOutlineArrowRight, HiOutlineInformationCircle, HiOutlineChevronRight } from 'react-icons/hi2';
+import { ExclamationCircleIcon, ArrowPathIcon, ArrowRightIcon, InformationCircleIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useAuth } from './AuthContext';
 import ForgotPassword from './ForgotPassword';
 import InstructionsModal from '../components/InstructionsModal';
@@ -215,7 +215,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  {error && (
  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
  <div className="flex">
- <HiOutlineExclamationCircle className="w-5 h-5 text-red-400 mr-2" />
+ <ExclamationCircleIcon className="w-5 h-5 text-red-400 mr-2" />
  <p className="text-red-800 text-sm">{error}</p>
  </div>
  </div>
@@ -230,13 +230,13 @@ const Login = ({ branding = "LABA Gestione" }) => {
  >
  {loading ? (
  <div className="flex items-center">
- <HiOutlineArrowPath className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" />
+ <ArrowPathIcon className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" />
  {isLogin ? 'Accesso in corso...' : 'Registrazione in corso...'}
  </div>
  ) : (
  <div className="flex items-center">
  <span className="mr-2">{isLogin ? 'Accedi' : 'Registrati'}</span>
- <HiOutlineArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+ <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
  </div>
  )}
  </button>
@@ -274,13 +274,13 @@ const Login = ({ branding = "LABA Gestione" }) => {
    className="flex w-full items-center gap-3 rounded-2xl bg-white/95 backdrop-blur-sm px-5 py-4 text-left border border-gray-100/80 shadow-lg shadow-blue-900/5 hover:bg-gray-50/80 transition-colors"
  >
    <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-     <HiOutlineInformationCircle className="w-5 h-5 text-blue-600" />
+     <InformationCircleIcon className="w-5 h-5 text-blue-600" />
    </div>
    <div>
      <h3 className="font-semibold text-gray-900">Istruzioni</h3>
      <p className="text-xs text-gray-500">Cos'è, come noleggiare, strike e penalità</p>
    </div>
-   <HiOutlineChevronRight className="w-5 h-5 text-gray-400 ml-auto" />
+   <ChevronRightIcon className="w-5 h-5 text-gray-400 ml-auto" />
  </button>
 
  <InstructionsModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />

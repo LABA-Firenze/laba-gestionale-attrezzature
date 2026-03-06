@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HiOutlineInformationCircle, HiOutlinePhoto, HiOutlineArrowsRightLeft, HiOutlineBookOpen, HiOutlineHashtag, HiOutlineXMark, HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { InformationCircleIcon, PhotoIcon, ArrowsRightLeftIcon, BookOpenIcon, HashtagIcon, XMarkIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 
 const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) => {
@@ -271,7 +271,7 @@ const canProceed = () => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <HiOutlineXMark className="icon" />
+ <XMarkIcon className="icon" />
  </button>
  </div>
  
@@ -280,11 +280,11 @@ const canProceed = () => {
  <div className="flex items-center justify-center">
  <div className="flex items-center space-x-4">
  {[
-   { num: 1, label: 'Info Base', icon: <HiOutlineInformationCircle className="w-4 h-4" /> },
-   { num: 2, label: 'Descrizione', icon: <HiOutlinePhoto className="w-4 h-4" /> },
-   { num: 3, label: 'Tipo Utilizzo', icon: <HiOutlineArrowsRightLeft className="w-4 h-4" /> },
-   { num: 4, label: 'Corsi & Categoria', icon: <HiOutlineBookOpen className="w-4 h-4" /> },
-   { num: 5, label: 'Codici Unità', icon: <HiOutlineHashtag className="w-4 h-4" /> }
+   { num: 1, label: 'Info Base', icon: <InformationCircleIcon className="w-4 h-4" /> },
+   { num: 2, label: 'Descrizione', icon: <PhotoIcon className="w-4 h-4" /> },
+   { num: 3, label: 'Tipo Utilizzo', icon: <ArrowsRightLeftIcon className="w-4 h-4" /> },
+   { num: 4, label: 'Corsi & Categoria', icon: <BookOpenIcon className="w-4 h-4" /> },
+   { num: 5, label: 'Codici Unità', icon: <HashtagIcon className="w-4 h-4" /> }
  ].map((stepData, index) => (
  <React.Fragment key={stepData.num}>
  <div className="flex flex-col items-center">
@@ -635,7 +635,7 @@ Tipo di Utilizzo
  {error && (
  <div className="alert-card alert-danger mt-4">
  <div className="flex items-center">
- <HiOutlineExclamationCircle className="icon text-red-500 mr-3" />
+ <ExclamationCircleIcon className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HiOutlineXMark } from 'react-icons/hi2';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import ReportBugModal from './ReportBugModal';
 
@@ -91,7 +91,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  onClick={onClose}
  className="text-gray-400 hover:text-gray-600 transition-colors"
  >
- <HiOutlineXMark className="w-6 h-6" />
+ <XMarkIcon className="w-6 h-6" />
  </button>
  </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HiOutlineXMark } from 'react-icons/hi2';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import QRCode from 'qrcode';
 
 const QRCodeGenerator = ({ item, onClose, embedded = false }) => {
@@ -84,7 +84,7 @@ return (
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600"
         >
-          <HiOutlineXMark className="w-5 h-5" />
+          <XMarkIcon className="w-5 h-5" />
         </button>
       </div>
 

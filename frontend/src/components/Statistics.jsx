@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HiOutlineChartBar } from 'react-icons/hi2';
+import { ChartBarIcon } from '@heroicons/react/24/outline';
 import BasicStats from './BasicStats';
 import AdvancedStats from './AdvancedStats';
 
@@ -33,7 +33,7 @@ const Statistics = () => {
               }`}
             >
               <div className="flex items-center space-x-2">
-                <HiOutlineChartBar className="w-5 h-5" />
+                <ChartBarIcon className="w-5 h-5" />
                 <span>Statistiche Base</span>
               </div>
             </button>
@@ -46,7 +46,7 @@ const Statistics = () => {
               }`}
             >
               <div className="flex items-center space-x-2">
-                <HiOutlineChartBar className="w-5 h-5" />
+                <ChartBarIcon className="w-5 h-5" />
                 <span>Statistiche Avanzate</span>
               </div>
             </button>
