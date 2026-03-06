@@ -101,7 +101,13 @@ r.post('/', requireAuth, async (req, res) => {
     
     if (unit_id) {
       // Get inventario_id from unit
-      const unitResult = await query('SELECT inventario_id FROM inventario_unita WHERE id = $1 AND stato = $2 AND prestito_corrente_id IS NULL', [unit_id, 'disponibile']);
+      const unitResult = await query(`
+        SELECT iu.inventario_id FROM inventario_unita iu
+        LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
+        WHERE iu.id = $1
+        AND ((iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL)
+             OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE))
+      `, [unit_id]);
       if (unitResult.length === 0) {
         return res.status(400).json({ error: 'Unità non disponibile o non trovata' });
       }

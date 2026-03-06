@@ -13,23 +13,24 @@ r.get('/', requireAuth, async (req, res) => {
     const scorteBasse = await query(`
       SELECT 
         i.*,
-        COUNT(iu.id) as unita_disponibili,
+        COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) as unita_disponibili,
         i.quantita_totale,
-        ROUND((COUNT(iu.id) * 100.0 / NULLIF(i.quantita_totale, 0)), 2) as percentuale_disponibile,
+        ROUND((COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) * 100.0 / NULLIF(i.quantita_totale, 0)), 2) as percentuale_disponibile,
         CASE 
-          WHEN COUNT(iu.id) = 0 THEN 'ESAURITO - Tutti gli oggetti sono in prestito'
-          WHEN COUNT(iu.id) = 1 AND i.quantita_totale > 2 THEN 'ATTENZIONE - Solo 1 oggetto disponibile'
-          WHEN COUNT(iu.id) <= (i.quantita_totale * 0.3) AND i.quantita_totale >= 4 AND COUNT(iu.id) > 0 THEN 'SCARSEGGIA - Pochi oggetti disponibili'
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 0 THEN 'ESAURITO - Tutti gli oggetti sono in prestito'
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 1 AND i.quantita_totale > 2 THEN 'ATTENZIONE - Solo 1 oggetto disponibile'
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) <= (i.quantita_totale * 0.3) AND i.quantita_totale >= 4 AND COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) > 0 THEN 'SCARSEGGIA - Pochi oggetti disponibili'
           ELSE 'NORMALE'
         END as motivo,
         CASE 
-          WHEN COUNT(iu.id) = 0 THEN 'esaurito'
-          WHEN COUNT(iu.id) = 1 AND i.quantita_totale > 2 THEN 'attenzione'
-          WHEN COUNT(iu.id) <= (i.quantita_totale * 0.3) AND i.quantita_totale >= 4 AND COUNT(iu.id) > 0 THEN 'scarseggia'
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 0 THEN 'esaurito'
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 1 AND i.quantita_totale > 2 THEN 'attenzione'
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) <= (i.quantita_totale * 0.3) AND i.quantita_totale >= 4 AND COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) > 0 THEN 'scarseggia'
           ELSE 'normale'
         END as stato_scorte
       FROM inventario i
-      LEFT JOIN inventario_unita iu ON iu.inventario_id = i.id AND iu.stato = 'disponibile'
+      LEFT JOIN inventario_unita iu ON iu.inventario_id = i.id
+      LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
       WHERE NOT EXISTS (
         SELECT 1 FROM riparazioni r 
         WHERE r.inventario_id = i.id 
@@ -42,14 +43,14 @@ r.get('/', requireAuth, async (req, res) => {
       )
       GROUP BY i.id
       HAVING (
-        COUNT(iu.id) = 0 OR 
-        (COUNT(iu.id) = 1 AND i.quantita_totale > 2) OR 
-        (COUNT(iu.id) <= (i.quantita_totale * 0.3) AND i.quantita_totale >= 4 AND COUNT(iu.id) > 0)
+        COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 0 OR 
+        (COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 1 AND i.quantita_totale > 2) OR 
+        (COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) <= (i.quantita_totale * 0.3) AND i.quantita_totale >= 4 AND COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) > 0)
       )
       ORDER BY 
         CASE 
-          WHEN COUNT(iu.id) = 0 THEN 1
-          WHEN COUNT(iu.id) = 1 AND i.quantita_totale > 2 THEN 2
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 0 THEN 1
+          WHEN COUNT(CASE WHEN (iu.stato = 'disponibile' AND iu.prestito_corrente_id IS NULL) OR (iu.stato = 'prestato' AND p.id IS NOT NULL AND p.data_uscita > CURRENT_DATE) THEN 1 END) = 1 AND i.quantita_totale > 2 THEN 2
           ELSE 3
         END,
         percentuale_disponibile ASC
