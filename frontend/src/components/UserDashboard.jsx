@@ -390,33 +390,41 @@ const UserDashboard = () => {
                     case 'in_attesa':
                     case 'pending':
                       return {
-                        pillBg: 'bg-yellow-100',
-                        pillText: 'text-yellow-800'
+                        cardBg: 'bg-yellow-50',
+                        cardBorder: 'border-yellow-200',
+                        pillBg: 'bg-yellow-200',
+                        pillText: 'text-yellow-900'
                       };
                     case 'approvata':
                       return {
-                        pillBg: 'bg-green-100',
-                        pillText: 'text-green-800'
+                        cardBg: 'bg-green-50',
+                        cardBorder: 'border-green-200',
+                        pillBg: 'bg-green-200',
+                        pillText: 'text-green-900'
                       };
                     case 'rifiutata':
                       return {
-                        pillBg: 'bg-red-100',
-                        pillText: 'text-red-800'
+                        cardBg: 'bg-red-50',
+                        cardBorder: 'border-red-200',
+                        pillBg: 'bg-red-200',
+                        pillText: 'text-red-900'
                       };
                     default:
                       return {
-                        pillBg: 'bg-gray-100',
-                        pillText: 'text-gray-800'
+                        cardBg: 'bg-gray-50',
+                        cardBorder: 'border-gray-200',
+                        pillBg: 'bg-gray-200',
+                        pillText: 'text-gray-900'
                       };
                   }
                 };
                 
-                const pillStyles = getRequestPillStyles(request.stato);
+                const styles = getRequestPillStyles(request.stato);
                 
                 return (
                   <div 
                     key={index} 
-                    className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-white"
+                    className={`flex items-center justify-between p-3 rounded-lg border ${styles.cardBg} ${styles.cardBorder}`}
                   >
                     <div>
                       <p className="font-medium text-gray-900">{request.oggetto_nome || request.articolo_nome || 'Oggetto'}</p>
@@ -428,7 +436,7 @@ const UserDashboard = () => {
                         )}
                       </p>
                     </div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${pillStyles.pillBg} ${pillStyles.pillText}`}>
+                    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${styles.pillBg} ${styles.pillText}`}>
                       {request.stato === 'approvata' ? 'Approvata' :
                        request.stato === 'in_attesa' || request.stato === 'pending' ? 'In Attesa' : 'Rifiutata'}
                     </span>
@@ -513,7 +521,7 @@ function StatCard({ title, value }) {
   };
 
   return (
-    <div className="kpi-card bg-white rounded-lg shadow-sm border border-gray-200 hover:scale-105 transition-transform">
+    <div className="kpi-card bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="flex items-center w-full">
         <div className={`w-12 h-12 ${colorMap[title]} rounded-lg flex items-center justify-center ${
           title === 'Articoli Disponibili' ? 'text-blue-600' :

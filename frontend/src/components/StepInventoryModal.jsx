@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Info, Image, ArrowLeftRight, BookOpen, Hash, X, AlertCircle } from 'lucide-react';
+import IconFill from './IconFill.jsx';
 import { useAuth } from '../auth/AuthContext';
 
 const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) => {
@@ -271,7 +272,7 @@ const canProceed = () => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <X className="icon" />
+ <IconFill as={X} className="icon" />
  </button>
  </div>
  
@@ -280,11 +281,11 @@ const canProceed = () => {
  <div className="flex items-center justify-center">
  <div className="flex items-center space-x-4">
  {[
-   { num: 1, label: 'Info Base', icon: <Info className="w-4 h-4" /> },
-   { num: 2, label: 'Descrizione', icon: <Image className="w-4 h-4" /> },
-   { num: 3, label: 'Tipo Utilizzo', icon: <ArrowLeftRight className="w-4 h-4" /> },
-   { num: 4, label: 'Corsi & Categoria', icon: <BookOpen className="w-4 h-4" /> },
-   { num: 5, label: 'Codici Unità', icon: <Hash className="w-4 h-4" /> }
+   { num: 1, label: 'Info Base', icon: <IconFill as={Info} className="w-4 h-4" /> },
+   { num: 2, label: 'Descrizione', icon: <IconFill as={Image} className="w-4 h-4" /> },
+   { num: 3, label: 'Tipo Utilizzo', icon: <IconFill as={ArrowLeftRight} className="w-4 h-4" /> },
+   { num: 4, label: 'Corsi & Categoria', icon: <IconFill as={BookOpen} className="w-4 h-4" /> },
+   { num: 5, label: 'Codici Unità', icon: <IconFill as={Hash} className="w-4 h-4" /> }
  ].map((stepData, index) => (
  <React.Fragment key={stepData.num}>
  <div className="flex flex-col items-center">
@@ -635,7 +636,7 @@ Tipo di Utilizzo
  {error && (
  <div className="alert-card alert-danger mt-4">
  <div className="flex items-center">
- <AlertCircle className="icon text-red-500 mr-3" />
+ <IconFill as={AlertCircle} className="icon text-red-500 mr-3" />
  <p className="text-red-800 ">{error}</p>
  </div>
  </div>

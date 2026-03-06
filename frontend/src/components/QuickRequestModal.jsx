@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import IconFill from './IconFill.jsx';
 import { useAuth } from '../auth/AuthContext';
 
 const QuickRequestModal = ({ isOpen, onClose, request, onSuccess }) => {
@@ -62,7 +63,7 @@ const QuickRequestModal = ({ isOpen, onClose, request, onSuccess }) => {
  onClick={handleClose}
  className="text-muted hover:text-primary"
  >
- <X className="icon" />
+ <IconFill as={X} className="icon" />
  </button>
  </div>
 

@@ -175,7 +175,7 @@ const ReportBugModal = ({ isOpen, onClose, onSuccess, prefillData = {} }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[9999] p-4"
       onClick={onClose}
     >
       <div 

@@ -65,7 +65,7 @@ const InstructionsModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-[9999]">
-      <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-md" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5">

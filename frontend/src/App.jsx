@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LayoutDashboard, Layers, ArrowLeftRight, Wrench, TriangleAlert, Users, BarChart3, Laptop, X, Bell, Menu, LogOut } from "lucide-react";
+import IconFill from "./components/IconFill.jsx";
 import AuthProvider, { useAuth } from "./auth/AuthContext";
 import { NotificationProvider } from "./components/NotificationSystem.jsx";
 import DesktopNotificationManager from "./components/DesktopNotificationManager.jsx";
@@ -63,14 +64,14 @@ function AppInner() {
   // Admin sidebar items for mobile menu
   const iconCls = "w-5 h-5";
   const adminSidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className={iconCls} /> },
-    { id: 'inventario', label: 'Inventario', icon: <Layers className={iconCls} /> },
-    { id: 'prestiti', label: 'Prestiti', icon: <ArrowLeftRight className={iconCls} /> },
-    { id: 'riparazioni', label: 'Riparazioni', icon: <Wrench className={iconCls} /> },
-    { id: 'penalita', label: 'Penalità', icon: <TriangleAlert className={iconCls} />, badge: penaltiesCount > 0 ? penaltiesCount : null },
-    { id: 'utenti', label: 'Utenti', icon: <Users className={iconCls} /> },
-    { id: 'statistiche', label: 'Statistiche', icon: <BarChart3 className={iconCls} /> },
-    { id: 'sistema', label: 'Stato del Sistema', icon: <Laptop className={iconCls} /> }
+    { id: 'dashboard', label: 'Dashboard', icon: <IconFill as={LayoutDashboard} className={iconCls} /> },
+    { id: 'inventario', label: 'Inventario', icon: <IconFill as={Layers} className={iconCls} /> },
+    { id: 'prestiti', label: 'Prestiti', icon: <IconFill as={ArrowLeftRight} className={iconCls} /> },
+    { id: 'riparazioni', label: 'Riparazioni', icon: <IconFill as={Wrench} className={iconCls} /> },
+    { id: 'penalita', label: 'Penalità', icon: <IconFill as={TriangleAlert} className={iconCls} />, badge: penaltiesCount > 0 ? penaltiesCount : null },
+    { id: 'utenti', label: 'Utenti', icon: <IconFill as={Users} className={iconCls} /> },
+    { id: 'statistiche', label: 'Statistiche', icon: <IconFill as={BarChart3} className={iconCls} /> },
+    { id: 'sistema', label: 'Stato del Sistema', icon: <IconFill as={Laptop} className={iconCls} /> }
   ];
   
   const [notifications, setNotifications] = useState([]);
@@ -304,7 +305,7 @@ function AppInner() {
  onClick={() => setSidebarOpen(false)}
  className="p-2 rounded-lg hover:bg-gray-100"
  >
- <X className="w-6 h-6" />
+ <IconFill as={X} className="w-6 h-6" />
  </button>
  </div>
  <nav className="flex-1 p-4 space-y-2">
@@ -314,10 +315,10 @@ function AppInner() {
  <NavButton icon="📦" label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="📝" label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="🛠️" label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
-<NavButton icon={<TriangleAlert className="w-5 h-5" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
- <NavButton icon={<Users className="w-5 h-5" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
+<NavButton icon={<IconFill as={TriangleAlert} className="w-5 h-5" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
+ <NavButton icon={<IconFill as={Users} className="w-5 h-5" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon="📈" label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Laptop className="w-5 h-5" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={Laptop} className="w-5 h-5" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
  </>
  ) : (
  <NavButton icon="👤" label="Area Utente" tab="utente" currentTab={tab} onClick={setTab} />
@@ -341,14 +342,14 @@ function AppInner() {
             </div>
             
             <nav className="flex-1 p-4 space-y-2">
- <NavButton icon={<LayoutDashboard className="icon" />} label="Dashboard" tab="dashboard" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Layers className="icon" />} label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<ArrowLeftRight className="icon" />} label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Wrench className="icon" />} label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
-<NavButton icon={<TriangleAlert className="icon" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
- <NavButton icon={<Users className="icon" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<BarChart3 className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
- <NavButton icon={<Laptop className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={LayoutDashboard} className="icon" />} label="Dashboard" tab="dashboard" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={Layers} className="icon" />} label="Inventario" tab="inventario" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={ArrowLeftRight} className="icon" />} label="Prestiti" tab="prestiti" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={Wrench} className="icon" />} label="Riparazioni" tab="riparazioni" currentTab={tab} onClick={handleTabChange} />
+<NavButton icon={<IconFill as={TriangleAlert} className="icon" />} label="Penalità" tab="penalita" currentTab={tab} onClick={handleTabChange} badge={penaltiesCount > 0 ? penaltiesCount : null} />
+ <NavButton icon={<IconFill as={Users} className="icon" />} label="Gestione Utenti" tab="utenti" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={BarChart3} className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
+ <NavButton icon={<IconFill as={Laptop} className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
 </nav>
  <UserBadge />
  </div>
@@ -371,7 +372,7 @@ function AppInner() {
             className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors z-[101]"
             type="button"
           >
-            <Bell className="w-6 h-6 text-gray-600" />
+            <IconFill as={Bell} className="w-6 h-6 text-gray-600" />
             {notifications.filter(n => !n.isRead).length > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {notifications.filter(n => !n.isRead).length}
@@ -384,7 +385,7 @@ function AppInner() {
             className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105 z-[101]"
             type="button"
           >
-            <Menu className="w-6 h-6" />
+            <IconFill as={Menu} className="w-6 h-6" />
           </button>
         </div>
       </div>
@@ -401,7 +402,7 @@ function AppInner() {
                 onClick={() => setNotificationsOpen(true)}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <Bell className="w-6 h-6 text-gray-600" />
+                <IconFill as={Bell} className="w-6 h-6 text-gray-600" />
                 {/* Notification Badge */}
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
@@ -428,7 +429,7 @@ function AppInner() {
              onClick={() => setNotificationsOpen(true)}
              className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
            >
-             <Bell className="w-6 h-6 text-gray-600" />
+             <IconFill as={Bell} className="w-6 h-6 text-gray-600" />
              {/* Notification Badge */}
              {unreadCount > 0 && (
                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
@@ -548,7 +549,7 @@ function UserBadge() {
  onClick={logout}
         className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-200 ease border border-gray-200 "
  >
- <LogOut className="w-4 h-4 mr-2" />
+ <IconFill as={LogOut} className="w-4 h-4 mr-2" />
  Esci
  </button>
  </div>

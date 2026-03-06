@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import IconFill from './IconFill.jsx';
 import QRCode from 'qrcode';
 
 const QRCodeGenerator = ({ item, onClose, embedded = false }) => {
@@ -76,7 +77,7 @@ if (embedded) {
 }
 
 return (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[9999]">
     <div className="bg-white rounded-lg p-4 w-full mx-4" style={{ maxWidth: '30rem' }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-semibold text-gray-900">QR Code - {item.nome}</h3>
@@ -84,7 +85,7 @@ return (
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600"
         >
-          <X className="w-5 h-5" />
+          <IconFill as={X} className="w-5 h-5" />
         </button>
       </div>
 
