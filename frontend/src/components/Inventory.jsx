@@ -518,7 +518,7 @@ const Inventory = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header - stessa card di Prestiti (titolo, sottotitolo, azioni a destra) */}
-      <div className="card mx-4 sm:mx-6 lg:mx-8 mb-8">
+      <div className="card mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6">
           <div>
             <h1 className="text-2xl font-bold text-primary">Gestione Inventario</h1>
@@ -618,7 +618,7 @@ const Inventory = () => {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="w-full">
         {/* Filters and Search */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <div className="flex flex-col lg:flex-row lg:items-end gap-6">

@@ -18,7 +18,7 @@ const Statistics = () => {
       </div>
     </div>
 
-    <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="w-full">
 
       {/* Tabs */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">

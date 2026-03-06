@@ -441,7 +441,6 @@ function AppInner() {
      </div>
      
      <main className="flex-1 p-4 lg:p-6 main-content">
-       <div className="max-w-7xl mx-auto">
          {tab === 'dashboard' && <Dashboard onNavigate={handleTabChange} />}
          {tab === 'inventario' && <Inventory />}
          {tab === 'prestiti' && <Loans 
@@ -455,7 +454,6 @@ function AppInner() {
          {tab === 'utenti' && <UserManagement />}
          {tab === 'statistiche' && <Statistics />}
          {tab === 'sistema' && <SystemStatus />}
-       </div>
      </main>
      
            {/* Footer - Hidden when mobile menu is open */}
