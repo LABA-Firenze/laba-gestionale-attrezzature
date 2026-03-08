@@ -13,7 +13,7 @@ function NotificationsPanel({ isOpen, onClose, notifications = [], onMarkAsRead,
  }`}
  onClick={onClose}
  ></div>
- <div className={`absolute right-0 top-0 h-full w-96 bg-white shadow-xl transform transition-all duration-300 ease-in-out ${
+ <div className={`absolute right-0 top-0 h-full w-full max-w-sm sm:max-w-md bg-white shadow-xl transform transition-all duration-300 ease-in-out ${
  isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
  }`}>
  <div className="flex flex-col h-full">

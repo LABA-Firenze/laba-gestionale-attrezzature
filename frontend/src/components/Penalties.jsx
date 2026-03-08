@@ -241,7 +241,7 @@ const Penalties = () => {
               placeholder="Cerca utenti..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="w-full min-w-0 sm:w-64 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           }
         >
@@ -256,8 +256,8 @@ const Penalties = () => {
           </Tab>
         </SectionTabs>
 
-        {/* Users Table */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        {/* Users Table - Desktop */}
+        <div className="hidden lg:block bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -351,6 +351,63 @@ const Penalties = () => {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Users Cards - Mobile */}
+        <div className="lg:hidden space-y-4">
+          {filteredUsers.length === 0 ? (
+            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+              <CheckCircleIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-1">Nessun utente trovato</h3>
+              <p className="text-gray-500">
+                {activeTab === 'blocked' 
+                  ? 'Non ci sono utenti bloccati.' 
+                  : activeTab === 'with-penalties'
+                    ? 'Non ci sono utenti con penalità.'
+                    : 'Non ci sono utenti con penalità nel sistema.'}
+              </p>
+            </div>
+          ) : (
+            filteredUsers.map((user) => (
+              <div
+                key={user.id}
+                onClick={() => openPenaltyModal(user)}
+                className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 cursor-pointer hover:shadow-md transition-shadow active:bg-gray-50"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                      {user.name.charAt(0)}{user.surname.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-gray-900 truncate">{user.name} {user.surname}</div>
+                      <div className="text-xs text-gray-500 truncate">{user.email}</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 flex-shrink-0">
+                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                      user.is_blocked ? 'bg-red-100 text-red-800' :
+                      user.penalty_strikes >= 2 ? 'bg-orange-100 text-orange-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {user.penalty_strikes || 0} / 3
+                    </span>
+                    {user.is_blocked ? (
+                      <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">BLOCCATO</span>
+                    ) : (
+                      <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">ATTIVO</span>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <span className="inline-flex items-center px-3 py-2 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">
+                    <ExclamationTriangleIcon className="w-3 h-3 mr-1" />
+                    Tocca per dettagli
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

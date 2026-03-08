@@ -31,7 +31,7 @@ const OperationsDropdown = ({ onExport, onTemplate, onImport }) => {
  </button>
 
  {isOpen && (
- <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+ <div className="absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
  <button
  onClick={() => {
  onExport();

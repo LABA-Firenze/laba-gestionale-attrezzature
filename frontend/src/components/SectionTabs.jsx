@@ -13,7 +13,7 @@ export default function SectionTabs({ children, rightContent }) {
           {children}
         </nav>
         {rightContent && (
-          <div className="flex items-center shrink-0">{rightContent}</div>
+          <div className="flex items-center w-full min-w-0 sm:w-auto sm:shrink-0">{rightContent}</div>
         )}
       </div>
     </div>
