@@ -160,6 +160,23 @@ const fetchAvailableUnits = async (itemId) => {
 
 // handleUnitsSelected removed - navigation now handled by footer buttons
 
+ // Date occupate dalle unità selezionate (per disabilitarle nel date picker)
+ const getDisabledDatesFromUnits = (units) => {
+   const allDates = new Set();
+   (units || []).forEach(unit => {
+     if (!unit?.prestito_data_uscita || !unit?.prestito_data_rientro) return;
+     const dal = new Date(unit.prestito_data_uscita);
+     const al = new Date(unit.prestito_data_rientro);
+     const curr = new Date(dal);
+     while (curr <= al) {
+       allDates.add(curr.toISOString().split('T')[0]);
+       curr.setDate(curr.getDate() + 1);
+     }
+   });
+   return [...allDates];
+ };
+ const disabledDates = getDisabledDatesFromUnits(selectedUnits);
+
  const handleCreateLoan = async () => {
  if (!selectedItem || (!selectedUser && !isManualUser) || selectedUnits.length === 0 || !dateRange.dal || !dateRange.al) {
  setError('Compila tutti i campi obbligatori');
@@ -723,6 +740,7 @@ body: JSON.stringify({
      }));
    }}
    minDate={getMinStartDate()}
+   disabledDates={disabledDates}
    required
    placeholder="Seleziona data inizio"
    className="w-full px-3 py-2"
@@ -753,6 +771,7 @@ onChange={(val) => {
  }}
    minDate={dateRange.dal || getMinStartDate()}
    disabledDays={[0]}
+   disabledDates={disabledDates}
    disabled={selectedItem?.tipo_prestito === 'solo_interno' || 
             (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')}
    required

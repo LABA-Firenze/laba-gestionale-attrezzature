@@ -35,6 +35,21 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     const [y, m, d] = dateStr.split('-').map(Number);
     return new Date(y, m - 1, d).getDay();
   };
+  // Date occupate dalla unità selezionata (per disabilitarle nel date picker)
+  const getDisabledDatesForUnit = (unit) => {
+    if (!unit?.prestito_data_uscita || !unit?.prestito_data_rientro) return [];
+    const dal = new Date(unit.prestito_data_uscita);
+    const al = new Date(unit.prestito_data_rientro);
+    const dates = [];
+    const curr = new Date(dal);
+    while (curr <= al) {
+      dates.push(curr.toISOString().split('T')[0]);
+      curr.setDate(curr.getDate() + 1);
+    }
+    return dates;
+  };
+  const disabledDates = selectedUnit ? getDisabledDatesForUnit(selectedUnit) : [];
+
   // Funzione per slittare la domenica a lunedì
   const skipSunday = (dateStr) => {
     if (!dateStr) return dateStr;
@@ -721,6 +736,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                     value={dateRange.dal}
                     onChange={(val) => handleInputChange({ target: { name: 'dal', value: val } })}
                     minDate={getMinStartDate()}
+                    disabledDates={disabledDates}
                     required
                     placeholder="Seleziona data inizio"
                     className="w-full"
@@ -747,6 +763,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                       return skipSunday(maxDate.toISOString().split('T')[0]);
                     })() : undefined}
                     disabledDays={[0]}
+                    disabledDates={disabledDates}
                     disabled={selectedObject.tipo_prestito === 'solo_interno' || 
                              (selectedObject.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')}
                     required

@@ -675,7 +675,8 @@ r.get('/:id/units', requireAuth, async (req, res) => {
     const result = await query(`
       SELECT iu.id, iu.codice_univoco, iu.stato, iu.note, iu.inventario_id, iu.prestito_corrente_id,
              i.nome as item_name,
-             p.data_rientro as prestito_data_rientro
+             p.data_uscita::text as prestito_data_uscita,
+             p.data_rientro::text as prestito_data_rientro
       FROM inventario_unita iu
       LEFT JOIN inventario i ON i.id = iu.inventario_id
       LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
@@ -700,7 +701,10 @@ r.get('/:id/disponibili', requireAuth, async (req, res) => {
         iu.stato,
         iu.note,
         iu.inventario_id,
-        i.nome as item_name
+        iu.prestito_corrente_id,
+        i.nome as item_name,
+        p.data_uscita::text as prestito_data_uscita,
+        p.data_rientro::text as prestito_data_rientro
       FROM inventario_unita iu
       JOIN inventario i ON i.id = iu.inventario_id
       LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'

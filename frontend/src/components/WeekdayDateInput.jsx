@@ -4,8 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
  * Calendario custom per date.
  * disabledDays: array di giorni da disabilitare (0=domenica, 6=sabato).
  * Es: [0, 6] = solo lun-ven | [0] = lun-sab (domenica disabilitata)
+ * disabledDates: array di stringhe YYYY-MM-DD da disabilitare (es. date occupate da prestiti)
  */
-const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0, 6], disabled, id, name, required, className = '', placeholder = 'Seleziona data' }) => {
+const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0, 6], disabledDates = [], disabled, id, name, required, className = '', placeholder = 'Seleziona data' }) => {
   const [open, setOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState(() => {
     if (value) {
@@ -37,10 +38,13 @@ const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0
   const minD = minDate ? parseDate(minDate) : null;
   const maxD = maxDate ? parseDate(maxDate) : null;
 
+  const disabledSet = new Set(disabledDates || []);
+
   const canSelect = (d) => {
     if (isDisabledDay(d)) return false;
     if (minD && d < minD) return false;
     if (maxD && d > maxD) return false;
+    if (disabledSet.size && disabledSet.has(toStr(d))) return false;
     return true;
   };
 
