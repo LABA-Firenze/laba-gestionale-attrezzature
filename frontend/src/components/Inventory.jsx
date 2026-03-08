@@ -525,7 +525,7 @@ const Inventory = () => {
           <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={() => setShowAddModal(true)}
-              className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+              className="group bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all duration-300 flex items-center cursor-pointer"
             >
               <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -534,7 +534,7 @@ const Inventory = () => {
             </button>
             <button
               onClick={() => setShowCategoryManager(true)}
-              className="group bg-white text-gray-700 px-6 py-3 rounded-full font-medium border border-gray-300 hover:bg-gray-50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+              className="group bg-white text-gray-700 px-6 py-3 rounded-full font-medium border border-gray-300 hover:bg-gray-50 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center cursor-pointer"
             >
               <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
@@ -620,7 +620,7 @@ const Inventory = () => {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+      <div className="px-4 sm:px-6 lg:px-8 w-full space-y-6">
         {/* Filters and Search */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 py-5 px-6">
           <div className="flex flex-col lg:flex-row lg:items-end gap-6">
@@ -789,7 +789,7 @@ const Inventory = () => {
                       {item.hasMultipleUnits && (
                         <button
                           onClick={() => toggleExpanded(item.id)}
-                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                          className="p-1 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
                           title={expandedItems.has(item.id) ? "Chiudi dettagli" : "Mostra dettagli"}
                         >
                           <ChevronRightIcon className={`w-4 h-4 text-gray-500 transition-transform ${expandedItems.has(item.id) ? 'rotate-90' : ''}`} />
@@ -827,7 +827,7 @@ const Inventory = () => {
                     {item.immagine_url && (
                       <>
                         <span>•</span>
-                        <button onClick={() => window.open(item.immagine_url, '_blank')} className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800">
+                        <button onClick={() => window.open(item.immagine_url, '_blank')} className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 cursor-pointer">
                           <PhotoIcon className="w-3.5 h-3.5" /> Visualizza
                         </button>
                       </>
@@ -836,21 +836,21 @@ const Inventory = () => {
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => setQrCodeItem(item)}
-                      className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
                       title="Genera QR Code"
                     >
                       <QrCodeIcon className="w-4 h-4" /> QR Code
                     </button>
                     <button
                       onClick={() => handleEditItem(item)}
-                      className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
                       title="Modifica articolo"
                     >
                       <PencilIcon className="w-4 h-4" /> Modifica
                     </button>
                     <button
                       onClick={() => handleDeleteItem(item.id)}
-                      className="inline-flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
                       title="Elimina articolo"
                     >
                       <TrashIcon className="w-4 h-4" />
@@ -911,8 +911,8 @@ const Inventory = () => {
                       return (
                         <div 
                           key={unit.id} 
-                          className={`bg-white p-3 rounded-xl border border-gray-200 hover:shadow-sm transition-shadow flex-shrink-0 min-w-[120px] ${
-                            unit.stato === 'prestato' ? 'cursor-pointer hover:border-blue-500' : ''
+                          className={`bg-white p-3 rounded-xl border border-gray-200 hover:shadow-sm transition-shadow flex-shrink-0 min-w-[120px] cursor-pointer ${
+                            unit.stato === 'prestato' ? 'hover:border-blue-500' : ''
                           }`}
                           onClick={() => handleUnitClick(unit)}
                         >
@@ -1046,7 +1046,7 @@ onClick={() => setShowCategoryManager(false)}
                               <div className="flex items-center space-x-2">
                                 <button
                                   onClick={() => handleEditCategory(cat)}
-                                  className="text-blue-600 hover:text-blue-800 p-1"
+                                  className="text-blue-600 hover:text-blue-800 p-1 cursor-pointer"
                                   title="Modifica categoria"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1055,7 +1055,7 @@ onClick={() => setShowCategoryManager(false)}
                                 </button>
                                 <button
                                   onClick={() => handleDeleteCategory(cat.id)}
-                                  className="text-red-600 hover:text-red-800 p-1"
+                                  className="text-red-600 hover:text-red-800 p-1 cursor-pointer"
                                   title="Elimina categoria"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

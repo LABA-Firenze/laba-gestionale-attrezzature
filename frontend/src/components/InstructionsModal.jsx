@@ -68,7 +68,7 @@ const InstructionsModal = ({ isOpen, onClose }) => {
       <div className="fixed inset-0 bg-black/50 backdrop-blur-md" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5">
+          <div className="bg-blue-600 px-6 py-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">📖</div>

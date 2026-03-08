@@ -284,7 +284,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  <div className="text-center py-8">
  {action === 'manage-requests' && (
  <div className="space-y-4">
- <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+ <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
  <ClipboardDocumentListIcon className="icon-lg text-white" />
  </div>
  <h3 className="text-lg font-semibold text-primary mb-2">Gestione Richieste</h3>
@@ -332,7 +332,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  
  {action === 'manage-repairs' && (
  <div className="space-y-4">
- <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+ <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
  <WrenchScrewdriverIcon className="icon-lg text-white" />
  </div>
  <h3 className="text-lg font-semibold text-primary mb-2">Gestione Riparazioni</h3>

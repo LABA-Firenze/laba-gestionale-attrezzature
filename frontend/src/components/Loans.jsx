@@ -443,7 +443,7 @@ const getStatusBadge = (status) => {
     action={
       <button
         onClick={() => setShowLoanModal(true)}
-        className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-medium hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center"
+        className="group bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all duration-300 flex items-center"
       >
         <PlusIcon className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
         <span>Nuovo Prestito</span>
@@ -613,7 +613,7 @@ const getStatusBadge = (status) => {
             <div className="col-span-full bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
                     {group.user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                   </div>
                   <div>
@@ -845,7 +845,7 @@ const getStatusBadge = (status) => {
             <div className="card bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                     {group.user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                   </div>
                   <div>
@@ -872,7 +872,7 @@ const getStatusBadge = (status) => {
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                   {(() => {
                     const nomeCompleto = `${item.utente_nome || ''} ${item.utente_cognome || ''}`.trim() || item.chi || '?';
                     return nomeCompleto.charAt(0).toUpperCase() + (nomeCompleto.split(' ')[1]?.charAt(0) || '').toUpperCase();
@@ -991,7 +991,7 @@ const getStatusBadge = (status) => {
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                   {(() => {
                     const nomeCompleto = `${item.utente_nome || ''} ${item.utente_cognome || ''}`.trim() || item.chi || '?';
                     return nomeCompleto.charAt(0).toUpperCase() + (nomeCompleto.split(' ')[1]?.charAt(0) || '').toUpperCase();

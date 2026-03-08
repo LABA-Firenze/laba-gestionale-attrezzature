@@ -428,7 +428,7 @@ return (
  {hasAvvisi && (
  <div className="bg-white rounded-xl shadow-lg border border-red-200 overflow-hidden mb-8">
  <div 
- className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4 cursor-pointer hover:from-red-600 hover:to-red-700 transition-colors"
+ className="bg-red-600 hover:bg-red-700 px-6 py-4 cursor-pointer transition-colors"
  onClick={() => setAvvisiCollapsed(!avvisiCollapsed)}
  >
  <div className="flex items-center justify-between">
@@ -567,7 +567,7 @@ return (
  {hasScadenze && (
  <div className="bg-white rounded-xl shadow-lg border border-purple-200 overflow-hidden mb-8">
  <div 
- className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4 cursor-pointer hover:from-purple-600 hover:to-purple-700 transition-colors"
+ className="bg-purple-600 hover:bg-purple-700 px-6 py-4 cursor-pointer transition-colors"
  onClick={() => setScadenzeCollapsed(!scadenzeCollapsed)}
  >
  <div className="flex items-center justify-between">

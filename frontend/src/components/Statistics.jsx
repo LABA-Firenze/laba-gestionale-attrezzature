@@ -11,7 +11,7 @@ const Statistics = () => {
         subtitle="Analisi e monitoraggio del sistema di gestione attrezzature"
       />
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+      <div className="px-4 sm:px-6 lg:px-8 w-full space-y-8">
         <BasicStats />
         <AdvancedStats />
       </div>

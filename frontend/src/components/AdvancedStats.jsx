@@ -151,7 +151,7 @@ const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
  const SimpleChart = ({ data, title }) => {
    const maxValue = data.length > 0 ? Math.max(...data.map(d => d.count), 1) : 1;
  
- const gradientColors = ['bg-gradient-to-r from-blue-500 to-blue-600', 'bg-gradient-to-r from-emerald-500 to-emerald-600', 'bg-gradient-to-r from-violet-500 to-violet-600', 'bg-gradient-to-r from-amber-500 to-amber-600'];
+ const barColors = ['bg-blue-600', 'bg-emerald-600', 'bg-violet-600', 'bg-amber-600'];
    return (
      <div className="space-y-3">
        <h4 className="text-sm font-medium text-gray-700">{title}</h4>
@@ -167,7 +167,7 @@ const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
                <div className="flex-1 min-w-0">
                  <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                    <div 
-                     className={`h-full rounded-full transition-all duration-500 ${gradientColors[index % gradientColors.length]}`}
+                     className={`h-full rounded-full transition-all duration-500 ${barColors[index % barColors.length]}`}
                      style={{ width: `${(item.count / maxValue) * 100}%` }}
                    />
                  </div>
@@ -243,7 +243,7 @@ const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
        <div className="flex-1 min-w-0">
          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
            <div 
-             className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 transition-all duration-500"
+             className="h-full rounded-full bg-emerald-600 transition-all duration-500"
              style={{ width: `${(item.count / maxCat) * 100}%` }}
            />
          </div>

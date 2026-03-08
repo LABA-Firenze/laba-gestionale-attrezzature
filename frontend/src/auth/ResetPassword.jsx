@@ -53,7 +53,7 @@ const ResetPassword = ({ token, onSuccess, onBack }) => {
           <p className="text-gray-600 mb-6">Ora puoi accedere con la tua nuova password.</p>
           <button
             onClick={onSuccess}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-full hover:from-blue-700 hover:to-indigo-700 transition-colors"
+            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition-colors"
           >
             Vai al Login
           </button>
@@ -109,7 +109,7 @@ const ResetPassword = ({ token, onSuccess, onBack }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-full hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Salvataggio...' : 'Imposta password'}
           </button>

@@ -226,7 +226,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  <button
  type="submit"
  disabled={loading}
- className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-full text-white bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
+ className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl active:translate-y-0"
  >
  {loading ? (
  <div className="flex items-center">

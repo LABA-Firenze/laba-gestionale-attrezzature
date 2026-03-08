@@ -55,7 +55,7 @@ const ForgotPassword = ({ onBack }) => {
  </p>
  <button
  onClick={onBack}
- className="w-full bg-gradient-to-r from-sky-400 to-[#033157] text-white py-3 px-4 rounded-full hover:from-sky-500 hover:to-[#022a47] transition-all duration-200 font-medium"
+ className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-full transition-colors font-medium"
  >
  Torna al Login
  </button>
@@ -112,7 +112,7 @@ const ForgotPassword = ({ onBack }) => {
  <button
  type="submit"
  disabled={loading}
- className="w-full bg-gradient-to-r from-sky-400 to-[#033157] text-white py-3 px-4 rounded-full hover:from-sky-500 hover:to-[#022a47] focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
+ className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
  >
  {loading ? (
  <div className="flex items-center justify-center">

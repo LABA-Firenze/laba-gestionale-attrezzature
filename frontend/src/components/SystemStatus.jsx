@@ -195,7 +195,7 @@ const SystemStatus = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 space-y-6">
         <PageHeader
           title={systemData.overall === 'healthy' ? 'Sistema Online' : 'Sistema con Avvisi'}
           subtitle="Monitoraggio in tempo reale dello stato del sistema"

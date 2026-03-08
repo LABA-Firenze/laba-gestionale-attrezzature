@@ -84,7 +84,7 @@ const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, use
         {/* User Section */}
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
           <div className="flex items-center space-x-3 mb-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
               <span className="text-white font-semibold text-sm">
                 {(user?.name?.[0] || "?") + (user?.surname?.[0] || "")}
               </span>

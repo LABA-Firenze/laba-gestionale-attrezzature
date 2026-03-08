@@ -88,12 +88,13 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
       });
       if (response.ok) {
         const data = await response.json();
-        // Group items by name and show only items with available units
+        // Group items by name - mostra TUTTI gli articoli (anche con 0 disponibili oggi)
+        // così l'utente può richiederli per date future quando saranno liberi
         const groupedInventory = data.reduce((acc, item) => {
           const existingItem = acc.find(group => group.nome === item.nome);
           if (existingItem) {
             existingItem.unita_disponibili += item.unita_disponibili || 0;
-          } else if (item.unita_disponibili > 0) {
+          } else {
             acc.push({
               ...item,
               unita_disponibili: item.unita_disponibili || 0
@@ -110,7 +111,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
   const fetchAvailableUnits = async (inventoryId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${inventoryId}/disponibili`, {
+      // Usa /units (tutte le unità) invece di /disponibili (solo quelle libere oggi)
+      // così l'utente può selezionare una unità e richiederla per date future
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${inventoryId}/units`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -444,9 +447,15 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                         {item.nome}
                       </h4>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">
-                          {item.unita_disponibili} {item.unita_disponibili === 1 ? 'disponibile' : 'disponibili'}
-                        </span>
+                        {item.unita_disponibili > 0 ? (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">
+                            {item.unita_disponibili} {item.unita_disponibili === 1 ? 'disponibile' : 'disponibili'}
+                          </span>
+                        ) : (
+                          <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full whitespace-nowrap">
+                            Occupato ora · richiedi per date future
+                          </span>
+                        )}
                       </div>
                     </div>
                     
@@ -497,7 +506,10 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto">
-                {availableUnits.map((unit) => (
+                {availableUnits.map((unit) => {
+                  const inPrestito = unit.prestito_corrente_id != null;
+                  const dataRientro = unit.prestito_data_rientro ? new Date(unit.prestito_data_rientro).toLocaleDateString('it-IT') : null;
+                  return (
                   <div
                     key={unit.id}
                     onClick={() => handleUnitSelect(unit)}
@@ -508,16 +520,22 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                         <span className="font-medium text-gray-900 text-sm break-words">{unit.codice_univoco}</span>
                       </div>
                       <div className="flex items-center justify-between mt-auto">
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">
-                          Disponibile
-                        </span>
+                        {inPrestito ? (
+                          <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full whitespace-nowrap">
+                            {dataRientro ? `In prestito fino al ${dataRientro}` : 'In prestito'}
+                          </span>
+                        ) : (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">
+                            Disponibile
+                          </span>
+                        )}
                       </div>
                     </div>
                     {unit.note && (
                       <p className="text-xs text-gray-500 mt-2 line-clamp-2">{unit.note}</p>
                     )}
                   </div>
-                ))}
+                );})}
               </div>
               
               {availableUnits.length === 0 && (

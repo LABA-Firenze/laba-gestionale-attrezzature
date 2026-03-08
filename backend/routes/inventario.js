@@ -668,14 +668,17 @@ r.delete('/:id', requireAuth, requireRole('admin'), async (req, res) => {
   }
 });
 
-// GET /api/inventario/:id/units - Get all units for an inventory item
+// GET /api/inventario/:id/units - Get all units for an inventory item (anche quelle in prestito)
 r.get('/:id/units', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await query(`
-      SELECT iu.*, i.nome as item_name 
+      SELECT iu.id, iu.codice_univoco, iu.stato, iu.note, iu.inventario_id, iu.prestito_corrente_id,
+             i.nome as item_name,
+             p.data_rientro as prestito_data_rientro
       FROM inventario_unita iu
       LEFT JOIN inventario i ON i.id = iu.inventario_id
+      LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
       WHERE iu.inventario_id = $1 
       ORDER BY iu.codice_univoco
     `, [id]);

@@ -183,7 +183,7 @@ const Penalties = () => {
         subtitle="Visualizza e gestisci le penalità degli utenti"
       />
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+      <div className="px-4 sm:px-6 lg:px-8 w-full space-y-6">
         {/* Error Message */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
@@ -303,7 +303,7 @@ const Penalties = () => {
                     <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                             {user.name.charAt(0)}{user.surname.charAt(0)}
                           </div>
                           <div className="ml-3">
