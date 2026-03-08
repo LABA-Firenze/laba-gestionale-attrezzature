@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Squares2X2Icon, ClockIcon, CubeIcon, ExclamationTriangleIcon, InformationCircleIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
+import { Squares2X2Icon, ClockIcon, CubeIcon, ExclamationTriangleIcon, InformationCircleIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import UserDashboard from '../components/UserDashboard';
 import MyLoans from '../components/MyLoans';
 import AvailableItems from '../components/AvailableItems';
 import ReportFault from '../components/ReportFault';
-import FocusStudio from '../components/FocusStudio';
 import SystemStatus from '../components/SystemStatus.jsx';
 import Footer from '../components/Footer';
 import MobileMenu from '../components/MobileMenu';
 import NotificationsPanel from '../components/NotificationsPanel';
 import InstructionsPage from '../components/InstructionsPage';
-import { FocusStudioProvider } from '../contexts/FocusStudioContext';
-
 // UserBadge Component (simplified to avoid overlap)
 function UserBadge() {
   const { user, logout, roleLabel } = useAuth();
@@ -55,7 +52,6 @@ const UserArea = () => {
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <Squares2X2Icon className="icon" /> },
-    { id: 'focus-studio', label: 'Focus LABA', icon: <AcademicCapIcon className="icon" /> },
     { id: 'my-loans', label: 'I Miei Prestiti', icon: <ClockIcon className="icon" /> },
     { id: 'available-items', label: 'Articoli Disponibili', icon: <CubeIcon className="icon" /> },
     { id: 'report-fault', label: 'Segnala Guasto', icon: <ExclamationTriangleIcon className="icon" /> },
@@ -68,8 +64,6 @@ const UserArea = () => {
     switch (activeView) {
       case 'dashboard':
         return <UserDashboard onOpenNotifications={() => setNotificationsOpen(true)} />;
-      case 'focus-studio':
-        return <FocusStudio />;
       case 'my-loans':
         return <MyLoans />;
       case 'available-items':
@@ -84,7 +78,6 @@ const UserArea = () => {
   };
 
   return (
-    <FocusStudioProvider>
     <div className="min-h-screen bg-gray-50 flex">
         {/* Mobile Header */}
         <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-[100]">
@@ -173,7 +166,6 @@ const UserArea = () => {
           onClose={() => setNotificationsOpen(false)}
         />
     </div>
-    </FocusStudioProvider>
   );
 };
 
