@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PageHeader from './PageHeader';
 import { PlusIcon, ExclamationTriangleIcon, ClockIcon, CheckCircleIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import ReportBugModal from './ReportBugModal';
@@ -85,20 +86,19 @@ const ReportFault = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Segnala Guasto</h1>
-          <p className="text-gray-600">Segnala problemi con gli articoli e gestisci le tue segnalazioni</p>
-        </div>
-        <button
-          onClick={() => setShowReportModal(true)}
-          className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors flex items-center"
-        >
-          <PlusIcon className="w-5 h-5 mr-2" />
-          Nuova Segnalazione
-        </button>
-      </div>
+      <PageHeader
+        title="Segnala Guasto"
+        subtitle="Segnala problemi con gli articoli e gestisci le tue segnalazioni"
+        action={
+          <button
+            onClick={() => setShowReportModal(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-full hover:bg-red-700 transition-colors"
+          >
+            <PlusIcon className="w-5 h-5" />
+            <span>Nuova Segnalazione</span>
+          </button>
+        }
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

@@ -292,7 +292,7 @@ function AppInner() {
  <div className="min-h-screen bg-gray-50 flex">
  {/* Sidebar Mobile */}
  <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
- <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)}></div>
+ <div className="fixed inset-0 bg-black/50 backdrop-blur-md" onClick={() => setSidebarOpen(false)}></div>
  <div className="relative flex flex-col w-64 h-full bg-white shadow-xl border-r border-gray-200">
  <div className="flex items-center justify-between p-4 border-b">
  <div 

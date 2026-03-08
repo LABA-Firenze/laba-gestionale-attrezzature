@@ -1,5 +1,6 @@
 import React from 'react';
 import { BuildingOffice2Icon, CheckCircleIcon, CalendarDaysIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import PageHeader from './PageHeader';
 
 const InstructionsPage = () => {
   const steps = [
@@ -19,17 +20,11 @@ const InstructionsPage = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {/* Hero header */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-8 mb-8 text-white">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">📖</div>
-          <div>
-            <h1 className="text-2xl font-bold">Come si usa</h1>
-            <p className="text-blue-100 text-sm">Guida al Service Attrezzatura LABA</p>
-          </div>
-        </div>
-      </div>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <PageHeader
+        title="Come si usa"
+        subtitle="Guida al Service Attrezzatura LABA"
+      />
 
       <div className="space-y-6">
         {/* Cos'è */}

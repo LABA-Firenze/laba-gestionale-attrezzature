@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PlusIcon, ClockIcon, CheckCircleIcon, XMarkIcon, CalendarIcon, TagIcon, CubeIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, ClockIcon, CheckCircleIcon, XMarkIcon, XCircleIcon, CheckIcon, CalendarIcon, TagIcon, CubeIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
+import PageHeader from './PageHeader';
 import SectionTabs, { Tab } from './SectionTabs';
 import NewRequestModal from './NewRequestModal';
 import { ItemListSkeleton } from './SkeletonLoader';
@@ -111,23 +112,20 @@ const MyLoans = () => {
   }
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">I Miei Prestiti</h1>
-            <p className="text-gray-600">Gestisci i tuoi prestiti attivi e richiedi nuovi articoli</p>
-          </div>
+    <div className="p-6 space-y-6">
+      <PageHeader
+        title="I Miei Prestiti"
+        subtitle="Gestisci i tuoi prestiti attivi e richiedi nuovi articoli"
+        action={
           <button
             onClick={() => setShowNewRequestModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
           >
             <PlusIcon className="w-5 h-5" />
             <span>Nuova Richiesta</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -192,16 +190,28 @@ const MyLoans = () => {
       <div className="mb-6">
       <SectionTabs>
         <Tab isActive={activeTab === 'active'} onClick={() => setActiveTab('active')}>
-          Prestiti Attivi ({loans.filter(loan => loan.stato === 'attivo').length})
+          <span className="inline-flex items-center gap-2">
+            <CheckIcon className="w-4 h-4" />
+            Prestiti Attivi ({loans.filter(loan => loan.stato === 'attivo').length})
+          </span>
         </Tab>
         <Tab isActive={activeTab === 'completed'} onClick={() => setActiveTab('completed')}>
-          Prestiti Completati ({loans.filter(loan => loan.stato === 'restituito').length})
+          <span className="inline-flex items-center gap-2">
+            <CheckCircleIcon className="w-4 h-4" />
+            Prestiti Completati ({loans.filter(loan => loan.stato === 'restituito').length})
+          </span>
         </Tab>
         <Tab isActive={activeTab === 'pending'} onClick={() => setActiveTab('pending')}>
-          In Approvazione ({requests.filter(req => req.stato === 'in_attesa').length})
+          <span className="inline-flex items-center gap-2">
+            <ClockIcon className="w-4 h-4" />
+            In Approvazione ({requests.filter(req => req.stato === 'in_attesa').length})
+          </span>
         </Tab>
         <Tab isActive={activeTab === 'rejected'} onClick={() => setActiveTab('rejected')}>
-          Rifiutati ({requests.filter(req => req.stato === 'rifiutata').length})
+          <span className="inline-flex items-center gap-2">
+            <XCircleIcon className="w-4 h-4" />
+            Rifiutati ({requests.filter(req => req.stato === 'rifiutata').length})
+          </span>
         </Tab>
       </SectionTabs>
       </div>

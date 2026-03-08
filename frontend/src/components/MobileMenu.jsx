@@ -11,8 +11,8 @@ const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, use
     style={{ display: isOpen ? 'block' : 'none' }}>
       {/* Overlay with smooth fade animation like notifications */}
       <div 
-        className={`absolute inset-0 bg-black transition-all duration-300 ease-in-out ${
-          isOpen ? 'bg-opacity-50 opacity-100' : 'bg-opacity-0 opacity-0'
+        className={`absolute inset-0 backdrop-blur-md transition-all duration-300 ease-in-out ${
+          isOpen ? 'bg-black/50 opacity-100' : 'bg-black/0 opacity-0'
         }`}
         onClick={onClose}
       />

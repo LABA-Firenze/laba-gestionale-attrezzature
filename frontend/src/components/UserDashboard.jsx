@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CubeIcon, CheckCircleIcon, ExclamationTriangleIcon, ClockIcon, BellIcon, XMarkIcon, InformationCircleIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
+import PageHeader from './PageHeader';
 import NewRequestModal from './NewRequestModal';
 import ReportBugModal from './ReportBugModal';
 import { UserDashboardSkeleton } from './SkeletonLoader';
@@ -166,24 +167,21 @@ const UserDashboard = ({ onOpenNotifications }) => {
   }
 
   return (
-    <div className="p-6">
-      {/* Header con notifiche (stessa logica admin: solo in dashboard) */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Benvenuto, {user?.name} {user?.surname}</p>
-        </div>
-        {onOpenNotifications && (
+    <div className="p-6 space-y-6">
+      <PageHeader
+        title="Dashboard"
+        subtitle={`Benvenuto, ${user?.name || ''} ${user?.surname || ''}`}
+        action={onOpenNotifications ? (
           <button
             onClick={onOpenNotifications}
-            className="relative p-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0"
+            className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
             type="button"
             aria-label="Notifiche"
           >
             <BellIcon className="w-6 h-6 text-gray-600" />
           </button>
-        )}
-      </div>
+        ) : undefined}
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -246,10 +244,10 @@ const UserDashboard = ({ onOpenNotifications }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
             onClick={() => setShowQuickRequestModal(true)}
-            className="group flex items-start gap-4 p-5 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 text-left"
+            className="group flex items-start gap-4 p-5 bg-white rounded-xl shadow-lg border border-gray-100 hover:bg-blue-50 hover:shadow-xl hover:border-blue-100 transition-all duration-300 text-left cursor-pointer"
           >
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-              <PlusIcon className="w-6 h-6 text-blue-600" />
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 group-hover:bg-blue-600 flex items-center justify-center transition-colors duration-300">
+              <PlusIcon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors duration-300" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">Nuova Richiesta</h3>
@@ -258,10 +256,10 @@ const UserDashboard = ({ onOpenNotifications }) => {
           </button>
           <button
             onClick={() => setShowReportFaultModal(true)}
-            className="group flex items-start gap-4 p-5 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 text-left"
+            className="group flex items-start gap-4 p-5 bg-white rounded-xl shadow-lg border border-gray-100 hover:bg-amber-50 hover:shadow-xl hover:border-amber-100 transition-all duration-300 text-left cursor-pointer"
           >
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-              <ExclamationTriangleIcon className="w-6 h-6 text-amber-600" />
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-100 group-hover:bg-amber-600 flex items-center justify-center transition-colors duration-300">
+              <ExclamationTriangleIcon className="w-6 h-6 text-amber-600 group-hover:text-white transition-colors duration-300" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">Segnala Guasto</h3>
@@ -392,40 +390,39 @@ const UserDashboard = ({ onOpenNotifications }) => {
           {recentData.recentRequests.length > 0 ? (
             <div className="space-y-3">
               {recentData.recentRequests.map((request, index) => {
-                const getRequestPillStyles = (stato) => {
+                const getCardStyles = (stato) => {
                   switch(stato) {
                     case 'in_attesa':
                     case 'pending':
-                      return {
-                        pillBg: 'bg-yellow-100',
-                        pillText: 'text-yellow-800'
-                      };
+                      return 'bg-yellow-50 border-yellow-200';
                     case 'approvata':
-                      return {
-                        pillBg: 'bg-green-100',
-                        pillText: 'text-green-800'
-                      };
+                      return 'bg-green-50 border-green-200';
                     case 'rifiutata':
-                      return {
-                        pillBg: 'bg-red-100',
-                        pillText: 'text-red-800'
-                      };
+                      return 'bg-red-50 border-red-200';
                     default:
-                      return {
-                        pillBg: 'bg-gray-100',
-                        pillText: 'text-gray-800'
-                      };
+                      return 'bg-gray-50 border-gray-200';
                   }
                 };
-                
-                const pillStyles = getRequestPillStyles(request.stato);
+                const getPillStyles = (stato) => {
+                  switch(stato) {
+                    case 'in_attesa':
+                    case 'pending':
+                      return 'bg-yellow-100 text-yellow-800';
+                    case 'approvata':
+                      return 'bg-green-100 text-green-800';
+                    case 'rifiutata':
+                      return 'bg-red-100 text-red-800';
+                    default:
+                      return 'bg-gray-100 text-gray-800';
+                  }
+                };
                 
                 return (
                   <div 
                     key={index} 
-                    className="flex items-center justify-between p-3 rounded-full border border-gray-200 bg-white"
+                    className={`flex items-center justify-between py-4 pl-6 pr-4 rounded-xl border ${getCardStyles(request.stato)}`}
                   >
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="font-medium text-gray-900">{request.oggetto_nome || request.articolo_nome || 'Oggetto'}</p>
                       <p className="text-sm text-gray-600">
                         {request.stato === 'approvata' && request.dal && request.al ? (
@@ -435,7 +432,7 @@ const UserDashboard = ({ onOpenNotifications }) => {
                         )}
                       </p>
                     </div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${pillStyles.pillBg} ${pillStyles.pillText}`}>
+                    <span className={`flex-shrink-0 ml-4 px-2 py-1 text-xs font-medium rounded-full ${getPillStyles(request.stato)}`}>
                       {request.stato === 'approvata' ? 'Approvata' :
                        request.stato === 'in_attesa' || request.stato === 'pending' ? 'In Attesa' : 'Rifiutata'}
                     </span>

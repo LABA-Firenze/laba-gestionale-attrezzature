@@ -356,7 +356,7 @@ const Penalties = () => {
 
       {/* Penalty Details Modal */}
       {showPenaltyModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[9999] p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center">
@@ -504,7 +504,7 @@ const Penalties = () => {
 
       {/* Edit Penalty Modal */}
       {editingPenalty && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[10000] p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Modifica penalità</h3>
