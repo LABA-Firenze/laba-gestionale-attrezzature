@@ -82,7 +82,7 @@ return (
         <h3 className="text-base font-semibold text-gray-900">QR Code - {item.nome}</h3>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-gray-600"
+          className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
         >
           <XMarkIcon className="w-5 h-5" />
         </button>

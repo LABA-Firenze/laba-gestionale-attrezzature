@@ -220,7 +220,7 @@ const AvailableItems = () => {
                   disabled={item.stato_effettivo !== 'disponibile'}
                   className={`mt-3 w-full py-2.5 text-sm font-medium rounded-full transition-colors ${
                     item.stato_effettivo === 'disponibile'
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
                 >

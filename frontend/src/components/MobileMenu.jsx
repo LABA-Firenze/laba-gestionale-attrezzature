@@ -44,7 +44,7 @@ const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, use
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105"
+              className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-all duration-200 ease-in-out hover:scale-105"
             >
               <XMarkIcon className="w-6 h-6 transition-transform duration-200 ease-in-out" />
             </button>

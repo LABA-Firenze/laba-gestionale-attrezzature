@@ -831,7 +831,7 @@ return (
     </h2>
  <button
  onClick={() => setSelectedAlert(null)}
- className="text-muted hover:text-primary"
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-muted hover:text-primary transition-colors"
  >
  <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -973,7 +973,7 @@ return (
  </h2>
  <button
  onClick={() => setSelectedLoan(null)}
- className="text-muted hover:text-primary"
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-muted hover:text-primary transition-colors"
  >
  <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />

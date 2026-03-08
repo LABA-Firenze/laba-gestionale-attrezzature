@@ -196,7 +196,7 @@ const UserDashboard = ({ onOpenNotifications }) => {
         <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-200 p-6 relative">
           <button
             onClick={handleDismissWelcome}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-4 right-4 p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
             aria-label="Chiudi"
           >
             <XMarkIcon className="w-5 h-5" />

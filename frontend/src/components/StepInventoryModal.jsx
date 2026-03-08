@@ -269,7 +269,7 @@ const canProceed = () => {
  </div>
  <button
  onClick={handleClose}
- className="text-muted hover:text-primary"
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-muted hover:text-primary transition-colors"
  >
  <XMarkIcon className="icon" />
  </button>

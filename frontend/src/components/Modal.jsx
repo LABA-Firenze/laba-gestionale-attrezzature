@@ -18,7 +18,7 @@ export default function Modal({ title, children, onClose, footer }){
  <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
  <div className="flex items-center justify-between p-6 border-b border-gray-200">
  <h3 className="text-lg font-semibold">{title}</h3>
- <button className="text-gray-400 hover:text-gray-600 transition-colors" onClick={onClose}>✕</button>
+ <button className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors" onClick={onClose}>✕</button>
  </div>
  <div className="p-6">{children}</div>
  <div className="flex justify-end gap-2 p-6 border-t border-gray-200">{footer}</div>

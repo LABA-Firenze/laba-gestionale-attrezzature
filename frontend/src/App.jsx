@@ -303,7 +303,7 @@ function AppInner() {
  </div>
  <button 
  onClick={() => setSidebarOpen(false)}
- className="p-2 rounded-full hover:bg-gray-100"
+ className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
  >
  <XMarkIcon className="w-6 h-6" />
  </button>

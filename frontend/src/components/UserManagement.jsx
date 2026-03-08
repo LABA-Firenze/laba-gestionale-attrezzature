@@ -878,7 +878,7 @@ return (
  <h3 className="text-lg font-semibold text-gray-900 ">Nuovo Utente</h3>
  <button
  onClick={() => setShowAddModal(false)}
- className="text-gray-400 hover:text-gray-600 "
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
  >
  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -1039,7 +1039,7 @@ return (
  </h3>
  <button
  onClick={() => setShowEditModal(false)}
- className="text-gray-400 hover:text-gray-600 "
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
  >
  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -1194,7 +1194,7 @@ return (
  </h3>
  <button
  onClick={() => setShowPasswordResetModal(false)}
- className="text-gray-400 hover:text-gray-600 "
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
  >
  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -1270,7 +1270,7 @@ return (
 </div>
 <button
 onClick={() => setShowPenaltyModal(false)}
-className="text-gray-400 hover:text-gray-600 transition-colors"
+className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
 >
 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -95,7 +95,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  <h3 className="text-lg font-semibold text-gray-900">Log Attività</h3>
  <button
  onClick={onClose}
- className="text-gray-400 hover:text-gray-600"
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
  >
  <XMarkIcon className="w-6 h-6" />
  </button>

@@ -954,7 +954,7 @@ const Inventory = () => {
                 <h2 className="text-xl font-bold text-primary">QR Code - {qrCodeItem.nome}</h2>
                 <button
                   onClick={() => setQrCodeItem(null)}
-                  className="text-muted hover:text-primary"
+                  className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-muted hover:text-primary transition-colors"
                 >
                   <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -975,9 +975,9 @@ const Inventory = () => {
               <div className="modal-header">
                 <h2 className="text-xl font-bold text-primary">Gestione Categorie</h2>
  <button
-                  onClick={() => setShowCategoryManager(false)}
-                  className="text-muted hover:text-primary"
- >
+onClick={() => setShowCategoryManager(false)}
+                  className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-muted hover:text-primary transition-colors"
+                >
                   <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
  </svg>
@@ -1118,7 +1118,7 @@ const Inventory = () => {
                     setSelectedUnit(null);
                     setUnitLoanDetails(null);
                   }}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1197,7 +1197,7 @@ const Inventory = () => {
                     setCategoryToDelete(null);
                     setItemsUsingCategory([]);
                   }}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

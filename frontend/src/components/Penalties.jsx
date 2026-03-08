@@ -370,7 +370,7 @@ const Penalties = () => {
               </div>
               <button
                 onClick={() => setShowPenaltyModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>
@@ -508,7 +508,7 @@ const Penalties = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Modifica penalità</h3>
-              <button onClick={() => setEditingPenalty(null)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setEditingPenalty(null)} className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors">
                 <XMarkIcon className="w-6 h-6" />
               </button>
             </div>

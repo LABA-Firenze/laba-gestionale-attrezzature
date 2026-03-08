@@ -1125,7 +1125,7 @@ const getStatusBadge = (status) => {
  </h2>
  <button
  onClick={() => setSelectedLoan(null)}
- className="text-muted hover:text-primary"
+ className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-muted hover:text-primary transition-colors"
  >
  <XMarkIcon className="icon" />
  </button>
@@ -1201,7 +1201,7 @@ const getStatusBadge = (status) => {
              setShowRejectModal(false);
              setError(null);
            }}
-           className="text-gray-400 hover:text-gray-600 transition-colors"
+           className="p-2 -m-2 rounded-lg hover:bg-gray-100 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
          >
            <XMarkIcon className="w-6 h-6" />
          </button>
