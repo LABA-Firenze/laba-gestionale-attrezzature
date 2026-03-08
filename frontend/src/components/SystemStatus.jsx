@@ -309,7 +309,7 @@ const SystemStatus = () => {
               ) : (
                 <div className="space-y-4">
                   {systemData.recentIncidents.map((incident) => (
-                    <div key={incident.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-full">
+                    <div key={incident.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl">
                       <div className={`w-2 h-2 rounded-full mt-2 ${incident.severity === 'error' ? 'bg-red-500' : 'bg-yellow-500'} ${getPulseAnimation(incident.severity)}`}></div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
@@ -344,7 +344,7 @@ const SystemStatus = () => {
             <div className="p-6 border-t border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Total Requests */}
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-full p-6">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Richieste Totali</h4>
                   </div>
@@ -353,7 +353,7 @@ const SystemStatus = () => {
                 </div>
 
                 {/* Active Users */}
-                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-full p-6">
+                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Utenti Attivi</h4>
                   </div>
@@ -362,7 +362,7 @@ const SystemStatus = () => {
                 </div>
 
                 {/* Total Inventory */}
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-full p-6">
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Inventario</h4>
                   </div>
@@ -371,7 +371,7 @@ const SystemStatus = () => {
                 </div>
 
                 {/* Active Loans */}
-                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-full p-6">
+                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">Prestiti Attivi</h4>
                   </div>
@@ -411,7 +411,7 @@ const SystemStatus = () => {
                   </div>
                 ) : (
                   systemData.apiEndpoints.map((api, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-full">
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                     <div className="flex items-center space-x-4">
                       <div className={`relative w-3 h-3 rounded-full ${getStatusBg(api.status)} ${getPulseAnimation(api.status)}`}>
                         <div className={`w-full h-full rounded-full ${api.status === 'healthy' ? 'bg-green-500' : api.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
@@ -581,7 +581,7 @@ const EmailTestSection = ({ token }) => {
       </div>
 
       {result && (
-        <div className={`mt-4 p-4 rounded-full ${
+        <div className={`mt-4 p-4 rounded-xl ${
           result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
         }`}>
           <div className="flex items-start">

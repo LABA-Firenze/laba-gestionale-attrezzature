@@ -23,6 +23,7 @@ import NotificationsPanel from "./components/NotificationsPanel.jsx";
 import Footer from "./components/Footer.jsx";
 import UserArea from "./user/UserArea.jsx";
 import MobileMenu from "./components/MobileMenu.jsx";
+import { NotificationPanelProvider } from "./contexts/NotificationPanelContext.jsx";
 
 // App principale con design moderno
 function AppInner() {
@@ -365,19 +366,22 @@ function AppInner() {
           <img src="/logoSito.svg" alt="LABA Logo" className="h-8 w-auto" />
         </div>
         <div className="flex items-center space-x-2">
-          {/* Notification Bell */}
-          <button 
-            onClick={() => setNotificationsOpen(true)}
-            className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
-            type="button"
-          >
-            <BellIcon className="w-6 h-6 text-gray-600" />
-            {notifications.filter(n => !n.isRead).length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {notifications.filter(n => !n.isRead).length}
-              </span>
-            )}
-          </button>
+          {/* Notification Bell - solo in dashboard (admin) */}
+          {isAdmin && tab === 'dashboard' && (
+            <button 
+              onClick={() => setNotificationsOpen(true)}
+              className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
+              type="button"
+              aria-label="Notifiche"
+            >
+              <BellIcon className="w-6 h-6 text-gray-600" />
+              {notifications.filter(n => !n.isRead).length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {notifications.filter(n => !n.isRead).length}
+                </span>
+              )}
+            </button>
+          )}
           {/* Hamburger Menu */}
           <button 
             onClick={() => setMobileMenuOpen(true)}
@@ -389,57 +393,13 @@ function AppInner() {
         </div>
       </div>
 
-      {/* Top Bar Desktop - For UsersIcon */}
-      {!isAdmin && (
-        <div className="hidden lg:block bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* Notifications Bell */}
-              <button 
-                onClick={() => setNotificationsOpen(true)}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                <BellIcon className="w-6 h-6 text-gray-600" />
-                {/* Notification Badge */}
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
  {/* Content Area */}
  {isAdmin ? (
+   <NotificationPanelProvider 
+     openNotifications={() => setNotificationsOpen(true)} 
+     unreadCount={unreadCount}
+   >
    <div className="flex-1 flex flex-col">
-     {/* Top Bar Desktop - For Admin */}
-     <div className="hidden lg:block bg-white border-b border-gray-200 px-6 py-4">
-       <div className="flex items-center justify-between">
-         <div className="flex items-center space-x-4">
-         </div>
-         <div className="flex items-center space-x-4">
-           {/* Notifications Bell */}
-           <button 
-             onClick={() => setNotificationsOpen(true)}
-             className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
-           >
-             <BellIcon className="w-6 h-6 text-gray-600" />
-             {/* Notification Badge */}
-             {unreadCount > 0 && (
-               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
-                 {unreadCount}
-               </span>
-             )}
-           </button>
-         </div>
-       </div>
-     </div>
-     
      <main className="flex-1 p-4 lg:p-6 main-content">
          {tab === 'dashboard' && <Dashboard onNavigate={handleTabChange} />}
          {tab === 'inventario' && <Inventory />}
@@ -459,6 +419,7 @@ function AppInner() {
            {/* Footer - Hidden when mobile menu is open */}
            {!mobileMenuOpen && <Footer onSystemClick={() => setTab('sistema')} />}
    </div>
+   </NotificationPanelProvider>
  ) : (
    <UserArea />
  )}

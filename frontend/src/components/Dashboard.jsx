@@ -366,6 +366,7 @@ return (
   <PageHeader
     title={`Dashboard ${roleLabel}`}
     subtitle="Panoramica del sistema di gestione attrezzature"
+    showNotificationBell
   />
 
   {/* Statistics Cards */}

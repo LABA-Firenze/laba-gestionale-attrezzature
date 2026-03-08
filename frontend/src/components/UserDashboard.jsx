@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { CubeIcon, CheckCircleIcon, ExclamationTriangleIcon, ClockIcon, BellIcon, XMarkIcon, InformationCircleIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import NewRequestModal from './NewRequestModal';
 import ReportBugModal from './ReportBugModal';
 import { UserDashboardSkeleton } from './SkeletonLoader';
 
-const UserDashboard = () => {
+const UserDashboard = ({ onOpenNotifications }) => {
   const [stats, setStats] = useState({
     availableItems: 0,
     myRequests: 0,
@@ -166,10 +167,22 @@ const UserDashboard = () => {
 
   return (
     <div className="p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Benvenuto, {user?.name} {user?.surname}</p>
+      {/* Header con notifiche (stessa logica admin: solo in dashboard) */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600">Benvenuto, {user?.name} {user?.surname}</p>
+        </div>
+        {onOpenNotifications && (
+          <button
+            onClick={onOpenNotifications}
+            className="relative p-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0"
+            type="button"
+            aria-label="Notifiche"
+          >
+            <BellIcon className="w-6 h-6 text-gray-600" />
+          </button>
+        )}
       </div>
 
       {/* Stats Cards */}
@@ -188,15 +201,11 @@ const UserDashboard = () => {
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
             aria-label="Chiudi"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <XMarkIcon className="w-5 h-5" />
           </button>
           <div className="flex items-start">
             <div className="flex-shrink-0">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <InformationCircleIcon className="w-8 h-8 text-blue-600" />
             </div>
             <div className="ml-4 flex-1 pr-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Benvenuto nel Service Attrezzatura!</h3>
@@ -231,27 +240,33 @@ const UserDashboard = () => {
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+      {/* Azioni Rapide - allineate a stile admin */}
+      <div className="mb-8">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Azioni Rapide</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
             onClick={() => setShowQuickRequestModal(true)}
-            className="btn-primary hover-lift flex items-center justify-center"
+            className="group flex items-start gap-4 p-5 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 text-left"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Nuova Richiesta
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+              <PlusIcon className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">Nuova Richiesta</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Richiedi un articolo in prestito</p>
+            </div>
           </button>
           <button
             onClick={() => setShowReportFaultModal(true)}
-            className="btn-secondary hover-lift flex items-center justify-center"
+            className="group flex items-start gap-4 p-5 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 text-left"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-            Segnala Guasto
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+              <ExclamationTriangleIcon className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">Segnala Guasto</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Segnala un problema con un articolo</p>
+            </div>
           </button>
         </div>
       </div>
@@ -269,13 +284,11 @@ const UserDashboard = () => {
               userPenalties.strikes >= 2 ? 'bg-orange-100' :
               'bg-yellow-100'
             }`}>
-              <svg className={`w-5 h-5 ${
+              <ExclamationTriangleIcon className={`w-5 h-5 ${
                 userPenalties.isBlocked ? 'text-red-600' :
                 userPenalties.strikes >= 2 ? 'text-orange-600' :
                 'text-yellow-600'
-              }`} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
+              }`} />
             </div>
             <div className="ml-4 flex-1">
               <h3 className={`text-lg font-semibold ${
@@ -344,9 +357,7 @@ const UserDashboard = () => {
         {/* Active Loans */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <ClockIcon className="w-5 h-5 mr-2 text-green-600" />
             Prestiti Attivi
           </h3>
           {recentData.activeLoans.length > 0 ? (
@@ -365,9 +376,7 @@ const UserDashboard = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <ClockIcon className="mx-auto h-12 w-12 text-gray-400 mb-3" />
               <p className="text-sm text-gray-500">Nessun prestito attivo al momento</p>
               <p className="text-xs text-gray-400 mt-1">I tuoi prestiti attivi appariranno qui</p>
             </div>
@@ -377,9 +386,7 @@ const UserDashboard = () => {
         {/* Recent Requests */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <CheckCircleIcon className="w-5 h-5 mr-2 text-gray-600" />
             Richieste Recenti
           </h3>
           {recentData.recentRequests.length > 0 ? (
@@ -438,9 +445,7 @@ const UserDashboard = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <CheckCircleIcon className="mx-auto h-12 w-12 text-gray-400 mb-3" />
               <p className="text-sm text-gray-500">Nessuna richiesta recente</p>
               <p className="text-xs text-gray-400 mt-1">Le tue richieste appariranno qui</p>
               <button
@@ -480,29 +485,13 @@ const UserDashboard = () => {
   );
 };
 
-// Stat Card Component (same as admin dashboard)
+// Stat Card Component
 function StatCard({ title, value }) {
   const iconMap = {
-    'Articoli Disponibili': (
-      <svg className="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-    ),
-    'Le Mie Richieste': (
-      <svg className="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    'Le Mie Segnalazioni': (
-      <svg className="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-      </svg>
-    ),
-    'I Miei Prestiti': (
-      <svg className="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    )
+    'Articoli Disponibili': <CubeIcon className="icon-lg" />,
+    'Le Mie Richieste': <CheckCircleIcon className="icon-lg" />,
+    'Le Mie Segnalazioni': <ExclamationTriangleIcon className="icon-lg" />,
+    'I Miei Prestiti': <ClockIcon className="icon-lg" />
   };
 
   const colorMap = {
@@ -513,7 +502,7 @@ function StatCard({ title, value }) {
   };
 
   return (
-    <div className="kpi-card bg-white rounded-xl shadow-sm border border-gray-200 hover:scale-105 transition-transform">
+    <div className="kpi-card bg-white rounded-xl shadow-sm border border-gray-200">
       <div className="flex items-center w-full">
         <div className={`w-12 h-12 ${colorMap[title]} rounded-full flex items-center justify-center ${
           title === 'Articoli Disponibili' ? 'text-blue-600' :

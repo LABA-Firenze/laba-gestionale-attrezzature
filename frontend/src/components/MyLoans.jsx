@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { PlusIcon, ClockIcon, CheckCircleIcon, XMarkIcon, CalendarIcon, TagIcon, CubeIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
+import SectionTabs, { Tab } from './SectionTabs';
 import NewRequestModal from './NewRequestModal';
 import { ItemListSkeleton } from './SkeletonLoader';
 
@@ -119,11 +121,9 @@ const MyLoans = () => {
           </div>
           <button
             onClick={() => setShowNewRequestModal(true)}
-            className="btn-primary hover-lift flex items-center space-x-2"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
+            <PlusIcon className="w-5 h-5" />
             <span>Nuova Richiesta</span>
           </button>
         </div>
@@ -134,9 +134,7 @@ const MyLoans = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-blue-100 rounded-full">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <ClockIcon className="w-6 h-6 text-blue-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Prestiti Attivi</p>
@@ -150,9 +148,7 @@ const MyLoans = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-green-100 rounded-full">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <CheckCircleIcon className="w-6 h-6 text-green-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Prestiti Completati</p>
@@ -166,9 +162,7 @@ const MyLoans = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-full">
-              <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <ClockIcon className="w-6 h-6 text-yellow-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">In Approvazione</p>
@@ -182,9 +176,7 @@ const MyLoans = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-red-100 rounded-full">
-              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <XMarkIcon className="w-6 h-6 text-red-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Rifiutati</p>
@@ -196,52 +188,22 @@ const MyLoans = () => {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
-            <button
-              onClick={() => setActiveTab('active')}
-              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'active'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Prestiti Attivi ({loans.filter(loan => loan.stato === 'attivo').length})
-            </button>
-            <button
-              onClick={() => setActiveTab('completed')}
-              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'completed'
-                  ? 'border-green-500 text-green-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Prestiti Completati ({loans.filter(loan => loan.stato === 'restituito').length})
-            </button>
-            <button
-              onClick={() => setActiveTab('pending')}
-              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'pending'
-                  ? 'border-yellow-500 text-yellow-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              In Approvazione ({requests.filter(req => req.stato === 'in_attesa').length})
-            </button>
-            <button
-              onClick={() => setActiveTab('rejected')}
-              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'rejected'
-                  ? 'border-red-500 text-red-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Rifiutati ({requests.filter(req => req.stato === 'rifiutata').length})
-            </button>
-          </nav>
-        </div>
+      {/* Tabs - capsule style come admin */}
+      <div className="mb-6">
+      <SectionTabs>
+        <Tab isActive={activeTab === 'active'} onClick={() => setActiveTab('active')}>
+          Prestiti Attivi ({loans.filter(loan => loan.stato === 'attivo').length})
+        </Tab>
+        <Tab isActive={activeTab === 'completed'} onClick={() => setActiveTab('completed')}>
+          Prestiti Completati ({loans.filter(loan => loan.stato === 'restituito').length})
+        </Tab>
+        <Tab isActive={activeTab === 'pending'} onClick={() => setActiveTab('pending')}>
+          In Approvazione ({requests.filter(req => req.stato === 'in_attesa').length})
+        </Tab>
+        <Tab isActive={activeTab === 'rejected'} onClick={() => setActiveTab('rejected')}>
+          Rifiutati ({requests.filter(req => req.stato === 'rifiutata').length})
+        </Tab>
+      </SectionTabs>
       </div>
 
       {/* Content based on active tab */}
@@ -254,15 +216,13 @@ const MyLoans = () => {
             </div>
             {loans.filter(loan => loan.stato === 'attivo').length === 0 ? (
               <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <ClockIcon className="mx-auto h-12 w-12 text-gray-400" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900">Nessun prestito attivo</h3>
                 <p className="mt-1 text-sm text-gray-500">Non hai prestiti attivi al momento.</p>
                 <div className="mt-6">
                   <button
                     onClick={() => setShowNewRequestModal(true)}
-                    className="btn-primary hover-lift"
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
                   >
                     Crea una nuova richiesta
                   </button>
@@ -282,21 +242,15 @@ const MyLoans = () => {
                         </div>
                         <div className="mt-2 flex items-center space-x-6 text-sm text-gray-500">
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Uscita: {formatDate(loan.data_uscita)}</span>
                           </div>
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Rientro: {formatDate(loan.data_rientro)}</span>
                           </div>
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                            </svg>
+                            <TagIcon className="w-4 h-4 mr-1" />
                             <span>Quantità: {loan.quantita}</span>
                           </div>
                         </div>
@@ -319,9 +273,7 @@ const MyLoans = () => {
             </div>
             {loans.filter(loan => loan.stato === 'restituito').length === 0 ? (
               <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
+                <CubeIcon className="mx-auto h-12 w-12 text-gray-400" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900">Nessun prestito completato</h3>
                 <p className="mt-1 text-sm text-gray-500">Non hai ancora prestiti approvati o completati.</p>
               </div>
@@ -339,21 +291,15 @@ const MyLoans = () => {
                         </div>
                         <div className="mt-2 flex items-center space-x-6 text-sm text-gray-500">
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Uscita: {formatDate(loan.data_uscita)}</span>
                           </div>
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Rientro: {formatDate(loan.data_rientro)}</span>
                           </div>
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                            </svg>
+                            <TagIcon className="w-4 h-4 mr-1" />
                             <span>Quantità: {loan.quantita}</span>
                           </div>
                         </div>
@@ -376,15 +322,13 @@ const MyLoans = () => {
             </div>
             {requests.filter(req => req.stato === 'in_attesa').length === 0 ? (
               <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <ClockIcon className="mx-auto h-12 w-12 text-gray-400" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900">Nessuna richiesta in attesa</h3>
                 <p className="mt-1 text-sm text-gray-500">Non hai richieste in attesa di approvazione.</p>
                 <div className="mt-6">
                   <button
                     onClick={() => setShowNewRequestModal(true)}
-                    className="btn-primary hover-lift"
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
                   >
                     Crea una nuova richiesta
                   </button>
@@ -404,15 +348,11 @@ const MyLoans = () => {
                         </div>
                         <div className="mt-2 flex items-center space-x-6 text-sm text-gray-500">
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Richiesta: {formatDate(request.created_at)}</span>
                           </div>
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Dal: {formatDate(request.dal)} - Al: {formatDate(request.al)}</span>
                           </div>
                         </div>
@@ -433,9 +373,7 @@ const MyLoans = () => {
                             </>
                           ) : (
                             <>
-                              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                              </svg>
+                              <XMarkIcon className="w-4 h-4 mr-1.5" />
                               Annulla
                             </>
                           )}
@@ -456,9 +394,7 @@ const MyLoans = () => {
             </div>
             {requests.filter(req => req.stato === 'rifiutata').length === 0 ? (
               <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <XMarkIcon className="mx-auto h-12 w-12 text-gray-400" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900">Nessuna richiesta rifiutata</h3>
                 <p className="mt-1 text-sm text-gray-500">Non hai richieste che sono state rifiutate.</p>
               </div>
@@ -476,16 +412,12 @@ const MyLoans = () => {
                         </div>
                         <div className="mt-2 flex items-center space-x-6 text-sm text-gray-500">
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <CalendarIcon className="w-4 h-4 mr-1" />
                             <span>Richiesta: {formatDate(request.created_at)}</span>
                           </div>
                           {request.motivo_rifiuto && (
                             <div className="flex items-center">
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
+                              <ExclamationCircleIcon className="w-4 h-4 mr-1" />
                               <span>Motivo: {request.motivo_rifiuto}</span>
                             </div>
                           )}
@@ -507,9 +439,7 @@ const MyLoans = () => {
       {error && (
         <div className="mt-4 bg-red-50 border border-red-200 rounded-full p-4">
           <div className="flex items-center">
-            <svg className="w-5 h-5 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <ExclamationCircleIcon className="w-5 h-5 text-red-500 mr-3" />
             <p className="text-red-800">{error}</p>
           </div>
         </div>

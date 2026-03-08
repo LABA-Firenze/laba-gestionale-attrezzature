@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CubeIcon, MapPinIcon, TagIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import NewRequestModal from './NewRequestModal';
 import { ItemListSkeleton } from './SkeletonLoader';
@@ -153,9 +154,7 @@ const AvailableItems = () => {
       {/* Items Grid */}
       {filteredItems.length === 0 ? (
         <div className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
+          <CubeIcon className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">Nessun articolo trovato</h3>
           <p className="mt-1 text-sm text-gray-500">
             {searchTerm || selectedCategory 
@@ -167,72 +166,66 @@ const AvailableItems = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">{item.nome}</h3>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
-                    {getStatusText(item.stato_effettivo)}
-                  </span>
+            <div key={item.id} className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <CubeIcon className="w-6 h-6 text-blue-600" />
                 </div>
-
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <span>{item.unita_disponibili || 0} {(item.unita_disponibili || 0) === 1 ? 'disponibile' : 'disponibili'}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 truncate">{item.nome}</h3>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
+                      {getStatusText(item.stato_effettivo)}
+                    </span>
                   </div>
-                  
-                  {item.posizione && item.posizione.trim() && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                      <span>{item.posizione}</span>
-                  </div>
+                  {item.note && (
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.note}</p>
                   )}
-
-                  <div className="flex items-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    <span>{item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : 'N/A'}</span>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 mb-4">
+                    <span className="flex items-center gap-1.5">
+                      <CubeIcon className="w-3.5 h-3.5" />
+                      {item.unita_disponibili || 0} {(item.unita_disponibili || 0) === 1 ? 'disponibile' : 'disponibili'}
+                    </span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1.5">
+                      <TagIcon className="w-3.5 h-3.5" />
+                      {item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : 'N/A'}
+                    </span>
+                    {item.posizione && item.posizione.trim() && (
+                      <>
+                        <span>•</span>
+                        <span className="flex items-center gap-1.5">
+                          <MapPinIcon className="w-3.5 h-3.5" />
+                          {item.posizione}
+                        </span>
+                      </>
+                    )}
+                    {item.immagine_url && (
+                      <>
+                        <span>•</span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); window.open(item.immagine_url, '_blank'); }}
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                          title="Visualizza immagine"
+                        >
+                          <PhotoIcon className="w-3.5 h-3.5" /> Immagine
+                        </button>
+                      </>
+                    )}
                   </div>
-
-                  {item.immagine_url && (
-                    <div className="flex items-center text-sm">
-                      <button
-                        onClick={() => window.open(item.immagine_url, '_blank')}
-                        className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
-                        title="Visualizza immagine"
-                      >
-                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Visualizza Immagine
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {item.note && (
-                  <p className="text-sm text-gray-600 mb-6">{item.note}</p>
-                )}
-
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => handleRequestItem(item)}
-                    disabled={item.stato_effettivo !== 'disponibile'}
-                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                      item.stato_effettivo === 'disponibile'
-                        ? 'btn-primary hover-lift'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    {item.stato_effettivo === 'disponibile' ? 'Richiedi' : 'Non disponibile'}
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => handleRequestItem(item)}
+                      disabled={item.stato_effettivo !== 'disponibile'}
+                      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                        item.stato_effettivo === 'disponibile'
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      {item.stato_effettivo === 'disponibile' ? 'Richiedi' : 'Non disponibile'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

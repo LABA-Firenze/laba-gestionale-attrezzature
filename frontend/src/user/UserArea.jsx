@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Squares2X2Icon, ClockIcon, CubeIcon, ExclamationTriangleIcon, InformationCircleIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import UserDashboard from '../components/UserDashboard';
 import MyLoans from '../components/MyLoans';
@@ -36,9 +37,7 @@ function UserBadge() {
         onClick={logout}
         className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-200 ease border border-gray-200"
       >
-        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
+        <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
         Esci
       </button>
     </div>
@@ -53,51 +52,11 @@ const UserArea = () => {
 
 
   const sidebarItems = [
-    {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icon: (
-        <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      )
-    },
-    {
-      id: 'my-loans',
-      label: 'I Miei Prestiti',
-      icon: (
-        <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    {
-      id: 'available-items',
-      label: 'Articoli Disponibili',
-      icon: (
-        <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-      )
-    },
-    {
-      id: 'report-fault',
-      label: 'Segnala Guasto',
-      icon: (
-        <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-        </svg>
-      )
-    },
-    {
-      id: 'istruzioni',
-      label: 'Come si usa?',
-      icon: (
-        <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    }
+    { id: 'dashboard', label: 'Dashboard', icon: <Squares2X2Icon className="icon" /> },
+    { id: 'my-loans', label: 'I Miei Prestiti', icon: <ClockIcon className="icon" /> },
+    { id: 'available-items', label: 'Articoli Disponibili', icon: <CubeIcon className="icon" /> },
+    { id: 'report-fault', label: 'Segnala Guasto', icon: <ExclamationTriangleIcon className="icon" /> },
+    { id: 'istruzioni', label: 'Come si usa?', icon: <InformationCircleIcon className="icon" /> }
   ];
 
   // Navigation to system status removed - only admin can access
@@ -105,7 +64,7 @@ const UserArea = () => {
   const renderActiveView = () => {
     switch (activeView) {
       case 'dashboard':
-        return <UserDashboard />;
+        return <UserDashboard onOpenNotifications={() => setNotificationsOpen(true)} />;
       case 'my-loans':
         return <MyLoans />;
       case 'available-items':
@@ -131,26 +90,24 @@ const UserArea = () => {
               <img src="/logoSito.svg" alt="LABA Logo" className="h-8 w-auto" />
             </div>
             <div className="flex items-center space-x-2">
-              {/* Notification Bell */}
-              <button
-                onClick={() => setNotificationsOpen(true)}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
-                type="button"
-              >
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                {/* Badge for unread notifications - placeholder for future implementation */}
-              </button>
+              {/* Notification Bell - solo in dashboard */}
+              {activeView === 'dashboard' && (
+                <button
+                  onClick={() => setNotificationsOpen(true)}
+                  className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
+                  type="button"
+                  aria-label="Notifiche"
+                >
+                  <BellIcon className="w-6 h-6 text-gray-600" />
+                </button>
+              )}
               {/* Hamburger Menu */}
               <button
                 onClick={() => setMobileMenuOpen(true)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 ease-in-out hover:scale-105 z-[101]"
                 type="button"
               >
-                <svg className="w-6 h-6 transition-transform duration-200 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <Bars3Icon className="w-6 h-6 transition-transform duration-200 ease-in-out" />
               </button>
             </div>
           </div>
