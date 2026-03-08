@@ -166,14 +166,14 @@ const AvailableItems = () => {
             >
               {/* Accent bar + header */}
               <div className="flex items-start gap-3 px-5 pt-5 pb-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                  <CubeIcon className="w-5 h-5 text-gray-500" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <CubeIcon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-semibold text-gray-900 leading-tight line-clamp-2 pr-2">
                     {item.nome}
                   </h3>
-                  <span className={`inline-flex items-center mt-2 px-2.5 py-0.5 rounded-md text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
+                  <span className={`inline-flex items-center mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.stato_effettivo)}`}>
                     {getStatusText(item.stato_effettivo)}
                   </span>
                 </div>
@@ -190,17 +190,17 @@ const AvailableItems = () => {
               <div className="px-5 py-3 mt-auto flex flex-col gap-2">
                 <div className="flex items-center gap-4 text-xs text-gray-500">
                   <span className="inline-flex items-center gap-1.5">
-                    <Squares2X2Icon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <Squares2X2Icon className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                     <span>{item.unita_disponibili || 0} {(item.unita_disponibili || 0) === 1 ? 'disponibile' : 'disponibili'}</span>
                   </span>
                   <span className="inline-flex items-center gap-1.5 min-w-0">
-                    <TagIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <TagIcon className="w-4 h-4 text-indigo-500 flex-shrink-0" />
                     <span className="truncate">{item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : 'N/A'}</span>
                   </span>
                 </div>
                 {item.posizione && item.posizione.trim() && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <MapPinIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <MapPinIcon className="w-4 h-4 text-amber-500 flex-shrink-0" />
                     <span className="truncate">{item.posizione}</span>
                   </div>
                 )}
@@ -210,7 +210,7 @@ const AvailableItems = () => {
                     className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 w-fit"
                     title="Visualizza immagine"
                   >
-                    <PhotoIcon className="w-4 h-4" /> Immagine
+                    <PhotoIcon className="w-4 h-4 text-blue-600" /> Immagine
                   </button>
                 )}
 
@@ -218,7 +218,7 @@ const AvailableItems = () => {
                 <button
                   onClick={() => handleRequestItem(item)}
                   disabled={item.stato_effettivo !== 'disponibile'}
-                  className={`mt-3 w-full py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  className={`mt-3 w-full py-2.5 text-sm font-medium rounded-full transition-colors ${
                     item.stato_effettivo === 'disponibile'
                       ? 'bg-blue-600 text-white hover:bg-blue-700'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
