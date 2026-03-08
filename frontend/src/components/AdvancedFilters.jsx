@@ -167,7 +167,7 @@ const AdvancedFilters = ({
  type="date"
  value={filters.dateFrom}
  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  />
  </div>
 
@@ -180,7 +180,7 @@ const AdvancedFilters = ({
  type="date"
  value={filters.dateTo}
  onChange={(e) => handleFilterChange('dateTo', e.target.value)}
- className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+ className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
  />
  </div>
 

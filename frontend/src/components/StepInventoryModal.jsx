@@ -257,7 +257,7 @@ const canProceed = () => {
 
  return (
  <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && handleClose()}>
- <div className="modal-content h-[90vh] flex flex-col" style={{ maxWidth: '56rem', width: '95vw' }} onClick={(e) => e.stopPropagation()}>
+ <div className="modal-content step-inventory-modal h-[90vh] flex flex-col" style={{ maxWidth: '56rem', width: '95vw' }} onClick={(e) => e.stopPropagation()}>
  <div className="modal-header">
  <div>
  <h2 className="text-lg font-semibold text-primary">
@@ -429,7 +429,7 @@ Tipo di Utilizzo
 <div className="form-group">
   <label className="form-label">Seleziona il tipo di utilizzo</label>
   <div className="space-y-2">
-    <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
+    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
       <input
         type="radio"
         name="tipo_prestito"
@@ -444,7 +444,7 @@ Tipo di Utilizzo
       </div>
     </label>
     
-    <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
+    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
       <input
         type="radio"
         name="tipo_prestito"
@@ -459,7 +459,7 @@ Tipo di Utilizzo
       </div>
     </label>
     
-    <label className="flex items-center space-x-3 p-3 bg-white rounded-full border border-gray-200 cursor-pointer hover:bg-gray-50">
+    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
       <input
         type="radio"
         name="tipo_prestito"
@@ -474,7 +474,7 @@ Tipo di Utilizzo
       </div>
     </label>
   </div>
-  <div className="mt-2 p-3 bg-blue-50 rounded-full border border-blue-200">
+  <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
     <p className="text-xs text-blue-700">
       {formData.tipo_prestito === 'solo_esterno' && (
         <>📅 <strong>Solo Prestito Esterno:</strong> Gli studenti possono richiedere prestiti per più giorni e portare l'oggetto fuori dall'accademia</>
@@ -501,7 +501,7 @@ Tipo di Utilizzo
  {/* Multiple Course Selection */}
  <div className="form-group">
  <label className="form-label">Corsi Accademici *</label>
- <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-full p-3">
+ <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
  {courses.map(course => (
  <label key={course.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 cursor-pointer rounded">
  <input
@@ -531,7 +531,7 @@ Tipo di Utilizzo
  <p className="text-xs text-gray-500 mb-2">Corsi Selezionati ({formData.corsi_assegnati.length}):</p>
  <div className="flex flex-wrap gap-2">
  {formData.corsi_assegnati.map(courseName => (
- <span key={courseName} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+ <span key={courseName} className="inline-flex items-center px-2 py-1 rounded-lg text-xs bg-blue-100 text-blue-800">
  {courseName}
  <button
  type="button"
@@ -593,7 +593,7 @@ Tipo di Utilizzo
 
  <div className="form-group">
  <label className="form-label">Codici Univoci ({formData.unita.length})</label>
- <div className="bg-gray-50 rounded-full p-3 max-h-60 overflow-y-auto border border-gray-200">
+ <div className="bg-gray-50 rounded p-3 max-h-60 overflow-y-auto border border-gray-200">
  <div className="space-y-2">
  {formData.unita.map((unit, index) => (
  <div key={index} className="flex items-center space-x-2 p-2 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors">

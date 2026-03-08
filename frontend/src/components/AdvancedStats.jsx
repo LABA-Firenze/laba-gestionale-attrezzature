@@ -120,7 +120,7 @@ const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
        </div>
        <div className="min-w-0">
          <p className="font-medium text-gray-900 truncate">{item.nome}</p>
-         <p className="text-xs text-gray-500 truncate">{item.categoria_madre} {item.categoria_figlia && `– ${item.categoria_figlia}`}</p>
+         <p className="text-xs text-gray-500 truncate">{item.categoria_figlia || item.categoria_madre || '–'}</p>
        </div>
      </div>
      <div className="text-right shrink-0">
@@ -237,7 +237,9 @@ const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
    const maxCat = Math.max(...items.map(i => i.count), 1);
    return items.map((item, index) => (
      <div key={index} className="flex items-center gap-4">
-       <span className="w-32 text-sm font-medium text-gray-700 truncate shrink-0">{item.categoria_madre}</span>
+       <span className="w-40 text-sm font-medium text-gray-700 truncate shrink-0" title={item.categoria_figlia ? `${item.categoria_madre} – ${item.categoria_figlia}` : item.categoria_madre}>
+            {item.categoria_figlia ? item.categoria_figlia : item.categoria_madre}
+          </span>
        <div className="flex-1 min-w-0">
          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
            <div 

@@ -57,16 +57,20 @@ const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
  corso_accademico: ''
  });
  const [isManualUser, setIsManualUser] = useState(false);
+ const [searchItemTerm, setSearchItemTerm] = useState('');
+ const [searchUserTerm, setSearchUserTerm] = useState('');
  const [tipoUtilizzo, setTipoUtilizzo] = useState('');
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState(null);
  const { token } = useAuth();
 
- // Fetch data when modal opens
+ // Fetch data and reset search when modal opens
  useEffect(() => {
  if (isOpen) {
- fetchInventory();
- fetchUsers();
+   fetchInventory();
+   fetchUsers();
+   setSearchItemTerm('');
+   setSearchUserTerm('');
  }
  }, [isOpen]);
 
@@ -253,6 +257,8 @@ body: JSON.stringify({
  corso_accademico: ''
  });
  setIsManualUser(false);
+ setSearchItemTerm('');
+ setSearchUserTerm('');
  setTipoUtilizzo('');
  setError(null);
  onClose();
@@ -324,12 +330,27 @@ body: JSON.stringify({
  <h3 className="text-lg font-semibold text-gray-800 ">
  Seleziona l'oggetto da prestare
  </h3>
+ <div className="mb-4">
+   <label className="block text-sm font-medium text-gray-700 mb-2">Cerca oggetto</label>
+   <input
+     type="text"
+     value={searchItemTerm}
+     onChange={(e) => setSearchItemTerm(e.target.value)}
+     placeholder="Cerca per nome, scaffale..."
+     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+   />
+ </div>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
- {inventory.map(item => (
+ {inventory
+   .filter((item) => {
+     const term = searchItemTerm.toLowerCase();
+     return !term || item.nome?.toLowerCase().includes(term) || item.scaffale?.toLowerCase().includes(term) || item.note?.toLowerCase().includes(term);
+   })
+   .map(item => (
  <div
  key={item.id}
  onClick={() => handleItemSelect(item)}
- className="p-4 border border-gray-300 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"
+ className="p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
  >
                 <h4 className="font-semibold text-gray-900 ">{item.nome}</h4>
                 <p className="text-sm text-gray-600 ">
@@ -344,7 +365,7 @@ body: JSON.stringify({
                       e.stopPropagation();
                       window.open(item.immagine_url, '_blank');
                     }}
-                    className="mt-2 inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
+                    className="mt-2 inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-lg hover:bg-blue-200 transition-colors"
                     title="Visualizza immagine"
                   >
                     <PhotoIcon className="w-3 h-3 mr-1" />
@@ -354,6 +375,14 @@ body: JSON.stringify({
  </div>
  ))}
  </div>
+ {inventory.filter((item) => {
+   const term = searchItemTerm.toLowerCase();
+   return !term || item.nome?.toLowerCase().includes(term) || item.scaffale?.toLowerCase().includes(term) || item.note?.toLowerCase().includes(term);
+ }).length === 0 && (
+   <div className="text-center py-8 text-gray-500">
+     {searchItemTerm ? 'Nessun oggetto trovato con i criteri di ricerca' : 'Nessun oggetto disponibile'}
+   </div>
+ )}
  </div>
  )}
 
@@ -367,7 +396,7 @@ body: JSON.stringify({
  <div className="flex space-x-4 mb-6">
  <button
  onClick={() => setIsManualUser(false)}
- className={`px-4 py-2 rounded-full ${
+ className={`px-4 py-2 rounded-lg ${
  !isManualUser 
  ? 'bg-blue-600 text-white' 
  : 'bg-gray-200 text-gray-700 '
@@ -377,7 +406,7 @@ body: JSON.stringify({
  </button>
  <button
  onClick={() => setIsManualUser(true)}
- className={`px-4 py-2 rounded-full ${
+ className={`px-4 py-2 rounded-lg ${
  isManualUser 
  ? 'bg-blue-600 text-white' 
  : 'bg-gray-200 text-gray-700 '
@@ -388,12 +417,33 @@ body: JSON.stringify({
  </div>
 
  {!isManualUser ? (
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
- {users.map(user => (
+ <div className="space-y-4">
+   <div>
+     <label className="block text-sm font-medium text-gray-700 mb-2">Cerca utente</label>
+     <input
+       type="text"
+       value={searchUserTerm}
+       onChange={(e) => setSearchUserTerm(e.target.value)}
+       placeholder="Cerca per nome, cognome, email, matricola, corso..."
+       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+     />
+   </div>
+   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-80 overflow-y-auto">
+ {users
+   .filter((user) => {
+     const term = searchUserTerm.toLowerCase();
+     if (!term) return true;
+     const fullName = `${user.name || ''} ${user.surname || ''}`.toLowerCase();
+     const email = (user.email || '').toLowerCase();
+     const matricola = (user.matricola || '').toLowerCase();
+     const corso = (user.corso_accademico || '').toLowerCase();
+     return fullName.includes(term) || email.includes(term) || matricola.includes(term) || corso.includes(term);
+   })
+   .map(user => (
  <div
  key={user.id}
  onClick={() => handleUserSelect(user)}
- className="p-4 border border-gray-300 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"
+ className="p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
  >
  <h4 className="font-semibold text-gray-900 ">
  {user.name} {user.surname}
@@ -404,6 +454,20 @@ body: JSON.stringify({
  </p>
  </div>
  ))}
+   </div>
+   {users.filter((user) => {
+     const term = searchUserTerm.toLowerCase();
+     if (!term) return true;
+     const fullName = `${user.name || ''} ${user.surname || ''}`.toLowerCase();
+     const email = (user.email || '').toLowerCase();
+     const matricola = (user.matricola || '').toLowerCase();
+     const corso = (user.corso_accademico || '').toLowerCase();
+     return fullName.includes(term) || email.includes(term) || matricola.includes(term) || corso.includes(term);
+   }).length === 0 && (
+     <div className="text-center py-8 text-gray-500">
+       {searchUserTerm ? 'Nessun utente trovato con i criteri di ricerca' : 'Nessun utente registrato'}
+     </div>
+   )}
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -412,40 +476,40 @@ body: JSON.stringify({
  placeholder="Nome *"
  value={manualUser.name}
  onChange={(e) => setManualUser(prev => ({ ...prev, name: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="text"
  placeholder="Cognome *"
  value={manualUser.surname}
  onChange={(e) => setManualUser(prev => ({ ...prev, surname: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="email"
  placeholder="Email (nome.cognome@labafirenze.com) *"
  value={manualUser.email}
  onChange={(e) => setManualUser(prev => ({ ...prev, email: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="text"
  placeholder="Matricola *"
  value={manualUser.matricola}
  onChange={(e) => setManualUser(prev => ({ ...prev, matricola: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
  />
  <input
  type="tel"
  placeholder="Telefono"
  value={manualUser.phone}
  onChange={(e) => setManualUser(prev => ({ ...prev, phone: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
  />
  <select
  value={manualUser.corso_accademico}
  onChange={(e) => setManualUser(prev => ({ ...prev, corso_accademico: e.target.value }))}
- className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-gray-400 "
+ className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 "
  >
  <option value="">Seleziona corso *</option>
  <option value="Graphic Design & Multimedia">Graphic Design & Multimedia</option>
@@ -479,7 +543,7 @@ body: JSON.stringify({
  <div
  key={unit.id}
  onClick={() => handleUnitToggle(unit)}
- className={`p-4 border rounded-full cursor-pointer transition-colors ${
+ className={`p-4 border rounded-lg cursor-pointer transition-colors ${
  selectedUnits.find(u => u.id === unit.id)
  ? 'border-blue-500 bg-blue-50 '
  : 'border-gray-300 hover:bg-gray-50 '
@@ -527,7 +591,7 @@ body: JSON.stringify({
        </button>
      </div>
 
-     <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
+     <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
        <div className="flex items-center mb-3">
          <ListBulletIcon className="w-5 h-5 text-purple-600 mr-2" />
          <div>
@@ -539,7 +603,7 @@ body: JSON.stringify({
        </div>
        
        <div className="space-y-3">
-         <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+         <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
            <input
              type="radio"
              name="tipo_utilizzo_admin"
@@ -559,7 +623,7 @@ body: JSON.stringify({
            </div>
          </label>
          
-         <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+         <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
            <input
              type="radio"
              name="tipo_utilizzo_admin"
@@ -592,7 +656,7 @@ body: JSON.stringify({
  Date del prestito
  </h3>
  
- <div className="bg-gray-50 rounded-full p-4 mb-6">
+ <div className="bg-gray-50 rounded p-4 mb-6">
  <h4 className="font-medium text-gray-900 mb-2">Riepilogo:</h4>
  <p><strong>Oggetto:</strong> {selectedItem?.nome}</p>
  <p><strong>Utente:</strong> {selectedUser ? `${selectedUser.name} ${selectedUser.surname}` : `${manualUser.name} ${manualUser.surname}`}</p>
@@ -604,7 +668,7 @@ body: JSON.stringify({
 
  {/* Info Tipo Prestito */}
  {selectedItem?.tipo_prestito === 'solo_interno' && (
-   <div className="bg-orange-50 border border-orange-200 rounded-full p-4 mb-4">
+   <div className="bg-orange-50 border border-orange-200 rounded p-4 mb-4">
      <div className="flex items-center">
        <ExclamationTriangleIcon className="w-5 h-5 text-orange-600 mr-2" />
        <div>
@@ -619,7 +683,7 @@ body: JSON.stringify({
 
  {/* Info Tipo Utilizzo per oggetti "entrambi" */}
  {selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo && (
-   <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
+   <div className="bg-purple-50 border border-purple-200 rounded p-4 mb-4">
      <div className="flex items-center">
        <InformationCircleIcon className="w-5 h-5 text-purple-600 mr-2" />
        <div>
@@ -761,7 +825,7 @@ onChange={(val) => {
  )}
 
  {error && (
- <div className="bg-red-50 border border-red-200 rounded-full p-3 mt-4">
+ <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
  <p className="text-red-800 text-sm">{error}</p>
  </div>
  )}
@@ -780,7 +844,7 @@ onChange={(val) => {
             handleClose();
           }
         }}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 "
+        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 "
       >
         {step > 1 ? 'Indietro' : 'Annulla'}
       </button>
@@ -813,7 +877,7 @@ onChange={(val) => {
             (step === 3 && selectedUnits.length === 0) ||
             (step === 4 && selectedItem?.tipo_prestito === 'entrambi' && !tipoUtilizzo)
           }
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Avanti
         </button>
@@ -821,7 +885,7 @@ onChange={(val) => {
  <button
  onClick={handleCreateLoan}
  disabled={loading || !dateRange.dal || (!dateRange.al && !(selectedItem?.tipo_prestito === 'solo_interno' || (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')))}
- className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-full hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {loading ? 'Creazione...' : 'Crea Prestito'}
  </button>

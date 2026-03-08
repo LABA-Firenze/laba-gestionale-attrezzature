@@ -450,9 +450,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                       </div>
                     </div>
                     
-                    {/* Categoria */}
+                    {/* Categoria (mostra solo subcategoria: Attrezzature Video, Suono, ecc.) */}
                     <p className="text-sm text-gray-600 mb-2 line-clamp-1">
-                      {item.categoria_nome}
+                      {item.categoria_nome ? (item.categoria_nome.includes(' - ') ? item.categoria_nome.split(' - ')[1] : item.categoria_nome) : '–'}
                     </p>
                     
                     {/* Disclaimer uso interno */}
@@ -559,7 +559,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   </p>
               </div>
 
-              <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
                 <div className="flex items-center mb-3">
                   <ListBulletIcon className="w-5 h-5 text-purple-600 mr-2" />
                   <div>
@@ -571,7 +571,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                 </div>
                 
                 <div className="space-y-3">
-                  <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+                  <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
                     <input
                       type="radio"
                       name="tipo_utilizzo"
@@ -593,7 +593,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                     </div>
                   </label>
                   
-                  <label className="flex items-center space-x-3 p-4 bg-white rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
+                  <label className="flex items-center space-x-3 p-4 bg-white rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-50 transition-colors">
                     <input
                       type="radio"
                       name="tipo_utilizzo"
@@ -659,7 +659,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
               {/* Tipo Prestito Info */}
               {selectedObject.tipo_prestito === 'solo_interno' && (
-                <div className="bg-orange-50 border border-orange-200 rounded-full p-4 mb-4">
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
                   <div className="flex items-center">
                     <ExclamationTriangleIcon className="w-5 h-5 text-orange-600 mr-2" />
                     <div>
@@ -674,7 +674,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
               {/* Info Tipo Utilizzo per oggetti "entrambi" */}
               {selectedObject.tipo_prestito === 'entrambi' && (
-                <div className="bg-purple-50 border border-purple-200 rounded-full p-4 mb-4">
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
                   <div className="flex items-center">
                     <InformationCircleIcon className="w-5 h-5 text-purple-600 mr-2" />
                     <div>
@@ -748,13 +748,13 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                   value={note}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Note aggiuntive (opzionale)"
                 />
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-full">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                   {error}
                 </div>
               )}

@@ -511,6 +511,20 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Step Inventory Modal: meno capsule, radius ok ma non così tondo */
+.step-inventory-modal .input-field,
+.step-inventory-modal .select-field {
+  border-radius: 0.5rem;
+}
+.step-inventory-modal .btn-primary,
+.step-inventory-modal .btn-secondary,
+.step-inventory-modal .btn-success {
+  border-radius: 0.5rem;
+}
+.step-inventory-modal .card {
+  border-radius: 0.5rem;
+}
+
 /* Dark mode styles removed */
 
 /* User Profile Dropdown */
