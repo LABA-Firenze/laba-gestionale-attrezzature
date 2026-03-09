@@ -89,17 +89,15 @@ const UserArea = () => {
               <img src="/logoSito.svg" alt="LABA Logo" className="h-8 w-auto" />
             </div>
             <div className="flex items-center space-x-2">
-              {/* Notification Bell - solo in dashboard */}
-              {activeView === 'dashboard' && (
-                <button
-                  onClick={() => setNotificationsOpen(true)}
-                  className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
-                  type="button"
-                  aria-label="Notifiche"
-                >
-                  <BellIcon className="w-6 h-6 text-gray-600" />
-                </button>
-              )}
+              {/* Notification Bell - sempre in header mobile, a destra accanto all'hamburger */}
+              <button
+                onClick={() => setNotificationsOpen(true)}
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
+                type="button"
+                aria-label="Notifiche"
+              >
+                <BellIcon className="w-6 h-6 text-gray-600" />
+              </button>
               {/* Hamburger Menu */}
               <button
                 onClick={() => setMobileMenuOpen(true)}

@@ -366,8 +366,8 @@ function AppInner() {
           <img src="/logoSito.svg" alt="LABA Logo" className="h-8 w-auto" />
         </div>
         <div className="flex items-center space-x-2">
-          {/* Notification Bell - solo in dashboard (admin) */}
-          {isAdmin && tab === 'dashboard' && (
+          {/* Notification Bell - sempre in header mobile (admin) */}
+          {isAdmin && (
             <button 
               onClick={() => setNotificationsOpen(true)}
               className="relative p-2 rounded-full hover:bg-gray-100 transition-colors z-[101]"
