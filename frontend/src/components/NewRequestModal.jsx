@@ -457,11 +457,17 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                                          item.note?.toLowerCase().includes(searchTerm.toLowerCase());
                     return matchesSearch;
                   })
-                  .map((item) => (
+                  .map((item) => {
+                  const nonPrenotabile = item.stato_effettivo === 'in_riparazione' || item.stato_effettivo === 'in_manutenzione';
+                  return (
                   <div
                     key={item.id}
-                    onClick={() => handleObjectSelect(item)}
-                    className="p-4 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-md cursor-pointer transition-all flex flex-col"
+                    onClick={() => !nonPrenotabile && handleObjectSelect(item)}
+                    className={`p-4 border rounded-xl transition-all flex flex-col ${
+                      nonPrenotabile
+                        ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-90'
+                        : 'border-gray-200 hover:border-blue-500 hover:shadow-md cursor-pointer'
+                    }`}
                   >
                     {/* Titolo e disponibilità */}
                     <div className="mb-2">
@@ -469,7 +475,15 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                         {item.nome}
                       </h4>
                       <div className="flex items-center justify-between">
-                        {item.unita_disponibili > 0 ? (
+                        {item.stato_effettivo === 'in_riparazione' ? (
+                          <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full whitespace-nowrap">
+                            In riparazione
+                          </span>
+                        ) : item.stato_effettivo === 'in_manutenzione' ? (
+                          <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full whitespace-nowrap">
+                            In manutenzione
+                          </span>
+                        ) : item.unita_disponibili > 0 ? (
                           <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">
                             {item.unita_disponibili} {item.unita_disponibili === 1 ? 'disponibile' : 'disponibili'}
                           </span>
@@ -495,7 +509,8 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                       </div>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
               {inventory.filter((item) => {
                 const matchesSearch = item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -529,8 +544,13 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto">
                 {availableUnits.map((unit) => {
-                  const inPrestito = unit.prestito_corrente_id != null;
-                  const dataRientro = unit.prestito_data_rientro ? new Date(unit.prestito_data_rientro).toLocaleDateString('it-IT') : null;
+                  const hasPrestito = unit.prestito_data_uscita && unit.prestito_data_rientro;
+                  const hasRichiesta = unit.richiesta_data_dal && unit.richiesta_data_al;
+                  const occupatoDal = hasPrestito ? unit.prestito_data_uscita : (hasRichiesta ? unit.richiesta_data_dal : null);
+                  const occupatoAl = hasPrestito ? unit.prestito_data_rientro : (hasRichiesta ? unit.richiesta_data_al : null);
+                  const isOccupato = occupatoDal && occupatoAl;
+                  const occupatoDalFormatted = isOccupato ? new Date(occupatoDal).toLocaleDateString('it-IT') : null;
+                  const occupatoAlFormatted = isOccupato ? new Date(occupatoAl).toLocaleDateString('it-IT') : null;
                   return (
                   <div
                     key={unit.id}
@@ -542,9 +562,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                         <span className="font-medium text-gray-900 text-sm break-words">{unit.codice_univoco}</span>
                       </div>
                       <div className="flex items-center justify-between mt-auto">
-                        {inPrestito ? (
-                          <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full whitespace-nowrap">
-                            {dataRientro ? `In prestito fino al ${dataRientro}` : 'In prestito'}
+                        {isOccupato ? (
+                          <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full whitespace-nowrap">
+                            Occupato dal {occupatoDalFormatted} al {occupatoAlFormatted}
                           </span>
                         ) : (
                           <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">

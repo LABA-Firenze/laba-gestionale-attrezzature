@@ -104,6 +104,7 @@ r.get('/disponibili', requireAuth, async (req, res) => {
           CONCAT(COALESCE(i.categoria_madre, ''), ' - ', COALESCE(cs.nome, '')) as categoria_nome,
           CAST(${UNITI_DISPONIBILI_OGGI} AS INTEGER) AS unita_disponibili,
           CASE
+            WHEN EXISTS(SELECT 1 FROM riparazioni r WHERE r.inventario_id = i.id AND r.stato = 'in_corso') THEN 'in_riparazione'
             WHEN i.in_manutenzione = TRUE THEN 'in_manutenzione'
             WHEN ${UNITI_DISPONIBILI_OGGI} = 0 THEN 'non_disponibile'
             ELSE 'disponibile'
