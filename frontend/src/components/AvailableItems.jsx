@@ -74,7 +74,8 @@ const AvailableItems = () => {
       case 'disponibile': return 'bg-green-100 text-green-800';
       case 'in_prestito': return 'bg-blue-100 text-blue-800';
       case 'in_riparazione': return 'bg-orange-100 text-orange-800';
-      case 'non_disponibile': return 'bg-red-100 text-red-800';
+      case 'non_disponibile': return 'bg-amber-100 text-amber-800';
+      case 'in_manutenzione': return 'bg-gray-100 text-gray-700';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -84,9 +85,17 @@ const AvailableItems = () => {
       case 'disponibile': return 'Disponibile';
       case 'in_prestito': return 'In Prestito';
       case 'in_riparazione': return 'In Riparazione';
-      case 'non_disponibile': return 'Non Disponibile';
+      case 'non_disponibile': return 'Occupato ora · richiedi per date future';
+      case 'in_manutenzione': return 'In manutenzione';
       default: return status;
     }
+  };
+
+  // Stessa logica della dashboard (azione rapida): si può richiedere se non in manutenzione/riparazione.
+  // Quando "non_disponibile" = occupato ora ma prenotabile per date future (il date picker esclude le date già occupate).
+  const isRequestable = (item) => {
+    const s = item.stato_effettivo;
+    return s !== 'in_manutenzione' && s !== 'in_riparazione';
   };
 
   const handleRequestItem = (item) => {
@@ -214,17 +223,17 @@ const AvailableItems = () => {
                   </button>
                 )}
 
-                {/* CTA */}
+                {/* CTA: stessa logica della dashboard - richiedibile se non in manutenzione/riparazione */}
                 <button
                   onClick={() => handleRequestItem(item)}
-                  disabled={item.stato_effettivo !== 'disponibile'}
+                  disabled={!isRequestable(item)}
                   className={`mt-3 w-full py-2.5 text-sm font-medium rounded-full transition-colors ${
-                    item.stato_effettivo === 'disponibile'
+                    isRequestable(item)
                       ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
                 >
-                  {item.stato_effettivo === 'disponibile' ? 'Richiedi' : 'Non disponibile'}
+                  {isRequestable(item) ? 'Richiedi' : 'Non richiedibile'}
                 </button>
               </div>
             </article>
