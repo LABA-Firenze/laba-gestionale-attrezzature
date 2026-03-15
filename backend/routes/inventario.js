@@ -668,7 +668,7 @@ r.delete('/:id', requireAuth, requireRole('admin'), async (req, res) => {
   }
 });
 
-// GET /api/inventario/:id/units - Get all units for an inventory item (anche quelle in prestito)
+// GET /api/inventario/:id/units - Get all units for an inventory item (anche quelle in prestito o con richiesta in attesa)
 r.get('/:id/units', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -676,10 +676,13 @@ r.get('/:id/units', requireAuth, async (req, res) => {
       SELECT iu.id, iu.codice_univoco, iu.stato, iu.note, iu.inventario_id, iu.prestito_corrente_id,
              i.nome as item_name,
              p.data_uscita::text as prestito_data_uscita,
-             p.data_rientro::text as prestito_data_rientro
+             p.data_rientro::text as prestito_data_rientro,
+             r.dal::text as richiesta_data_dal,
+             r.al::text as richiesta_data_al
       FROM inventario_unita iu
       LEFT JOIN inventario i ON i.id = iu.inventario_id
       LEFT JOIN prestiti p ON p.id = iu.prestito_corrente_id AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
+      LEFT JOIN richieste r ON r.id = iu.richiesta_riservata_id AND LOWER(TRIM(COALESCE(r.stato,''))) = 'in_attesa'
       WHERE iu.inventario_id = $1 
       ORDER BY iu.codice_univoco
     `, [id]);

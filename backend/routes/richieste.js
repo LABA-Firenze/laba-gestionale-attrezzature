@@ -100,10 +100,11 @@ r.post('/', requireAuth, async (req, res) => {
     let actualInventarioId = inventario_id;
     
     if (unit_id) {
-      // Verifica che l'unità esista e che non abbia prestiti attivi che sovrappongono [dal, al]
+      // Verifica che l'unità esista, non sia già riservata da un'altra richiesta in attesa, e non abbia prestiti attivi che sovrappongono [dal, al]
       const unitResult = await query(`
         SELECT iu.inventario_id FROM inventario_unita iu
         WHERE iu.id = $1
+        AND iu.richiesta_riservata_id IS NULL
         AND NOT EXISTS (
           SELECT 1 FROM prestiti p
           WHERE p.id = iu.prestito_corrente_id
@@ -113,9 +114,12 @@ r.post('/', requireAuth, async (req, res) => {
         )
       `, [unit_id, al, dal]);
       if (unitResult.length === 0) {
-        const unitExists = await query('SELECT inventario_id FROM inventario_unita WHERE id = $1', [unit_id]);
+        const unitExists = await query('SELECT inventario_id, richiesta_riservata_id FROM inventario_unita WHERE id = $1', [unit_id]);
         if (unitExists.length === 0) {
           return res.status(400).json({ error: 'Unità non trovata' });
+        }
+        if (unitExists[0].richiesta_riservata_id != null) {
+          return res.status(400).json({ error: 'Unità già riservata per una richiesta in attesa. Scegli un\'altra unità o date diverse.' });
         }
         return res.status(400).json({ error: 'Unità occupata nelle date selezionate. Scegli altre date.' });
       }

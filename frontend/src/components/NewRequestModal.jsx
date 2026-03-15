@@ -35,18 +35,25 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     const [y, m, d] = dateStr.split('-').map(Number);
     return new Date(y, m - 1, d).getDay();
   };
-  // Date occupate dalla unità selezionata (per disabilitarle nel date picker)
-  const getDisabledDatesForUnit = (unit) => {
-    if (!unit?.prestito_data_uscita || !unit?.prestito_data_rientro) return [];
-    const dal = new Date(unit.prestito_data_uscita);
-    const al = new Date(unit.prestito_data_rientro);
-    const dates = [];
+  // Date occupate dalla unità (prestito attivo o richiesta in attesa) — disabilitate nel date picker
+  const dateRangeToArray = (dalStr, alStr) => {
+    if (!dalStr || !alStr) return [];
+    const dal = new Date(dalStr);
+    const al = new Date(alStr);
+    const arr = [];
     const curr = new Date(dal);
     while (curr <= al) {
-      dates.push(curr.toISOString().split('T')[0]);
+      arr.push(curr.toISOString().split('T')[0]);
       curr.setDate(curr.getDate() + 1);
     }
-    return dates;
+    return arr;
+  };
+  const getDisabledDatesForUnit = (unit) => {
+    if (!unit) return [];
+    const fromPrestito = dateRangeToArray(unit.prestito_data_uscita, unit.prestito_data_rientro);
+    const fromRichiesta = dateRangeToArray(unit.richiesta_data_dal, unit.richiesta_data_al);
+    const combined = [...fromPrestito, ...fromRichiesta];
+    return [...new Set(combined)].sort();
   };
   const disabledDates = selectedUnit ? getDisabledDatesForUnit(selectedUnit) : [];
 
