@@ -1,27 +1,31 @@
-// Script per aggiornare password utente
+// Script per aggiornare password utente (solo da env, niente credenziali in codice).
+// Uso: USER_EMAIL=user@example.com NEW_PASSWORD=nuovapassword node backend/scripts/update_user_password.js
+import bcrypt from 'bcryptjs';
 import { query } from '../utils/postgres.js';
 
 async function updateUserPassword() {
+  const email = process.env.USER_EMAIL;
+  const newPassword = process.env.NEW_PASSWORD;
+  if (!email || !newPassword) {
+    console.error('Imposta USER_EMAIL e NEW_PASSWORD (es. USER_EMAIL=user@example.com NEW_PASSWORD=xxx node backend/scripts/update_user_password.js)');
+    process.exit(1);
+  }
+
   console.log('🔑 Aggiornamento password utente...');
-  
   try {
-    // Aggiorna password utente test
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
     const result = await query(`
       UPDATE users 
       SET password_hash = $1 
       WHERE email = $2
       RETURNING id, email, name, surname
-    `, [
-      '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password: test123
-      'test@laba.it'
-    ]);
-    
+    `, [hashedPassword, email]);
+
     if (result.length > 0) {
-      console.log('✅ Password aggiornata per:', result[0]);
+      console.log('✅ Password aggiornata per:', result[0].email);
     } else {
-      console.log('❌ Utente non trovato');
+      console.log('❌ Utente non trovato:', email);
     }
-    
   } catch (error) {
     console.error('❌ Errore aggiornamento password:', error);
     throw error;

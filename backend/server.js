@@ -72,7 +72,12 @@ app.use(morgan("dev"));
 app.get("/api/health", (_, res) => res.json({ ok: true, version: "2.1", build: "2.1" }));
 
 // Keepalive endpoint per mantenere attivo il database Supabase
-app.get("/api/keepalive", async (_, res) => {
+// In produzione richiede ?token=CRON_SECRET_TOKEN (stesso token dei cron su cron-job.org)
+app.get("/api/keepalive", async (req, res) => {
+  const cronToken = process.env.CRON_SECRET_TOKEN;
+  if (cronToken && req.query.token !== cronToken) {
+    return res.status(401).json({ error: 'Token non valido' });
+  }
   try {
     // 1. Query dirette PostgreSQL (mantengono attivo il database)
     const [usersCount, inventarioCount, prestitiCount] = await Promise.all([
@@ -86,27 +91,30 @@ app.get("/api/keepalive", async (_, res) => {
     // RLS è abilitato con policy permissiva (vedi migrations/rls_keepalive_policies.sql)
     let restActivity = null;
     const supabase = getSupabase();
+    const isProd = process.env.NODE_ENV === 'production';
     if (supabase) {
       try {
-        console.log('🔄 Chiamata REST Supabase su tabella keepalive_log...');
+        if (!isProd) console.log('🔄 Chiamata REST Supabase su tabella keepalive_log...');
         // Query su tabella dedicata (senza dati sensibili, RLS con policy permissiva)
         const result = await supabase
           .from('keepalive_log')
           .select('id', { count: 'exact', head: true });
-        
-        console.log('📊 Risultato completo Supabase:', {
-          hasError: !!result.error,
-          count: result.count,
-          error: result.error ? {
-            message: result.error.message,
-            code: result.error.code,
-            details: result.error.details,
-            hint: result.error.hint
-          } : null
-        });
-        
+
+        if (!isProd) {
+          console.log('📊 Risultato completo Supabase:', {
+            hasError: !!result.error,
+            count: result.count,
+            error: result.error ? {
+              message: result.error.message,
+              code: result.error.code,
+              details: result.error.details,
+              hint: result.error.hint
+            } : null
+          });
+        }
+
         if (result.error) {
-          console.warn('⚠️ Errore chiamata REST Supabase:', JSON.stringify(result.error, null, 2));
+          console.warn('⚠️ Errore chiamata REST Supabase:', result.error.message);
           restActivity = { 
             error: result.error.message || 'Unknown error',
             code: result.error.code,
@@ -119,7 +127,7 @@ app.get("/api/keepalive", async (_, res) => {
             count: result.count || 0, 
             rest_request: true 
           };
-          console.log('✅ Chiamata REST Supabase riuscita, count:', result.count);
+          if (!isProd) console.log('✅ Chiamata REST Supabase riuscita, count:', result.count);
         }
       } catch (supabaseError) {
         console.error('❌ Eccezione chiamata REST Supabase:', {

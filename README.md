@@ -177,8 +177,15 @@ NODE_ENV=development
 # CORS
 CORS_ORIGIN=http://localhost:5173
 
+# Cron e Keepalive (produzione): token per cron-job.org
+# Imposta su Railway; usalo in URL come ?token=VALORE (se contiene +, /, = usare URL encoding, es. + → %2B)
+CRON_SECRET_TOKEN=your-cron-secret-token
+
+# Sicurezza (review): JWT_SECRET obbligatorio in prod; CORS allow-list (CORS_ORIGINS); cron/keepalive con token;
+# rate limit su login/register/forgot-password (20 req/15 min per IP); script senza credenziali in codice; privacy in Login/Registrazione.
+
 # Email (SMTP) - Per notifiche di approvazione richieste
-push# OPZIONE 1: Gmail (con App Password)
+# OPZIONE 1: Gmail (con App Password)
 # 1. Abilita "Verifica in 2 passaggi" su Google Account
 # 2. Vai su: https://myaccount.google.com/apppasswords
 # 3. Genera una "App Password" (16 caratteri)
@@ -460,9 +467,18 @@ created_at      TIMESTAMP DEFAULT NOW()
    DATABASE_URL=postgresql://... (auto-generato)
    JWT_SECRET=your-production-secret
    CORS_ORIGIN=https://your-domain.railway.app
+   CRON_SECRET_TOKEN=your-cron-secret  # Per cron e keepalive (cron-job.org)
    ```
 
-4. **Configurazione Build**
+4. **Cron e Keepalive (cron-job.org)**  
+   Imposta `CRON_SECRET_TOKEN` su Railway, poi su [cron-job.org](https://cron-job.org) crea due job:
+   - **Reminder email** (es. ogni giorno alle 18:00):  
+     `https://attrezzatura.laba.biz/api/cron/send-reminders?token=VALORE`  
+   - **Keepalive** (es. ogni 5–10 min):  
+     `https://attrezzatura.laba.biz/api/keepalive?token=VALORE`  
+   Se il token contiene `+`, `/` o `=` usa l’URL encoding (es. `+` → `%2B`).
+
+5. **Configurazione Build**
    - Il file `railway.json` gestisce il build automatico
    - `nixpacks.toml` configura l'ambiente Node.js
 

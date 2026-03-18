@@ -1,5 +1,6 @@
 // backend/routes/auth.js - PostgreSQL Version
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { query } from '../utils/postgres.js';
@@ -8,6 +9,15 @@ import { normalizeUser, normalizeRole } from '../utils/roles.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
 
 const r = Router();
+
+// Rate limit su login/register/forgot-password per mitigare brute-force
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Troppi tentativi. Riprova tra 15 minuti.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 // In produzione JWT_SECRET deve essere impostato (es. variabile d'ambiente su Railway).
 const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'dev-secret-change-me');
 if (process.env.NODE_ENV === 'production' && !JWT_SECRET) {
@@ -66,7 +76,7 @@ function clearAuthCookie(res) {
 }
 
 // POST /api/auth/login — imposta cookie httpOnly, risponde solo con { user }
-r.post('/login', async (req, res) => {
+r.post('/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body || {};
     if (!email || !password) {
@@ -113,7 +123,7 @@ r.post('/logout', (req, res) => {
 });
 
 // POST /api/auth/register (pubblico o con admin: se non autenticato, ruolo sempre 'user')
-r.post('/register', async (req, res) => {
+r.post('/register', authLimiter, async (req, res) => {
   try {
     const { email, password, name, surname, phone, matricola, corso_accademico, ruolo } = req.body || {};
     
@@ -168,7 +178,7 @@ r.get('/me', requireAuth, (req, res) => {
 });
 
 // POST /api/auth/forgot-password - Self-service: invia email con link per reset
-r.post('/forgot-password', async (req, res) => {
+r.post('/forgot-password', authLimiter, async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email) {
