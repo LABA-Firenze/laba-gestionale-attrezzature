@@ -20,27 +20,17 @@ const Loans = ({ selectedRequestFromNotification, onRequestHandled, initialTab, 
  const [rejectRequestId, setRejectRequestId] = useState(null);
  const [rejectReason, setRejectReason] = useState('');
  const [approvingRequestId, setApprovingRequestId] = useState(null);
- const { token } = useAuth();
+ const { api, isAuthenticated } = useAuth();
 
  const fetchData = async () => {
  try {
  setLoading(true);
  const [requestsRes, loansRes] = await Promise.all([
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste?all=1`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti?all=1`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      api.get('/api/richieste?all=1'),
+      api.get('/api/prestiti?all=1')
  ]);
-
- if (!requestsRes.ok) throw new Error('Errore nel caricamento richieste');
- if (!loansRes.ok) throw new Error('Errore nel caricamento prestiti');
-
- const [requestsData, loansData] = await Promise.all([
- requestsRes.json(),
- loansRes.json()
- ]);
+ const requestsData = requestsRes.data ?? [];
+ const loansData = loansRes.data ?? [];
 
  setRequests(requestsData);
  setLoans(loansData);
@@ -52,10 +42,10 @@ const Loans = ({ selectedRequestFromNotification, onRequestHandled, initialTab, 
  };
 
  useEffect(() => {
- if (token) {
+ if (isAuthenticated) {
    fetchData();
  }
- }, [token]);
+ }, [isAuthenticated]);
 
  // Gestisce l'apertura automatica del modale dalla notifica
  useEffect(() => {
@@ -92,17 +82,10 @@ try {
 setApprovingRequestId(requestId);
 setError(null);
 
-const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/${requestId}/approva`, {
-method: 'PUT',
-headers: {
-'Authorization': `Bearer ${token}`,
-'Content-Type': 'application/json'
-}
-});
+const response = await api.put(`/api/prestiti/${requestId}/approva`, {});
+const responseData = response.data ?? {};
 
-const responseData = await response.json();
-
-if (!response.ok) {
+if (response.status !== 200) {
 // Handle user blocked error specially
 if (responseData.userBlocked) {
 setError(`❌ UTENTE BLOCCATO: ${responseData.message}\n\nMotivo: ${responseData.reason}\n\nL'utente deve presentarsi di persona per sbloccare l'account.`);
@@ -145,14 +128,12 @@ icon: '/favicon.ico'
 }));
 
 // Ricarica i dati per avere lo stato aggiornato completo (incluso il nuovo prestito)
-const [updatedRequestsData, updatedLoansData] = await Promise.all([
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste?all=1`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  }).then(res => res.json()),
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti?all=1`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  }).then(res => res.json())
+const [rRes, lRes] = await Promise.all([
+  api.get('/api/richieste?all=1'),
+  api.get('/api/prestiti?all=1')
 ]);
+const updatedRequestsData = rRes.data ?? [];
+const updatedLoansData = lRes.data ?? [];
 
 setRequests(updatedRequestsData);
 setLoans(updatedLoansData);
@@ -176,17 +157,9 @@ setApprovingRequestId(null);
    throw new Error('Motivazione del rifiuto richiesta');
  }
 
- const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/${requestId}/rifiuta`, {
- method: 'PUT',
- headers: {
- 'Authorization': `Bearer ${token}`,
- 'Content-Type': 'application/json'
- },
- body: JSON.stringify({ motivazione: motivazione.trim() })
- });
-
- if (!response.ok) {
- const errorData = await response.json();
+ const response = await api.put(`/api/prestiti/${requestId}/rifiuta`, { motivazione: motivazione.trim() });
+ if (response.status !== 200) {
+ const errorData = response.data ?? {};
  throw new Error(errorData.error || 'Errore nel rifiuto');
  }
 
@@ -220,19 +193,11 @@ setApprovingRequestId(null);
 
  const handleReturn = async (loanId) => {
  try {
- const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/${loanId}/restituisci`, {
- method: 'PUT',
- headers: {
- 'Authorization': `Bearer ${token}`,
- 'Content-Type': 'application/json'
- }
- });
-
- if (!response.ok) {
- const errorData = await response.json();
+ const response = await api.put(`/api/prestiti/${loanId}/restituisci`);
+ if (response.status !== 200) {
+ const errorData = response.data ?? {};
  throw new Error(errorData.error || 'Errore nella restituzione');
  }
-
  await fetchData();
  } catch (err) {
  setError(err.message);

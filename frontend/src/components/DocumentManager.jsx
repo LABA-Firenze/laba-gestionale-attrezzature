@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../auth/AuthContext';
 
 const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
  const [documents, setDocuments] = useState([]);
  const [uploading, setUploading] = useState(false);
  const [dragOver, setDragOver] = useState(false);
+ const { api } = useAuth();
 
  useEffect(() => {
  if (item && isOpen) {
@@ -13,14 +15,9 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
 
  const loadDocuments = async () => {
  try {
- const { token } = useAuth();
- const response = await fetch(`/api/inventario/${item.id}/documents`, {
- headers: { 'Authorization': `Bearer ${token}` }
- });
- if (response.ok) {
- const docs = await response.json();
- setDocuments(docs);
- }
+ const response = await api.get(`/api/inventario/${item.id}/documents`);
+ const docs = response.data ?? [];
+ setDocuments(Array.isArray(docs) ? docs : []);
  } catch (error) {
  console.error('Errore nel caricamento documenti:', error);
  }
@@ -29,25 +26,15 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
  const handleFileUpload = async (files) => {
  setUploading(true);
  try {
- const { token } = useAuth();
  const formData = new FormData();
- 
  Array.from(files).forEach(file => {
  formData.append('documents', file);
  });
-
- const response = await fetch(`/api/inventario/${item.id}/documents`, {
- method: 'POST',
- headers: { 'Authorization': `Bearer ${token}` },
- body: formData
+ await api.post(`/api/inventario/${item.id}/documents`, formData, {
+ headers: { 'Content-Type': 'multipart/form-data' }
  });
-
- if (response.ok) {
  await loadDocuments();
  onSave && onSave();
- } else {
- throw new Error('Errore nel caricamento');
- }
  } catch (error) {
  console.error('Errore upload:', error);
  alert('Errore nel caricamento dei documenti');
@@ -58,18 +45,10 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
 
  const handleDeleteDocument = async (docId) => {
  if (!confirm('Sei sicuro di voler eliminare questo documento?')) return;
-
  try {
- const { token } = useAuth();
- const response = await fetch(`/api/inventario/documents/${docId}`, {
- method: 'DELETE',
- headers: { 'Authorization': `Bearer ${token}` }
- });
-
- if (response.ok) {
+ await api.delete(`/api/inventario/documents/${docId}`);
  await loadDocuments();
  onSave && onSave();
- }
  } catch (error) {
  console.error('Errore eliminazione:', error);
  }
@@ -77,20 +56,14 @@ const DocumentManager = ({ item, isOpen, onClose, onSave }) => {
 
  const handleDownload = async (document) => {
  try {
- const { token } = useAuth();
- const response = await fetch(`/api/inventario/documents/${document.id}/download`, {
- headers: { 'Authorization': `Bearer ${token}` }
- });
-
- if (response.ok) {
- const blob = await response.blob();
+ const response = await api.get(`/api/inventario/documents/${document.id}/download`, { responseType: 'blob' });
+ const blob = response.data;
  const url = window.URL.createObjectURL(blob);
  const a = document.createElement('a');
  a.href = url;
  a.download = document.original_name;
  a.click();
  window.URL.revokeObjectURL(url);
- }
  } catch (error) {
  console.error('Errore download:', error);
  }

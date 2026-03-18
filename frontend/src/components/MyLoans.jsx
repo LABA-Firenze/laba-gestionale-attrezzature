@@ -14,29 +14,18 @@ const MyLoans = () => {
   const [showNewRequestModal, setShowNewRequestModal] = useState(false);
   const [activeTab, setActiveTab] = useState('active');
   const [cancellingRequestId, setCancellingRequestId] = useState(null);
-  const { token, user } = useAuth();
+  const { api, user } = useAuth();
 
   // Fetch user's loans and requests
   const fetchData = async () => {
     try {
       setLoading(true);
       const [loansRes, requestsRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/mie`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste/mie`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
+        api.get('/api/prestiti/mie'),
+        api.get('/api/richieste/mie')
       ]);
-
-      if (!loansRes.ok) throw new Error('Errore nel caricamento prestiti');
-      if (!requestsRes.ok) throw new Error('Errore nel caricamento richieste');
-
-      const [loansData, requestsData] = await Promise.all([
-        loansRes.json(),
-        requestsRes.json()
-      ]);
-
+      const loansData = loansRes.data ?? [];
+      const requestsData = requestsRes.data ?? [];
       setLoans(loansData);
       setRequests(requestsData);
     } catch (err) {
@@ -86,19 +75,7 @@ const MyLoans = () => {
       setCancellingRequestId(requestId);
       setError(null);
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste/${requestId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || errorData.error || 'Errore nell\'annullamento della richiesta');
-      }
-
-      // Ricarica i dati
+      await api.delete(`/api/richieste/${requestId}`);
       await fetchData();
     } catch (err) {
       setError(err.message);

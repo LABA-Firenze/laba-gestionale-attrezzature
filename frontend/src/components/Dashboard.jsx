@@ -31,7 +31,7 @@ const Dashboard = ({ onNavigate }) => {
  const [selectedLoan, setSelectedLoan] = useState(null);
  const [avvisiCollapsed, setAvvisiCollapsed] = useState(false);
  const [scadenzeCollapsed, setScadenzeCollapsed] = useState(false);
-   const { token, isAdmin, roleLabel } = useAuth();
+   const { api, isAuthenticated, isAdmin, roleLabel } = useAuth();
 
  
   // Helper function to calculate time ago
@@ -94,53 +94,23 @@ const Dashboard = ({ onNavigate }) => {
  const fetchDashboardData = useCallback(async () => {
  try {
  setLoading(true);
-    const requests = [
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste?all=1`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/riparazioni`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/segnalazioni`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti?all=1`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-    ];
+    const inv = api.get('/api/inventario');
+    const rich = api.get('/api/richieste?all=1');
+    const rip = api.get('/api/riparazioni');
+    const seg = api.get('/api/segnalazioni');
+    const prest = api.get('/api/prestiti?all=1');
+    const avvisi = isAdmin ? api.get('/api/avvisi') : api.get('/api/avvisi/utente');
 
-    // Add alerts endpoint for admin or user-specific alerts
-    if (isAdmin) {
-      requests.push(fetch(`${import.meta.env.VITE_API_BASE_URL}/api/avvisi`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }));
-    } else {
-      requests.push(fetch(`${import.meta.env.VITE_API_BASE_URL}/api/avvisi/utente`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }));
-    }
+    const [inventoryRes, requestsRes, repairsRes, reportsRes, prestitiRes, alertsRes] = await Promise.all([inv, rich, rip, seg, prest, avvisi]);
 
- const responses = await Promise.all(requests);
- const [inventoryRes, requestsRes, repairsRes, reportsRes, prestitiRes, alertsRes] = responses;
+    const inventoryData = inventoryRes.data;
+    const requestsData = requestsRes.data ?? [];
+    const repairsData = repairsRes.data ?? [];
+    const reportsData = reportsRes.data ?? [];
+    const prestitiData = prestitiRes.data ?? [];
+    const alertsData = alertsRes.data ?? {};
 
- if (!inventoryRes.ok) throw new Error('Errore nel caricamento inventario');
- if (!requestsRes.ok) throw new Error('Errore nel caricamento richieste');
- if (!repairsRes.ok) throw new Error('Errore nel caricamento riparazioni');
- if (!reportsRes.ok) throw new Error('Errore nel caricamento segnalazioni');
- if (!prestitiRes.ok) throw new Error('Errore nel caricamento prestiti');
- if (!alertsRes.ok) throw new Error('Errore nel caricamento avvisi');
-
- const [inventoryData, requestsData, repairsData, reportsData, prestitiData, alertsData] = await Promise.all([
- inventoryRes.json(),
- requestsRes.json(),
- repairsRes.json(),
- reportsRes.json(),
- prestitiRes.json(),
- alertsRes.json()
- ]);
+ if (!inventoryData) throw new Error('Errore nel caricamento inventario');
 
 // Calcola statistiche corrette
 const activeLoans = prestitiData.filter(p => p.stato === 'attivo').length;
@@ -339,14 +309,14 @@ setRecentReports(reportsData.slice(0, 5));
  } finally {
  setLoading(false);
  }
- }, [token, isAdmin]);
+ }, [api, isAdmin]);
 
  useEffect(() => {
- // Aspetta che token sia disponibile prima di caricare i dati
- if (token) {
+// Aspetta che la sessione sia disponibile prima di caricare i dati
+  if (isAuthenticated) {
    fetchDashboardData();
  }
- }, [token, isAdmin, fetchDashboardData]);
+ }, [isAuthenticated, isAdmin, fetchDashboardData]);
 
  if (loading) {
  return <DashboardSkeleton />;

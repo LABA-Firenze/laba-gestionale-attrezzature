@@ -13,7 +13,7 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
    note: '',
    tipo_prestito: 'solo_esterno'
  });
- const { token } = useAuth();
+ const { api } = useAuth();
 
  const handleSubmit = async (e) => {
  e.preventDefault();
@@ -33,22 +33,10 @@ const QuickActionModal = ({ isOpen, onClose, action, onSuccess }) => {
  units.push({ codice_univoco: code, note: '' });
  }
 
- const response = await fetch('/api/inventario', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({
+ await api.post('/api/inventario', {
  ...formData,
  unita: units
- })
  });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nella creazione');
- }
 
  onSuccess && onSuccess();
  handleClose();

@@ -39,33 +39,28 @@ function AppInner() {
   const [selectedRequestFromNotification, setSelectedRequestFromNotification] = useState(null);
   
   const [penaltiesCount, setPenaltiesCount] = useState(0);
-  const { isAdmin, user, logout, token } = useAuth();
+  const { isAdmin, user, logout, api, isAuthenticated } = useAuth();
 
   // Fetch penalties count
   useEffect(() => {
-    if (isAdmin && token) {
+    if (isAdmin && isAuthenticated) {
       const fetchPenaltiesCount = async () => {
         try {
-          const usersRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/users`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (usersRes.ok) {
-            const usersData = await usersRes.json();
-            const usersWithPenalties = usersData.filter(user => 
-              (user.penalty_strikes && user.penalty_strikes > 0) || user.is_blocked
-            );
-            setPenaltiesCount(usersWithPenalties.length);
-          }
+          const res = await api.get('/api/auth/users');
+          const usersData = Array.isArray(res.data) ? res.data : [];
+          const usersWithPenalties = usersData.filter(u => 
+            (u.penalty_strikes && u.penalty_strikes > 0) || u.is_blocked
+          );
+          setPenaltiesCount(usersWithPenalties.length);
         } catch (err) {
           console.error('Errore nel caricamento conteggio penalità:', err);
         }
       };
       fetchPenaltiesCount();
-      // Refresh ogni 30 secondi
       const interval = setInterval(fetchPenaltiesCount, 30000);
       return () => clearInterval(interval);
     }
-  }, [isAdmin, token]);
+  }, [isAdmin, isAuthenticated, api]);
   
   // Admin sidebar items for mobile menu
   const iconCls = "w-5 h-5";
@@ -88,24 +83,15 @@ function AppInner() {
 
  // Fetch real notifications
  const fetchNotifications = async () => {
-   if (!token) return;
-   
+   if (!isAuthenticated) return;
    try {
-     // Load recent requests and alerts
      const [requestsRes, alertsRes] = await Promise.all([
-       fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste?all=1`, {
-         headers: { 'Authorization': `Bearer ${token}` }
-       }),
-       fetch(`${import.meta.env.VITE_API_BASE_URL}/api/avvisi`, {
-         headers: { 'Authorization': `Bearer ${token}` }
-       })
+       api.get('/api/richieste?all=1'),
+       api.get('/api/avvisi')
      ]);
-
-     if (requestsRes.ok && alertsRes.ok) {
-       const [requestsData, alertsData] = await Promise.all([
-         requestsRes.json(),
-         alertsRes.json()
-       ]);
+     const requestsData = requestsRes.data ?? [];
+     const alertsData = alertsRes.data ?? {};
+     if (Array.isArray(requestsData) || alertsData) {
 
        // Generate real notifications
        const realNotifications = [];
@@ -170,15 +156,14 @@ function AppInner() {
    return `${diffInDays} giorni fa`;
  };
 
- // Load notifications on component mount and token change
+ // Load notifications on component mount
  useEffect(() => {
-   if (token && isAdmin) {
+   if (isAuthenticated && isAdmin) {
      fetchNotifications();
-     // Refresh every 5 minutes
      const interval = setInterval(fetchNotifications, 5 * 60 * 1000);
      return () => clearInterval(interval);
    }
- }, [token, isAdmin]);
+ }, [isAuthenticated, isAdmin]);
 
  // Listener per navigazione dal footer
  useEffect(() => {
@@ -533,7 +518,7 @@ function UserBadge() {
 }
 
 function Gate() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const params = new URLSearchParams(window.location.search);
   const resetToken = params.get('resetToken');
 
@@ -546,6 +531,14 @@ function Gate() {
     window.history.replaceState({}, '', window.location.pathname);
     window.location.reload();
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Caricamento...
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

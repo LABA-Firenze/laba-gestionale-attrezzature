@@ -10,7 +10,7 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  const [activeTab, setActiveTab] = useState('active');
  const [showReportBug, setShowReportBug] = useState(false);
  const [selectedLoan, setSelectedLoan] = useState(null);
- const { token } = useAuth();
+ const { api } = useAuth();
 
  useEffect(() => {
  if (isOpen) {
@@ -21,18 +21,9 @@ const MyLoansModal = ({ isOpen, onClose }) => {
  const fetchLoans = async () => {
  try {
  setLoading(true);
- const response = await fetch('/api/prestiti/mie', {
- headers: {
- 'Authorization': `Bearer ${token}`
- }
- });
-
- if (response.ok) {
- const data = await response.json();
- setLoans(data);
- } else {
- setError('Errore nel caricamento dei prestiti');
- }
+ const response = await api.get('/api/prestiti/mie');
+ const data = response.data ?? [];
+ setLoans(Array.isArray(data) ? data : []);
  } catch (err) {
  setError('Errore nel caricamento dei prestiti');
  console.error('Error fetching loans:', err);

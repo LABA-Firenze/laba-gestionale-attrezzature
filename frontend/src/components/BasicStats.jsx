@@ -10,7 +10,7 @@ const BasicStats = () => {
     totalLoans: 0
   });
   const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
+  const { api } = useAuth();
 
   useEffect(() => {
     fetchBasicStats();
@@ -20,26 +20,15 @@ const BasicStats = () => {
     try {
       setLoading(true);
       const [inventoryRes, usersRes, requestsRes, loansRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/users`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste?all=1`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti?all=1`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
+        api.get('/api/inventario'),
+        api.get('/api/auth/users'),
+        api.get('/api/richieste?all=1'),
+        api.get('/api/prestiti?all=1')
       ]);
-
-      const [inventory, users, requests, loans] = await Promise.all([
-        inventoryRes.json(),
-        usersRes.json(),
-        requestsRes.json(),
-        loansRes.json()
-      ]);
+      const inventory = inventoryRes.data ?? [];
+      const users = usersRes.data ?? [];
+      const requests = requestsRes.data ?? [];
+      const loans = loansRes.data ?? [];
 
       const activeLoans = loans.filter(l => l.stato === 'attivo').length;
       setStats({

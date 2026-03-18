@@ -26,7 +26,7 @@ const AdvancedStats = () => {
  const [loading, setLoading] = useState(true);
  const [error, setError] = useState(null);
  const [selectedPeriod, setSelectedPeriod] = useState('30'); // 30, 90, 365 giorni
- const { token } = useAuth();
+ const { api } = useAuth();
 
  useEffect(() => {
  fetchStats();
@@ -35,26 +35,18 @@ const AdvancedStats = () => {
  const fetchStats = async () => {
  try {
  setLoading(true);
- const headers = {
- 'Authorization': `Bearer ${token}`
- };
-
- // Fetch all statistics in parallel
- const base = import.meta.env.VITE_API_BASE_URL || '';
-const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
- fetch(`${base}/api/stats/top-users?period=${selectedPeriod}`, { headers }),
- fetch(`${base}/api/stats/top-items?period=${selectedPeriod}`, { headers }),
- fetch(`${base}/api/stats/top-departments?period=${selectedPeriod}`, { headers }),
- fetch(`${base}/api/stats/monthly-requests?period=${selectedPeriod}`, { headers })
+ const [usersRes, itemsRes, departmentsRes, monthlyRes] = await Promise.all([
+ api.get(`/api/stats/top-users?period=${selectedPeriod}`),
+ api.get(`/api/stats/top-items?period=${selectedPeriod}`),
+ api.get(`/api/stats/top-departments?period=${selectedPeriod}`),
+ api.get(`/api/stats/monthly-requests?period=${selectedPeriod}`)
  ]);
-
  const statsData = {
- topUsers: usersRes.ok ? await usersRes.json() : [],
- topItems: itemsRes.ok ? await itemsRes.json() : [],
- topDepartments: departmentsRes.ok ? await departmentsRes.json() : [],
- monthlyData: monthlyRes.ok ? await monthlyRes.json() : []
+ topUsers: usersRes.data ?? [],
+ topItems: itemsRes.data ?? [],
+ topDepartments: departmentsRes.data ?? [],
+ monthlyData: monthlyRes.data ?? []
  };
-
  setStats(statsData);
  } catch (err) {
  setError('Errore nel caricamento delle statistiche');

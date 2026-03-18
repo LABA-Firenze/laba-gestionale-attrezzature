@@ -9,20 +9,15 @@ const ReportFault = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
-  const { token, user } = useAuth();
+  const { api, user } = useAuth();
 
   // Fetch user's reports
   const fetchReports = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/segnalazioni/mie`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!response.ok) throw new Error('Errore nel caricamento segnalazioni');
-
-      const data = await response.json();
-      setReports(data);
+      const response = await api.get('/api/segnalazioni/mie');
+      const data = response.data ?? [];
+      setReports(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
     } finally {

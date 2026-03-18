@@ -56,7 +56,7 @@ const Inventory = () => {
  unita: []
  });
  
-  const { isAdmin, token } = useAuth();
+  const { isAdmin, api } = useAuth();
 
   // Function to abbreviate course names
   const abbreviateCourse = (courseName) => {
@@ -79,16 +79,11 @@ const Inventory = () => {
    if (unit.stato !== 'prestato') return; // Only show details for loaned units
    
    try {
-     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/unit/${unit.id}`, {
-       headers: { 'Authorization': `Bearer ${token}` }
-     });
-     
-     if (response.ok) {
-       const loanDetails = await response.json();
-       setSelectedUnit(unit);
-       setUnitLoanDetails(loanDetails);
-       setShowUnitDetailModal(true);
-     }
+     const response = await api.get(`/api/prestiti/unit/${unit.id}`);
+     const loanDetails = response.data ?? {};
+     setSelectedUnit(unit);
+     setUnitLoanDetails(loanDetails);
+     setShowUnitDetailModal(true);
    } catch (error) {
      console.error('Error fetching unit loan details:', error);
    }
@@ -99,22 +94,11 @@ const Inventory = () => {
  try {
  setLoading(true);
  const [inventoryRes, loansRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario`, {
- headers: { 'Authorization': `Bearer ${token}` }
- }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti?all=1`, {
- headers: { 'Authorization': `Bearer ${token}` }
- })
+        api.get('/api/inventario'),
+        api.get('/api/prestiti?all=1')
  ]);
- 
- if (!inventoryRes.ok) throw new Error('Errore nel caricamento inventario');
- if (!loansRes.ok) throw new Error('Errore nel caricamento prestiti');
- 
- const [inventoryData, loansData] = await Promise.all([
- inventoryRes.json(),
- loansRes.json()
- ]);
- 
+ const inventoryData = inventoryRes.data ?? [];
+ const loansData = loansRes.data ?? [];
  setInventory(inventoryData);
  setLoans(loansData);
  } catch (err) {
@@ -127,16 +111,9 @@ const Inventory = () => {
  // Fetch categories
  const fetchCategories = async () => {
  try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categorie-semplici`, {
- headers: {
- 'Authorization': `Bearer ${token}`
- }
- });
- 
- if (!response.ok) throw new Error('Errore nel caricamento categorie');
- 
- const data = await response.json();
- setCategories(data);
+      const response = await api.get('/api/categorie-semplici');
+ const data = response.data ?? [];
+ setCategories(Array.isArray(data) ? data : []);
  } catch (err) {
  console.error('Errore categorie:', err);
  }
@@ -145,16 +122,9 @@ const Inventory = () => {
  // Fetch courses
  const fetchCourses = async () => {
  try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/corsi`, {
- headers: {
- 'Authorization': `Bearer ${token}`
- }
- });
- 
- if (!response.ok) throw new Error('Errore nel caricamento corsi');
- 
- const data = await response.json();
- setCourses(data);
+      const response = await api.get('/api/corsi');
+ const data = response.data ?? [];
+ setCourses(Array.isArray(data) ? data : []);
  } catch (err) {
  console.error('Errore corsi:', err);
  }
@@ -163,16 +133,9 @@ const Inventory = () => {
   // Fetch units for a specific item
   const fetchItemUnits = async (itemId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${itemId}/units`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Errore nel caricamento unità');
-
-      const data = await response.json();
-      return data;
+      const response = await api.get(`/api/inventario/${itemId}/units`);
+      const data = response.data ?? [];
+      return Array.isArray(data) ? data : [];
     } catch (err) {
       console.error('Errore unità:', err);
       return [];
@@ -315,24 +278,11 @@ const Inventory = () => {
     if (!window.confirm('Sei sicuro di voler eliminare questo articolo?')) return;
 
  try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${itemId}`, {
- method: 'DELETE',
- headers: {
- 'Authorization': `Bearer ${token}`
- }
- });
-
- if (!response.ok) {
-        const errorData = await response.json();
-        // Mostra modal di avviso invece di errore generico
-        setDeleteWarningMessage(errorData.error || 'Errore nell\'eliminazione');
-        setShowDeleteWarningModal(true);
-        return;
-      }
+      await api.delete(`/api/inventario/${itemId}`);
 
       await fetchInventory();
     } catch (err) {
-      setDeleteWarningMessage(err.message);
+      setDeleteWarningMessage(err.response?.data?.error || err.message);
       setShowDeleteWarningModal(true);
     }
   };
@@ -340,7 +290,7 @@ const Inventory = () => {
   // Handle export
   const handleExport = async () => {
     try {
-      await exportInventoryToExcel(token);
+      await exportInventoryToExcel(api);
     } catch (err) {
       setError(err.message);
     }
@@ -349,7 +299,7 @@ const Inventory = () => {
   // Handle import
   const handleImportExcel = async (file) => {
     try {
-      const result = await importInventoryFromExcel(file, token);
+      const result = await importInventoryFromExcel(file, api);
       console.log('Import result:', result);
       
       // Refresh inventory after import
@@ -371,7 +321,7 @@ const Inventory = () => {
   // Handle template
   const handleTemplate = async () => {
     try {
-      await generateInventoryTemplate(token);
+      await generateInventoryTemplate(api);
     } catch (err) {
       setError(err.message);
     }
@@ -382,16 +332,7 @@ const Inventory = () => {
     if (!newCategory.nome.trim()) return;
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categorie-semplici`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newCategory)
-      });
-
-      if (!response.ok) throw new Error('Errore nella creazione categoria');
+      await api.post('/api/categorie-semplici', newCategory);
 
       setNewCategory({ nome: '' });
       await fetchCategories();
@@ -422,14 +363,7 @@ const Inventory = () => {
     if (!categoryToDelete) return;
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categorie-semplici/${categoryToDelete.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Errore nell\'eliminazione categoria');
+      await api.delete(`/api/categorie-semplici/${categoryToDelete.id}`);
 
       await fetchCategories();
       await fetchInventory(); // Ricarica l'inventario per aggiornare le categorie
@@ -460,16 +394,7 @@ const Inventory = () => {
     if (!editingCategory || !editCategoryName.trim()) return;
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categorie-semplici/${editingCategory.id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nome: editCategoryName.trim() })
-      });
-
-      if (!response.ok) throw new Error('Errore nella modifica categoria');
+      await api.put(`/api/categorie-semplici/${editingCategory.id}`, { nome: editCategoryName.trim() });
 
       await fetchCategories();
       await fetchInventory(); // Ricarica l'inventario per aggiornare le categorie

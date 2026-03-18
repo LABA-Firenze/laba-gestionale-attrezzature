@@ -27,7 +27,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   const [note, setNote] = useState('');
   const [tipoUtilizzo, setTipoUtilizzo] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const { token, user } = useAuth();
+  const { api, user } = useAuth();
 
   // Parsing YYYY-MM-DD in timezone locale (evita bug sabato/domenica)
   const getDayOfWeekLocal = (dateStr) => {
@@ -103,13 +103,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
 
   const fetchInventory = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/disponibili`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
+      const response = await api.get('/api/inventario/disponibili');
+      if (response.data != null) {
+        const data = Array.isArray(response.data) ? response.data : [];
         // Group items by name - mostra TUTTI gli articoli (anche con 0 disponibili oggi)
         // così l'utente può richiederli per date future quando saranno liberi
         const groupedInventory = data.reduce((acc, item) => {
@@ -134,13 +130,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   const fetchAvailableUnits = async (inventoryId) => {
     try {
       // Usa /units (tutte le unità) invece di /disponibili (solo quelle libere oggi)
-      // così l'utente può selezionare una unità e richiederla per date future
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${inventoryId}/units`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setAvailableUnits(data);
+      const response = await api.get(`/api/inventario/${inventoryId}/units`);
+      if (response.data != null) {
+        setAvailableUnits(Array.isArray(response.data) ? response.data : []);
       } else {
         setAvailableUnits([]);
       }
@@ -256,26 +248,30 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          unit_id: selectedUnit.id,
-          dal: dateRange.dal,
-          al: dataFine.toISOString().split('T')[0],
-          note: note,
-          tipo_utilizzo: selectedObject.tipo_prestito === 'entrambi' ? tipoUtilizzo : null
-        })
+      await api.post('/api/richieste', {
+        unit_id: selectedUnit.id,
+        dal: dateRange.dal,
+        al: dataFine.toISOString().split('T')[0],
+        note: note,
+        tipo_utilizzo: selectedObject.tipo_prestito === 'entrambi' ? tipoUtilizzo : null
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        
-        // Handle user blocked error specially
-        if (errorData.blocked) {
+      window.dispatchEvent(new CustomEvent('showNotification', {
+        detail: {
+          type: 'success',
+          data: {
+            title: 'Richiesta inviata con successo!',
+            body: 'La tua richiesta è stata inviata e sarà valutata dagli amministratori.',
+            icon: '/favicon.ico'
+          }
+        }
+      }));
+      onSuccess();
+      onClose();
+    } catch (err) {
+      const errorData = err.response?.data ?? {};
+      
+      // Handle user blocked error specially
+      if (errorData.blocked) {
           setError(
             <div className="space-y-2">
               <div className="flex items-center">
@@ -296,28 +292,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
               </div>
             </div>
           );
-        } else {
-          throw new Error(errorData.error || 'Errore nella creazione della richiesta');
-        }
-        return;
+      } else {
+        setError(errorData.error || err.message || 'Errore nella creazione della richiesta');
       }
-
-      // Show success notification
-      window.dispatchEvent(new CustomEvent('showNotification', {
-        detail: {
-          type: 'success',
-          data: { 
-            title: 'Richiesta inviata con successo!', 
-            body: 'La tua richiesta è stata inviata e sarà valutata dagli amministratori.',
-            icon: '/favicon.ico'
-          }
-        }
-      }));
-
-      onSuccess();
-      onClose();
-    } catch (err) {
-      setError(err.message);
     } finally {
       setLoading(false);
     }

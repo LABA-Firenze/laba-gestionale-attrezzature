@@ -12,7 +12,7 @@ const ActivityLog = ({ isOpen, onClose }) => {
  dateTo: ''
  });
 
- const { token } = useAuth();
+ const { api } = useAuth();
 
  useEffect(() => {
  if (isOpen) {
@@ -29,14 +29,9 @@ const ActivityLog = ({ isOpen, onClose }) => {
  if (filters.dateFrom) queryParams.append('dateFrom', filters.dateFrom);
  if (filters.dateTo) queryParams.append('dateTo', filters.dateTo);
 
- const response = await fetch(`/api/activity-log?${queryParams}`, {
- headers: { 'Authorization': `Bearer ${token}` }
- });
-
- if (response.ok) {
- const data = await response.json();
- setActivities(data);
- }
+ const response = await api.get(`/api/activity-log?${queryParams}`);
+ const data = response.data ?? [];
+ setActivities(Array.isArray(data) ? data : []);
  } catch (error) {
  console.error('Errore nel caricamento attività:', error);
  } finally {

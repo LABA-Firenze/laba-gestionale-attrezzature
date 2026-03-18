@@ -14,7 +14,7 @@ const ReportBugModal = ({ isOpen, onClose, onSuccess, prefillData = {} }) => {
     urgenza: 'media',
     messaggio: ''
   });
-  const { token, user } = useAuth();
+  const { api, user } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -35,17 +35,10 @@ const ReportBugModal = ({ isOpen, onClose, onSuccess, prefillData = {} }) => {
 
   const fetchMyLoans = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/mie`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        // Only include active loans - completed loans cannot be reported for faults
-        const activeLoans = data.filter(loan => loan.stato === 'attivo');
-        setMyLoans(activeLoans);
-      }
+      const response = await api.get('/api/prestiti/mie');
+      const data = response.data ?? [];
+      const activeLoans = (data || []).filter(loan => loan.stato === 'attivo');
+      setMyLoans(activeLoans);
     } catch (err) {
       console.error('Errore caricamento prestiti:', err);
     }
@@ -53,17 +46,9 @@ const ReportBugModal = ({ isOpen, onClose, onSuccess, prefillData = {} }) => {
 
   const fetchLoanUnits = async (loanId) => {
     try {
-      // Get only units that the user has on loan for this specific loan
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/${loanId}/units`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setAvailableUnits(data);
-      } else {
-        console.error('Errore caricamento unità prestito:', response.status);
-        setAvailableUnits([]);
-      }
+      const response = await api.get(`/api/prestiti/${loanId}/units`);
+      const data = response.data ?? [];
+      setAvailableUnits(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Errore caricamento unità:', err);
       setAvailableUnits([]);
@@ -95,27 +80,15 @@ const ReportBugModal = ({ isOpen, onClose, onSuccess, prefillData = {} }) => {
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/segnalazioni`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          tipo: formData.tipo,
-          urgenza: formData.urgenza,
-          messaggio: formData.messaggio,
-          inventario_id: selectedLoan.inventario_id,
-          unit_id: selectedUnit.id,
-          prestito_id: selectedLoan.id,
-          user_id: user.id
-        })
+      await api.post('/api/segnalazioni', {
+        tipo: formData.tipo,
+        urgenza: formData.urgenza,
+        messaggio: formData.messaggio,
+        inventario_id: selectedLoan.inventario_id,
+        unit_id: selectedUnit.id,
+        prestito_id: selectedLoan.id,
+        user_id: user.id
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Errore nella creazione della segnalazione');
-      }
 
       // Show success notification
       window.dispatchEvent(new CustomEvent('showNotification', {

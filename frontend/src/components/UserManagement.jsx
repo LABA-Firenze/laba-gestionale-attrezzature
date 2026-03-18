@@ -20,7 +20,7 @@ const [selectedUserForPenalty, setSelectedUserForPenalty] = useState(null);
 const [userPenalties, setUserPenalties] = useState([]);
 const [manualPenaltyStrikes, setManualPenaltyStrikes] = useState(1);
 const [manualPenaltyMotivo, setManualPenaltyMotivo] = useState('');
-const { token, user: currentUser } = useAuth();
+const { api, user: currentUser } = useAuth();
 
 const normalizeRole = (value) => (value || '').toString().trim().toLowerCase();
 
@@ -134,24 +134,15 @@ const canManagePenalties = useMemo(() => {
  const fetchUsers = useCallback(async () => {
    try {
      setLoading(true);
-     const response = await fetch(`${API_BASE_URL}/api/auth/users`, {
-       headers: {
-         'Authorization': `Bearer ${token}`
-       }
-     });
-     
-     if (!response.ok) {
-       throw new Error('Errore nel caricamento utenti');
-     }
-     
-    const data = await response.json();
-    setUsers(data || []);
+     const response = await api.get('/api/auth/users');
+     const data = response.data ?? [];
+     setUsers(Array.isArray(data) ? data : []);
    } catch (err) {
      setError(err.message);
    } finally {
      setLoading(false);
    }
- }, [token]);
+ }, [api]);
 
  useEffect(() => {
  fetchUsers();
@@ -198,20 +189,7 @@ const adminUsers = useMemo(() => normalizedUsers.filter(user => normalizeRole(us
  try {
  setError(null);
  
-   const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify(formData)
- });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nella creazione utente');
- }
-
+   await api.post('/api/auth/register', formData);
  await fetchUsers();
  setShowAddModal(false);
  setFormData({
@@ -239,20 +217,7 @@ const adminUsers = useMemo(() => normalizedUsers.filter(user => normalizeRole(us
  try {
  setError(null);
  
-   const response = await fetch(`${API_BASE_URL}/api/auth/admin-reset-password`, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({ email: resetUser.email, newPassword: resetData.newPassword })
- });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nel reset password');
- }
-
+   await api.post('/api/auth/admin-reset-password', { email: resetUser.email, newPassword: resetData.newPassword });
  setShowPasswordResetModal(false);
  setResetUser(null);
  setResetData({ newPassword: '', confirmPassword: '' });
@@ -293,20 +258,7 @@ ruolo: user.ruolo || 'user'
  try {
  setError(null);
  
-   const response = await fetch(`${API_BASE_URL}/api/users/${editingUser.id}`, {
- method: 'PUT',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify(formData)
- });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nell\'aggiornamento utente');
- }
-
+   await api.put(`/api/users/${editingUser.id}`, formData);
  await fetchUsers();
  setShowEditModal(false);
  setEditingUser(null);
@@ -321,18 +273,7 @@ return;
 }
 
 try {
-   const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
-method: 'DELETE',
-headers: {
-'Authorization': `Bearer ${token}`
-}
-});
-
-if (!response.ok) {
-const errorData = await response.json();
-throw new Error(errorData.error || 'Errore nell\'eliminazione utente');
-}
-
+   await api.delete(`/api/users/${userId}`);
 await fetchUsers();
 } catch (err) {
 setError(err.message);
@@ -350,14 +291,9 @@ await fetchUserPenalties(user.id);
 
 const fetchUserPenalties = async (userId) => {
 try {
-   const response = await fetch(`${API_BASE_URL}/api/penalties/user/${userId}`, {
-headers: { 'Authorization': `Bearer ${token}` }
-});
-
-if (response.ok) {
-const data = await response.json();
-setUserPenalties(data.penalties || []);
-}
+   const response = await api.get(`/api/penalties/user/${userId}`);
+   const data = response.data ?? {};
+   setUserPenalties(data.penalties || []);
 } catch (err) {
 console.error('Errore nel caricamento penalità:', err);
 }
@@ -365,20 +301,7 @@ console.error('Errore nel caricamento penalità:', err);
 
 const handleUnblockUser = async (userId, resetStrikes = false) => {
 try {
-   const response = await fetch(`${API_BASE_URL}/api/penalties/unblock-user`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${token}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({ userId, resetStrikes })
-});
-
-if (!response.ok) {
-const errorData = await response.json();
-throw new Error(errorData.error || 'Errore nello sblocco utente');
-}
-
+   await api.post('/api/penalties/unblock-user', { userId, resetStrikes });
 await fetchUsers();
 setShowPenaltyModal(false);
 } catch (err) {
@@ -408,38 +331,20 @@ const confirm = window.confirm(
 if (!confirm) return;
 }
 
-const response = await fetch(`${API_BASE_URL}/api/penalties/assign-manual`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${token}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({
+const res = await api.post('/api/penalties/assign-manual', {
 userId: selectedUserForPenalty.id,
 strikes: manualPenaltyStrikes,
 motivo: manualPenaltyMotivo || undefined
-})
 });
-
-if (!response.ok) {
-const errorData = await response.json();
-throw new Error(errorData.error || errorData.details || 'Errore nell\'assegnazione penalità');
-}
-
-const data = await response.json();
+const data = res.data ?? {};
 alert(data.message || 'Penalità assegnata con successo');
-
-// Reset form
 setManualPenaltyStrikes(1);
 setManualPenaltyMotivo('');
-
-// Refresh data
 await fetchUsers();
 await fetchUserPenalties(selectedUserForPenalty.id);
-// Aggiorna anche selectedUserForPenalty per riflettere i nuovi strike
-const updatedUser = await fetch(`${API_BASE_URL}/api/auth/users`, {
-headers: { 'Authorization': `Bearer ${token}` }
-}).then(r => r.json()).then(users => users.find(u => u.id === selectedUserForPenalty.id));
+const usersRes = await api.get('/api/auth/users');
+const usersList = usersRes.data ?? [];
+const updatedUser = usersList.find(u => u.id === selectedUserForPenalty.id);
 if (updatedUser) {
 setSelectedUserForPenalty(updatedUser);
 }
@@ -459,29 +364,14 @@ if (!window.confirm('Sei sicuro di voler rimuovere questa penalità? Gli strike 
 return;
 }
 
-const response = await fetch(`${API_BASE_URL}/api/penalties/${penaltyId}`, {
-method: 'DELETE',
-headers: {
-'Authorization': `Bearer ${token}`,
-'Content-Type': 'application/json'
-}
-});
-
-if (!response.ok) {
-const errorData = await response.json();
-throw new Error(errorData.error || errorData.details || 'Errore nella rimozione penalità');
-}
-
-const data = await response.json();
+const res = await api.delete(`/api/penalties/${penaltyId}`);
+const data = res.data ?? {};
 alert(data.message || 'Penalità rimossa con successo');
-
-// Refresh data
 await fetchUsers();
 await fetchUserPenalties(selectedUserForPenalty.id);
-// Aggiorna anche selectedUserForPenalty
-const updatedUser = await fetch(`${API_BASE_URL}/api/auth/users`, {
-headers: { 'Authorization': `Bearer ${token}` }
-}).then(r => r.json()).then(users => users.find(u => u.id === selectedUserForPenalty.id));
+const usersRes = await api.get('/api/auth/users');
+const usersList = usersRes.data ?? [];
+const updatedUser = usersList.find(u => u.id === selectedUserForPenalty.id);
 if (updatedUser) {
 setSelectedUserForPenalty(updatedUser);
 }

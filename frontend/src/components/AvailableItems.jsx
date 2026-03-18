@@ -14,20 +14,15 @@ const AvailableItems = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showNewRequestModal, setShowNewRequestModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const { token, user } = useAuth();
+  const { api, user } = useAuth();
 
   // Fetch available items
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/disponibili`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!response.ok) throw new Error('Errore nel caricamento articoli');
-
-      const data = await response.json();
-      setItems(data);
+      const response = await api.get('/api/inventario/disponibili');
+      const data = response.data ?? [];
+      setItems(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -38,15 +33,9 @@ const AvailableItems = () => {
   // Fetch categories - filter by user's course
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categorie-semplici`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Show all categories for now - can add course filtering later if needed
-        setCategories(data);
-      }
+      const response = await api.get('/api/categorie-semplici');
+      const data = response.data ?? [];
+      setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Errore caricamento categorie:', err);
     }

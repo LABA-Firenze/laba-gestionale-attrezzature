@@ -31,7 +31,7 @@ const UserDashboard = ({ onOpenNotifications }) => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showReportFaultModal, setShowReportFaultModal] = useState(false);
   const [welcomeSectionDismissed, setWelcomeSectionDismissed] = useState(false);
-  const { token, user } = useAuth();
+  const { api, user } = useAuth();
 
   // Load welcome section dismissed state from localStorage
   useEffect(() => {
@@ -66,28 +66,16 @@ const UserDashboard = ({ onOpenNotifications }) => {
       setLoading(true);
       setError(null);
 
-      // Fetch all data in parallel
       const [inventoryRes, requestsRes, reportsRes, loansRes, penaltiesRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/disponibili`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/richieste/mie`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/segnalazioni/mie`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti/mie`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/penalties/user/${user.id}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
+        api.get('/api/inventario/disponibili'),
+        api.get('/api/richieste/mie'),
+        api.get('/api/segnalazioni/mie'),
+        api.get('/api/prestiti/mie'),
+        api.get(`/api/penalties/user/${user.id}`)
       ]);
 
-      // Process inventory data
-      if (inventoryRes.ok) {
-        const inventoryData = await inventoryRes.json();
+      const inventoryData = inventoryRes.data ?? [];
+      if (Array.isArray(inventoryData)) {
         // Conta le UNITÀ disponibili totali, non gli articoli
         // Assicuriamoci che unita_disponibili sia un numero
         const totalAvailableUnits = inventoryData.reduce((total, item) => {
@@ -97,38 +85,26 @@ const UserDashboard = ({ onOpenNotifications }) => {
         setStats(prev => ({ ...prev, availableItems: totalAvailableUnits }));
       }
 
-      // Process requests data
-      if (requestsRes.ok) {
-        const requestsData = await requestsRes.json();
-        setStats(prev => ({ ...prev, myRequests: requestsData.length }));
-        setRecentData(prev => ({ ...prev, recentRequests: requestsData.slice(0, 3) }));
-      }
+      const requestsData = requestsRes.data ?? [];
+      setStats(prev => ({ ...prev, myRequests: requestsData.length }));
+      setRecentData(prev => ({ ...prev, recentRequests: (requestsData || []).slice(0, 3) }));
 
-      // Process reports data
-      if (reportsRes.ok) {
-        const reportsData = await reportsRes.json();
-        setStats(prev => ({ ...prev, myReports: reportsData.length }));
-        setRecentData(prev => ({ ...prev, recentReports: reportsData.slice(0, 3) }));
-      }
+      const reportsData = reportsRes.data ?? [];
+      setStats(prev => ({ ...prev, myReports: reportsData.length }));
+      setRecentData(prev => ({ ...prev, recentReports: (reportsData || []).slice(0, 3) }));
 
-      // Process loans data
-      if (loansRes.ok) {
-        const loansData = await loansRes.json();
-        const activeLoans = loansData.filter(loan => loan.stato === 'attivo');
-        setStats(prev => ({ ...prev, myLoans: activeLoans.length }));
-        setRecentData(prev => ({ ...prev, activeLoans: activeLoans.slice(0, 3) }));
-      }
+      const loansData = loansRes.data ?? [];
+      const activeLoans = (loansData || []).filter(loan => loan.stato === 'attivo');
+      setStats(prev => ({ ...prev, myLoans: activeLoans.length }));
+      setRecentData(prev => ({ ...prev, activeLoans: activeLoans.slice(0, 3) }));
 
-      // Process penalties data
-      if (penaltiesRes.ok) {
-        const penaltiesData = await penaltiesRes.json();
-        setUserPenalties({
-          strikes: penaltiesData.userInfo?.penalty_strikes || 0,
-          isBlocked: penaltiesData.userInfo?.is_blocked || false,
-          blockedReason: penaltiesData.userInfo?.blocked_reason || null,
-          penalties: penaltiesData.penalties || []
-        });
-      }
+      const penaltiesData = penaltiesRes.data ?? {};
+      setUserPenalties({
+        strikes: penaltiesData.userInfo?.penalty_strikes || 0,
+        isBlocked: penaltiesData.userInfo?.is_blocked || false,
+        blockedReason: penaltiesData.userInfo?.blocked_reason || null,
+        penalties: penaltiesData.penalties || []
+      });
 
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -136,14 +112,13 @@ const UserDashboard = ({ onOpenNotifications }) => {
     } finally {
       setLoading(false);
     }
-  }, [token, user]);
+  }, [api, user]);
 
   useEffect(() => {
-    // Aspetta che token e user siano disponibili prima di caricare i dati
-    if (token && user) {
+    if (user) {
       fetchData();
     }
-  }, [token, user, fetchData]);
+  }, [user, fetchData]);
 
   // Helper function to safely format dates
   const formatDate = (dateString) => {

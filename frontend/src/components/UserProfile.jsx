@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../auth/AuthContext';
 
 const UserProfile = ({ onClose, onUpdate }) => {
- const { user, token } = useAuth();
+ const { user, api } = useAuth();
  const [formData, setFormData] = useState({
  phone: '',
  notifications: true
@@ -49,23 +49,10 @@ const UserProfile = ({ onClose, onUpdate }) => {
  setSuccess(null);
 
  try {
- const response = await fetch(`/api/auth/users/${user.id}`, {
- method: 'PUT',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({
+ await api.put(`/api/auth/users/${user.id}`, {
  phone: formData.phone,
  notifications: formData.notifications
- })
  });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nell\'aggiornamento del profilo');
- }
-
  setSuccess('Profilo aggiornato con successo!');
  setTimeout(() => {
  onUpdate();
@@ -97,23 +84,10 @@ const UserProfile = ({ onClose, onUpdate }) => {
  }
 
  try {
- const response = await fetch('/api/auth/forgot-password', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({
+ await api.post('/api/auth/forgot-password', {
  email: user.email,
  newPassword: passwordData.newPassword
- })
  });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nell\'aggiornamento della password');
- }
-
  setSuccess('Password aggiornata con successo!');
  setPasswordData({
  currentPassword: '',

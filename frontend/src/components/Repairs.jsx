@@ -26,7 +26,7 @@ const Repairs = () => {
  const [availableUnits, setAvailableUnits] = useState([]);
  const [showDetailsModal, setShowDetailsModal] = useState(false);
  const [selectedRepair, setSelectedRepair] = useState(null);
- const { token } = useAuth();
+ const { api } = useAuth();
 
  // Handle object selection
  const handleObjectSelect = (object) => {
@@ -74,14 +74,9 @@ const Repairs = () => {
    }
    
    try {
-     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${objectId}/units`, {
-       headers: { 'Authorization': `Bearer ${token}` }
-     });
-     
-     if (response.ok) {
-       const units = await response.json();
-       setAvailableUnits(units);
-     }
+     const response = await api.get(`/api/inventario/${objectId}/units`);
+     const units = response.data ?? [];
+     setAvailableUnits(Array.isArray(units) ? units : []);
    } catch (err) {
      console.error('Errore caricamento unità:', err);
    }
@@ -96,21 +91,7 @@ const handleCompleteRepair = async (repairId) => {
       throw new Error('Riparazione non trovata');
     }
 
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/riparazioni/${repairId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ 
-        stato: 'completata'
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('Errore nel completamento riparazione');
-    }
-
+    await api.put(`/api/riparazioni/${repairId}`, { stato: 'completata' });
     await fetchData(); // Refresh the list
     setShowDetailsModal(false);
   } catch (err) {
@@ -121,17 +102,7 @@ const handleCompleteRepair = async (repairId) => {
 // Handle repair cancellation
 const handleCancelRepair = async (repairId) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/riparazioni/${repairId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ stato: 'annullata' })
-    });
-
-    if (!response.ok) throw new Error('Errore nell\'annullamento riparazione');
-
+    await api.put(`/api/riparazioni/${repairId}`, { stato: 'annullata' });
     await fetchData();
     setShowDetailsModal(false);
   } catch (error) {
@@ -161,19 +132,11 @@ const handleCancelRepair = async (repairId) => {
    stato: formData.stato
  };
 
- const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`, {
- method,
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify(submitData)
- });
-
- if (!response.ok) {
- throw new Error('Errore nel salvataggio');
+ if (editingRepair) {
+ await api.put(`/api/riparazioni/${editingRepair.id}`, submitData);
+ } else {
+ await api.post('/api/riparazioni', submitData);
  }
-
  await fetchData();
  setShowAddModal(false);
  resetModal();
@@ -187,22 +150,11 @@ const handleCancelRepair = async (repairId) => {
  try {
  setLoading(true);
  const [repairsRes, inventoryRes] = await Promise.all([
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/riparazioni`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      api.get('/api/riparazioni'),
+      api.get('/api/inventario')
  ]);
-
- if (!repairsRes.ok) throw new Error('Errore nel caricamento riparazioni');
- if (!inventoryRes.ok) throw new Error('Errore nel caricamento inventario');
-
- const [repairsData, inventoryData] = await Promise.all([
- repairsRes.json(),
- inventoryRes.json()
- ]);
-
+ const repairsData = repairsRes.data ?? [];
+ const inventoryData = inventoryRes.data ?? [];
  setRepairs(repairsData);
  setInventory(inventoryData);
  } catch (err) {

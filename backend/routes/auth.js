@@ -48,7 +48,24 @@ function signUser(user) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 }
 
-// POST /api/auth/login
+const COOKIE_NAME = 'laba_token';
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 giorni
+
+function setAuthCookie(res, token) {
+  res.cookie(COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: COOKIE_MAX_AGE,
+    path: '/'
+  });
+}
+
+function clearAuthCookie(res) {
+  res.clearCookie(COOKIE_NAME, { path: '/' });
+}
+
+// POST /api/auth/login — imposta cookie httpOnly, risponde solo con { user }
 r.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body || {};
@@ -56,46 +73,46 @@ r.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email e password richiesti' });
     }
 
-    // Check special admin first
+    let userPayload;
     if (isSpecialAdminLogin(email, password)) {
       const token = signUser(specialAdminUser());
-      return res.json({
-        token,
-        user: specialAdminUser()
-      });
-    }
-
-    // Check database users
-    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
-    if (result.length === 0) {
-      return res.status(401).json({ error: 'Credenziali non valide' });
-    }
-
-    const user = normalizeUser(result[0]);
-    const isValid = bcrypt.compareSync(password, user.password_hash);
-    if (!isValid) {
-      return res.status(401).json({ error: 'Credenziali non valide' });
-    }
-
-    const token = signUser(user);
-    res.json({
-      token,
-      user: {
+      setAuthCookie(res, token);
+      userPayload = specialAdminUser();
+    } else {
+      const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+      if (result.length === 0) {
+        return res.status(401).json({ error: 'Credenziali non valide' });
+      }
+      const user = normalizeUser(result[0]);
+      const isValid = bcrypt.compareSync(password, user.password_hash);
+      if (!isValid) {
+        return res.status(401).json({ error: 'Credenziali non valide' });
+      }
+      const token = signUser(user);
+      setAuthCookie(res, token);
+      userPayload = {
         id: user.id,
         email: user.email,
         name: user.name,
         surname: user.surname,
         ruolo: user.ruolo,
         corso_accademico: user.corso_accademico
-      }
-    });
+      };
+    }
+    res.json({ user: userPayload });
   } catch (error) {
     console.error('Errore login:', error);
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
 
-// POST /api/auth/register
+// POST /api/auth/logout — rimuove il cookie
+r.post('/logout', (req, res) => {
+  clearAuthCookie(res);
+  res.json({ ok: true });
+});
+
+// POST /api/auth/register (pubblico o con admin: se non autenticato, ruolo sempre 'user')
 r.post('/register', async (req, res) => {
   try {
     const { email, password, name, surname, phone, matricola, corso_accademico, ruolo } = req.body || {};
@@ -112,8 +129,22 @@ r.post('/register', async (req, res) => {
 
     const hashedPassword = bcrypt.hashSync(password, 10);
     
-    const userRole = normalizeRole(ruolo, null, email);
-    const storedRole = userRole === 'admin' ? 'supervisor' : userRole;
+    // Solo un admin autenticato può assegnare un ruolo diverso da 'user'. Registrazione pubblica = sempre 'user'.
+    let storedRole = 'user';
+    if (JWT_SECRET) {
+      try {
+        const auth = req.headers.authorization || '';
+        const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+        if (token) {
+          const payload = jwt.verify(token, JWT_SECRET);
+          const isAdmin = payload?.id === -1 || (payload?.ruolo || '').toLowerCase() === 'admin' || (payload?.ruolo || '').toLowerCase() === 'supervisor';
+          if (isAdmin && ruolo != null && ruolo !== '') {
+            const userRole = normalizeRole(ruolo, null, email);
+            storedRole = userRole === 'admin' ? 'supervisor' : userRole;
+          }
+        }
+      } catch (_) { /* token assente/invalido: resta 'user' */ }
+    }
 
     const result = await query(`
       INSERT INTO users (email, password_hash, name, surname, phone, matricola, corso_accademico, ruolo)
@@ -123,11 +154,8 @@ r.post('/register', async (req, res) => {
 
     const user = normalizeUser(result[0]);
     const token = signUser(user);
-    
-    res.status(201).json({
-      token,
-      user
-    });
+    setAuthCookie(res, token);
+    res.status(201).json({ user });
   } catch (error) {
     console.error('Errore registrazione:', error);
     res.status(500).json({ error: 'Errore interno del server' });

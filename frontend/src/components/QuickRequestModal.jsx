@@ -7,7 +7,7 @@ const QuickRequestModal = ({ isOpen, onClose, request, onSuccess }) => {
  const [error, setError] = useState(null);
  const [action, setAction] = useState('');
  const [motivation, setMotivation] = useState('');
- const { token } = useAuth();
+ const { api } = useAuth();
 
  const handleAction = async (selectedAction) => {
  if (selectedAction === 'rifiuta' && !motivation.trim()) {
@@ -19,22 +19,9 @@ const QuickRequestModal = ({ isOpen, onClose, request, onSuccess }) => {
  setLoading(true);
  setError(null);
 
- const response = await fetch(`/api/prestiti/${request.id}/${selectedAction}`, {
- method: 'PUT',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({
-          motivazione: selectedAction === 'rifiuta' ? motivation : null
- })
+ await api.put(`/api/prestiti/${request.id}/${selectedAction}`, {
+ motivazione: selectedAction === 'rifiuta' ? motivation : null
  });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || `Errore nell'${selectedAction === 'approva' ? 'approvazione' : 'rifiuto'}`);
- }
-
  onSuccess && onSuccess();
  handleClose();
  } catch (err) {

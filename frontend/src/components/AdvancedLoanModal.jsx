@@ -62,7 +62,7 @@ const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
  const [tipoUtilizzo, setTipoUtilizzo] = useState('');
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState(null);
- const { token } = useAuth();
+ const { api } = useAuth();
 
  // Fetch data and reset search when modal opens
  useEffect(() => {
@@ -86,13 +86,9 @@ const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
 
 const fetchInventory = async () => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setInventory(data.filter(item => item.stato_effettivo === 'disponibile'));
-    }
+    const response = await api.get('/api/inventario');
+    const data = response.data ?? [];
+    setInventory(Array.isArray(data) ? data.filter(item => item.stato_effettivo === 'disponibile') : []);
   } catch (err) {
     console.error('Errore caricamento inventario:', err);
   }
@@ -100,15 +96,10 @@ const fetchInventory = async () => {
 
 const fetchUsers = async () => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/users`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      // Filtra solo gli utenti normali (non admin) per i prestiti
-      const regularUsers = data.filter(user => user.ruolo !== 'admin');
-      setUsers(regularUsers);
-    }
+    const response = await api.get('/api/auth/users');
+    const data = response.data ?? [];
+    const regularUsers = Array.isArray(data) ? data.filter(user => user.ruolo !== 'admin') : [];
+    setUsers(regularUsers);
   } catch (err) {
     console.error('Errore caricamento utenti:', err);
   }
@@ -116,16 +107,9 @@ const fetchUsers = async () => {
 
 const fetchAvailableUnits = async (itemId) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${itemId}/disponibili`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setAvailableUnits(data);
-    } else {
-      console.error('Errore nel caricamento unità disponibili:', response.status);
-      setAvailableUnits([]);
-    }
+    const response = await api.get(`/api/inventario/${itemId}/disponibili`);
+    const data = response.data ?? [];
+    setAvailableUnits(Array.isArray(data) ? data : []);
   } catch (err) {
     console.error('Errore caricamento unità:', err);
     setAvailableUnits([]);
@@ -202,35 +186,16 @@ const fetchAvailableUnits = async (itemId) => {
  
  // Create manual user if needed
  if (isManualUser) {
- const userResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/register`, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({
+ const userResponse = await api.post('/api/auth/register', {
  ...manualUser,
  password: 'temp_password_' + Date.now() // Temporary password
- })
  });
- 
- if (!userResponse.ok) {
- const errorData = await userResponse.json();
- throw new Error(errorData.error || 'Errore nella creazione utente');
- }
- 
- const userData = await userResponse.json();
- userId = userData.user.id;
+ const userData = userResponse.data ?? {};
+ userId = userData.user?.id;
+ if (!userId) throw new Error(userData.error || 'Errore nella creazione utente');
  }
 
-// Create loan
-const loanResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prestiti`, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
-body: JSON.stringify({
+ await api.post('/api/prestiti', {
   inventario_id: selectedItem.id,
   chi: selectedUser ? `${selectedUser.name} ${selectedUser.surname}` : `${manualUser.name} ${manualUser.surname}`,
   data_uscita: dateRange.dal,
@@ -238,14 +203,7 @@ body: JSON.stringify({
   unita_ids: selectedUnits.map(u => u.id),
   tipo_utilizzo: selectedItem.tipo_prestito === 'entrambi' ? tipoUtilizzo : null,
   note: `Prestito diretto - ${selectedUnits.length} unità`
-})
  });
-
- if (!loanResponse.ok) {
- const errorData = await loanResponse.json();
- throw new Error(errorData.error || 'Errore nella creazione prestito');
- }
-
  onSuccess();
  handleClose();
  } catch (err) {

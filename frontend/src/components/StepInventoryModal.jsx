@@ -23,7 +23,7 @@ const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) 
     unita: []
   });
  
- const { token } = useAuth();
+ const { api } = useAuth();
 
  // Fetch data when modal opens
  useEffect(() => {
@@ -75,11 +75,8 @@ const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) 
  // Fetch existing units for editing
  const fetchExistingUnits = async (itemId) => {
  try {
- const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/inventario/${itemId}/units`, {
- headers: { 'Authorization': `Bearer ${token}` }
- });
- if (response.ok) {
- const units = await response.json();
+ const response = await api.get(`/api/inventario/${itemId}/units`);
+ const units = response.data ?? [];
  setFormData(prev => ({
  ...prev,
  unita: units.map(unit => ({
@@ -88,7 +85,6 @@ const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) 
  prestito_corrente_id: unit.prestito_corrente_id
  }))
  }));
- }
  } catch (err) {
  console.error('Errore caricamento unità:', err);
  }
@@ -96,13 +92,9 @@ const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) 
 
  const fetchCourses = async () => {
  try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/corsi`, {
- headers: { 'Authorization': `Bearer ${token}` }
- });
- if (response.ok) {
- const data = await response.json();
- setCourses(data);
- }
+ const response = await api.get('/api/corsi');
+ const data = response.data ?? [];
+ setCourses(Array.isArray(data) ? data : []);
  } catch (err) {
  console.error('Errore caricamento corsi:', err);
  }
@@ -110,13 +102,9 @@ const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) 
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categorie-semplici`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data);
-      }
+      const response = await api.get('/api/categorie-semplici');
+      const data = response.data ?? [];
+      setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Errore caricamento categorie:', err);
     }
@@ -188,34 +176,19 @@ const handleSubmit = async () => {
 
  try {
  setLoading(true);
- const method = editingItem ? 'PUT' : 'POST';
- const url = editingItem ? `${import.meta.env.VITE_API_BASE_URL}/api/inventario/${editingItem.id}` : `${import.meta.env.VITE_API_BASE_URL}/api/inventario`;
- 
-  // Prepara i dati per l'invio
   const submitData = {
     ...formData,
-    posizione: formData.scaffale, // Mappa scaffale a posizione per il backend
-    categoria_madre: formData.corsi_assegnati[0] || '', // Usa il primo corso selezionato come categoria_madre
+    posizione: formData.scaffale,
+    categoria_madre: formData.corsi_assegnati[0] || '',
     categoria_id: formData.categoria_id
   };
-
-  // Rimuovi i campi che non servono al backend
   delete submitData.scaffale;
 
- const response = await fetch(url, {
- method,
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify(submitData)
- });
-
- if (!response.ok) {
- const errorData = await response.json();
- throw new Error(errorData.error || 'Errore nel salvataggio');
+ if (editingItem) {
+ await api.put(`/api/inventario/${editingItem.id}`, submitData);
+ } else {
+ await api.post('/api/inventario', submitData);
  }
-
  onSuccess && onSuccess();
  handleClose();
  } catch (err) {

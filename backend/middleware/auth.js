@@ -6,10 +6,15 @@ import { normalizeUser, normalizeRole } from '../utils/roles.js';
 // Stessa logica di auth.js: in produzione deve essere impostato da env.
 const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'dev-secret-change-me');
 
+const COOKIE_NAME = 'laba_token';
+
 export async function requireAuth(req, res, next) {
   try {
-    const auth = req.headers.authorization || '';
-    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+    // Cookie httpOnly (priorità) oppure header Authorization per compatibilità
+    const token = req.cookies?.[COOKIE_NAME] ?? (() => {
+      const auth = req.headers.authorization || '';
+      return auth.startsWith('Bearer ') ? auth.slice(7) : null;
+    })();
     
     if (!token) {
       return res.status(401).json({ error: 'Non autorizzato' });

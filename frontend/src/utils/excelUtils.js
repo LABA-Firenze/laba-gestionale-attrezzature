@@ -1,22 +1,10 @@
 import * as XLSX from 'xlsx';
 
-// Export inventario to Excel - ora gestito dal backend
-export const exportInventoryToExcel = async (token) => {
+// Export inventario to Excel - ora gestito dal backend (api = axios con withCredentials)
+export const exportInventoryToExcel = async (api) => {
   try {
-    const response = await fetch('/api/excel/inventario/export', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Errore durante l\'export Excel');
-    }
-
-    // Scarica il file
-    const blob = await response.blob();
+    const response = await api.get('/api/excel/inventario/export', { responseType: 'blob' });
+    const blob = response.data;
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -103,23 +91,11 @@ export const exportRepairsToExcel = (repairs, filename = 'riparazioni_laba.xlsx'
   XLSX.writeFile(wb, filename);
 };
 
-// Generate template for inventory import - ora gestito dal backend
-export const generateInventoryTemplate = async (token) => {
+// Generate template for inventory import - ora gestito dal backend (api = axios con withCredentials)
+export const generateInventoryTemplate = async (api) => {
   try {
-    const response = await fetch('/api/excel/inventario/template', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Errore durante la generazione del template');
-    }
-
-    // Scarica il file
-    const blob = await response.blob();
+    const response = await api.get('/api/excel/inventario/template', { responseType: 'blob' });
+    const blob = response.data;
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -134,17 +110,15 @@ export const generateInventoryTemplate = async (token) => {
   }
 };
 
-// Import inventory from Excel - ora gestito dal backend
-export const importInventoryFromExcel = async (file, token) => {
+// Import inventory from Excel - ora gestito dal backend (api = axios con withCredentials)
+export const importInventoryFromExcel = async (file, api) => {
   try {
-    // Verifica che il file sia valido
     if (!file || !(file instanceof File) && !(file instanceof Blob)) {
       throw new Error('File non valido');
     }
 
     console.log('File ricevuto:', file.name, file.size, file.type);
 
-    // Converti il file in base64
     const base64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
@@ -155,26 +129,13 @@ export const importInventoryFromExcel = async (file, token) => {
       reader.readAsDataURL(file);
     });
 
-    const response = await fetch('/api/excel/inventario/import', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-        fileData: base64
-      })
+    const response = await api.post('/api/excel/inventario/import', {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      fileData: base64
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Errore durante l\'import Excel');
-    }
-
-    const result = await response.json();
+    const result = response.data ?? {};
     return result;
   } catch (error) {
     console.error('Errore import Excel:', error);

@@ -11,6 +11,7 @@ process.on('unhandledRejection', (reason, p) => {
 
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -65,6 +66,7 @@ const corsOrigins = (process.env.CORS_ORIGINS || 'https://attrezzatura.laba.biz'
   .filter(Boolean);
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan("dev"));
 
 app.get("/api/health", (_, res) => res.json({ ok: true, version: "2.1", build: "2.1" }));

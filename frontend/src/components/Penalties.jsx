@@ -18,20 +18,13 @@ const Penalties = () => {
   const [editingPenalty, setEditingPenalty] = useState(null);
   const [editStrikes, setEditStrikes] = useState(1);
   const [editMotivo, setEditMotivo] = useState('');
-  const { token } = useAuth();
+  const { api, isAuthenticated } = useAuth();
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      
-      // Fetch users with penalties
-      const usersRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/users`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!usersRes.ok) throw new Error('Errore nel caricamento utenti');
-
-      const usersData = await usersRes.json();
+      const usersRes = await api.get('/api/auth/users');
+      const usersData = usersRes.data ?? [];
       
       // Filter only users with penalties or blocked
       const usersWithPenalties = usersData.filter(user => 
@@ -40,15 +33,9 @@ const Penalties = () => {
 
       setUsers(usersWithPenalties);
       
-      // Fetch penalties stats
-      const statsRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/penalties/stats`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setPenalties(statsData);
-      }
+      const statsRes = await api.get('/api/penalties/stats');
+      const statsData = statsRes.data ?? [];
+      setPenalties(Array.isArray(statsData) ? statsData : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,14 +45,9 @@ const Penalties = () => {
 
   const fetchUserPenalties = async (userId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/penalties/user/${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUserPenalties(data.penalties || []);
-      }
+      const response = await api.get(`/api/penalties/user/${userId}`);
+      const data = response.data ?? {};
+      setUserPenalties(data.penalties || []);
     } catch (err) {
       console.error('Errore nel caricamento penalità utente:', err);
     }
@@ -74,11 +56,7 @@ const Penalties = () => {
   const handleDeletePenalty = async (penaltyId) => {
     if (!confirm('Sei sicuro di voler eliminare questa penalità? Gli strike verranno sottratti dal totale.')) return;
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/penalties/${penaltyId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!response.ok) throw new Error('Errore nell\'eliminazione');
+      await api.delete(`/api/penalties/${penaltyId}`);
       await fetchData();
       if (selectedUser) await fetchUserPenalties(selectedUser.id);
       setEditingPenalty(null);
@@ -96,21 +74,10 @@ const Penalties = () => {
   const handleSavePenaltyEdit = async () => {
     if (!editingPenalty) return;
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/penalties/${editingPenalty.id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          strike_assegnati: editStrikes,
-          motivo: editMotivo || undefined
-        })
+      await api.put(`/api/penalties/${editingPenalty.id}`, {
+        strike_assegnati: editStrikes,
+        motivo: editMotivo || undefined
       });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Errore nell\'aggiornamento');
-      }
       await fetchData();
       if (selectedUser) await fetchUserPenalties(selectedUser.id);
       setEditingPenalty(null);
@@ -121,19 +88,7 @@ const Penalties = () => {
 
   const handleUnblockUser = async (userId, resetStrikes = false) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/penalties/unblock-user`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId, resetStrikes })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Errore nello sblocco utente');
-      }
+      await api.post('/api/penalties/unblock-user', { userId, resetStrikes });
 
       await fetchData();
       setShowPenaltyModal(false);
@@ -149,10 +104,10 @@ const Penalties = () => {
   };
 
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       fetchData();
     }
-  }, [token]);
+  }, [isAuthenticated]);
 
   // Filter users based on active tab
   const filteredUsers = users.filter(user => {

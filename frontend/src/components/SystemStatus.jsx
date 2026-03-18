@@ -23,7 +23,7 @@ const SystemStatus = () => {
   const [expandedSections, setExpandedSections] = useState({});
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { token, isAdmin } = useAuth();
+  const { api, isAdmin } = useAuth();
 
   // Controllo accesso admin
   if (!isAdmin) {
@@ -52,27 +52,18 @@ const SystemStatus = () => {
 
   // Carica dati reali del sistema
   const fetchSystemStatus = async () => {
-    if (!token) return;
-    
     try {
       setLoading(true);
-      
-      // Carica stato sistema
-      const statusRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/stats/system-status`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
-      if (statusRes.ok) {
-        const statusData = await statusRes.json();
-        setSystemData(prev => ({
-          ...prev,
-          overall: statusData.overall,
-          services: statusData.services,
-          metrics: statusData.metrics
-        }));
-      }
 
-      // Testa endpoint API reali
+      const statusRes = await api.get('/api/stats/system-status');
+      const statusData = statusRes.data ?? {};
+      setSystemData(prev => ({
+        ...prev,
+        overall: statusData.overall ?? prev.overall,
+        services: statusData.services ?? prev.services,
+        metrics: statusData.metrics ?? prev.metrics
+      }));
+
       const endpoints = [
         { name: '/api/auth/login', method: 'POST', url: '/api/auth/login' },
         { name: '/api/inventario', method: 'GET', url: '/api/inventario' },
@@ -86,16 +77,17 @@ const SystemStatus = () => {
         endpoints.map(async (endpoint) => {
           const startTime = Date.now();
           try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint.url}`, {
-              method: endpoint.method === 'POST' ? 'POST' : 'GET',
-              headers: { 'Authorization': `Bearer ${token}` },
-              signal: AbortSignal.timeout(5000) // 5 secondi timeout
-            });
+            const fn = endpoint.method === 'POST' ? () => api.post(endpoint.url, {}) : () => api.get(endpoint.url);
+            const response = await Promise.race([
+              fn(),
+              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
+            ]);
             const responseTime = Date.now() - startTime;
+            const ok = response && (response.status === 200 || response.status === 201);
             return {
               endpoint: endpoint.name,
               method: endpoint.method,
-              status: response.ok ? 'healthy' : 'error',
+              status: ok ? 'healthy' : 'error',
               responseTime: responseTime
             };
           } catch (error) {
@@ -123,13 +115,12 @@ const SystemStatus = () => {
   };
 
   useEffect(() => {
-    if (token && isAdmin) {
+    if (isAdmin) {
       fetchSystemStatus();
-      // Aggiorna ogni 30 secondi
       const interval = setInterval(fetchSystemStatus, 30000);
       return () => clearInterval(interval);
     }
-  }, [token, isAdmin]);
+  }, [isAdmin]);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -448,7 +439,7 @@ const SystemStatus = () => {
           </div>
           
           <div className="p-6">
-            <EmailTestSection token={token} />
+            <EmailTestSection api={api} />
           </div>
         </div>
       </div>
@@ -457,7 +448,7 @@ const SystemStatus = () => {
 };
 
 // Componente per test email
-const EmailTestSection = ({ token }) => {
+const EmailTestSection = ({ api }) => {
   const [testEmail, setTestEmail] = useState('');
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState(null);
@@ -465,36 +456,17 @@ const EmailTestSection = ({ token }) => {
   const testConnection = async () => {
     setTesting(true);
     setResult(null);
-    
-    // Timeout di 30 secondi
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
-    
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/debug/test-email`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}: ${response.statusText}` }));
-        setResult({ success: false, error: errorData.error || `Errore ${response.status}`, data: errorData });
-        return;
-      }
-      
-      const data = await response.json();
+      const response = await api.get('/api/debug/test-email', { timeout: 30000 });
+      const data = response.data ?? {};
       setResult({ success: true, data });
     } catch (error) {
-      clearTimeout(timeoutId);
-      if (error.name === 'AbortError') {
-        setResult({ success: false, error: 'Timeout: la richiesta ha impiegato troppo tempo (oltre 30 secondi)' });
-      } else {
-        setResult({ success: false, error: error.message || 'Errore di connessione' });
-      }
+      const isTimeout = error.code === 'ECONNABORTED' || error.message?.includes('timeout');
+      setResult({
+        success: false,
+        error: isTimeout ? 'Timeout: la richiesta ha impiegato troppo tempo (oltre 30 secondi)' : (error.response?.data?.error || error.message || 'Errore di connessione'),
+        data: error.response?.data
+      });
     } finally {
       setTesting(false);
     }
@@ -505,42 +477,19 @@ const EmailTestSection = ({ token }) => {
       setResult({ success: false, error: 'Inserisci un indirizzo email valido' });
       return;
     }
-
     setTesting(true);
     setResult(null);
-    
-    // Timeout di 60 secondi per l'invio email
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
-    
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/debug/send-test-email`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ to: testEmail }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}: ${response.statusText}` }));
-        setResult({ success: false, error: errorData.error || `Errore ${response.status}`, data: errorData });
-        return;
-      }
-      
-      const data = await response.json();
+      const response = await api.post('/api/debug/send-test-email', { to: testEmail }, { timeout: 60000 });
+      const data = response.data ?? {};
       setResult({ success: true, data });
     } catch (error) {
-      clearTimeout(timeoutId);
-      if (error.name === 'AbortError') {
-        setResult({ success: false, error: 'Timeout: l\'invio email ha impiegato troppo tempo (oltre 60 secondi)' });
-      } else {
-        setResult({ success: false, error: error.message || 'Errore di connessione' });
-      }
+      const isTimeout = error.code === 'ECONNABORTED' || error.message?.includes('timeout');
+      setResult({
+        success: false,
+        error: isTimeout ? 'Timeout (60 secondi)' : (error.response?.data?.error || error.message || 'Errore di connessione'),
+        data: error.response?.data
+      });
     } finally {
       setTesting(false);
     }
