@@ -299,17 +299,23 @@ export async function initDatabase() {
       console.log('ℹ️ Colonna prestito_id già modificata o tabella non esiste');
     }
 
-    // Inserisci admin user se non esiste
-    const adminExists = await client.query('SELECT id FROM users WHERE email = $1', ['admin']);
-    if (adminExists.rows.length === 0) {
-      const hashedPassword = bcrypt.hashSync('laba2025', 10);
-      
-      await client.query(`
-        INSERT INTO users (email, password_hash, name, surname, ruolo, corso_accademico)
-        VALUES ($1, $2, $3, $4, $5, $6)
-      `, ['admin', hashedPassword, 'Admin', 'Sistema', 'admin', 'Tutti']);
-      
-      console.log('✅ Admin user creato: admin / laba2025');
+    // Crea utente admin iniziale solo se configurato da env (niente password in codice).
+    const initAdminEmail = process.env.INIT_ADMIN_EMAIL || null;
+    const initAdminPassword = process.env.INIT_ADMIN_PASSWORD || null;
+    if (initAdminEmail && initAdminPassword) {
+      const adminExists = await client.query('SELECT id FROM users WHERE email = $1', [initAdminEmail]);
+      if (adminExists.rows.length === 0) {
+        const hashedPassword = bcrypt.hashSync(initAdminPassword, 10);
+        await client.query(`
+          INSERT INTO users (email, password_hash, name, surname, ruolo, corso_accademico)
+          VALUES ($1, $2, $3, $4, $5, $6)
+        `, [initAdminEmail, hashedPassword, 'Admin', 'Sistema', 'admin', 'Tutti']);
+        console.log('✅ Utente admin iniziale creato (email da INIT_ADMIN_EMAIL)');
+      } else {
+        console.log('ℹ️ Utente admin già esistente:', initAdminEmail);
+      }
+    } else {
+      console.log('ℹ️ Nessun admin iniziale: imposta INIT_ADMIN_EMAIL e INIT_ADMIN_PASSWORD per crearlo al primo avvio.');
     }
 
     // Inserisci corsi accademici LABA solo se la tabella è vuota
@@ -371,7 +377,6 @@ export async function initDatabase() {
     
     console.log('✅ Database PostgreSQL inizializzato con successo!');
     console.log('✅ Schema unificato creato con tutte le tabelle');
-    console.log('✅ Admin user: admin / laba2025');
     
   } catch (error) {
     console.error('❌ Errore durante l\'inizializzazione del database:', error);

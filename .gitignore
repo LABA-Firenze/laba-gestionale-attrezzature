@@ -96,3 +96,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# File locale per git filter-repo (non committare, contiene stringhe da cercare nella storia)
+replacements.txt

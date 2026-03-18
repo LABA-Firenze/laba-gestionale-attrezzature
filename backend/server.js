@@ -26,8 +26,6 @@ import segnalazioniRouter from "./routes/segnalazioni.js";
 import avvisiRouter from "./routes/avvisi.js";
 import statsRouter from "./routes/stats.js";
 import usersRouter from "./routes/users.js";
-import migrationRouter from "./routes/migration.js";
-import debugRouter from "./routes/debug.js";
 import penaltiesRouter from "./routes/penalties.js";
 import excelRouter from "./routes/excel.js";
 import cronRouter from "./routes/cron.js";
@@ -37,6 +35,12 @@ import supabase from './utils/supabaseStorage.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
+
+// In produzione JWT_SECRET è obbligatorio (niente fallback per evitare token forgery).
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  console.error('❌ JWT_SECRET mancante. In produzione deve essere impostato (es. Railway Variables).');
+  process.exit(1);
+}
 
 // Inizializza il database PostgreSQL/Supabase
 try {
@@ -54,7 +58,12 @@ try {
   process.exit(1);
 }
 
-app.use(cors());
+// CORS: solo origini consentite (CORS_ORIGINS = lista separata da virgola, es. https://attrezzatura.laba.biz,http://localhost:5173)
+const corsOrigins = (process.env.CORS_ORIGINS || 'https://attrezzatura.laba.biz')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -158,9 +167,7 @@ app.use("/api/avvisi", avvisiRouter);
 app.use("/api/stats", statsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/penalties", penaltiesRouter);
-app.use("/api/migration", migrationRouter);
 app.use("/api/excel", excelRouter);
-app.use("/api/debug", debugRouter);
 app.use("/api/cron", cronRouter);
 
 // serve frontend build if built

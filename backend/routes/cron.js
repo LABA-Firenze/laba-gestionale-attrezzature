@@ -12,9 +12,9 @@ const r = Router();
 // Non richiede autenticazione ma usa un token segreto per sicurezza
 r.get('/send-reminders', async (req, res) => {
   try {
-    // Verifica token segreto (opzionale ma consigliato)
+    // Token obbligatorio: in produzione CRON_SECRET_TOKEN deve essere impostato
     const cronToken = process.env.CRON_SECRET_TOKEN;
-    if (cronToken && req.query.token !== cronToken) {
+    if (!cronToken || req.query.token !== cronToken) {
       return res.status(401).json({ error: 'Token non valido' });
     }
 

@@ -160,8 +160,23 @@ r.post('/', requireAuth, async (req, res) => {
     if (inventarioCheck.length === 0) {
       return res.status(400).json({ error: 'Oggetto non trovato' });
     }
-    
     const item = inventarioCheck[0];
+
+    // Utenti non admin possono richiedere solo oggetti del proprio corso
+    const role = (req.user?.ruolo || '').toLowerCase();
+    if (role !== 'admin' && role !== 'supervisor') {
+      const userCourse = req.user?.corso_accademico || null;
+      if (!userCourse) {
+        return res.status(403).json({ error: 'Corso accademico non assegnato. Non puoi effettuare richieste.' });
+      }
+      const inCourse = await query(
+        'SELECT 1 FROM inventario_corsi WHERE inventario_id = $1 AND corso = $2 LIMIT 1',
+        [actualInventarioId, userCourse]
+      );
+      if (inCourse.length === 0) {
+        return res.status(403).json({ error: 'Questo oggetto non è disponibile per il tuo corso' });
+      }
+    }
     
     // Validazione limite massimo 3 giorni per prestiti esterni
     // Calcola la differenza in giorni tra dataFine e dataInizio

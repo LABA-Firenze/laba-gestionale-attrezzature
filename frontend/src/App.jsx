@@ -1,29 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Squares2X2Icon, SquaresPlusIcon, ArrowsRightLeftIcon, WrenchScrewdriverIcon, ExclamationTriangleIcon, UsersIcon, ChartBarIcon, ComputerDesktopIcon, XMarkIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import AuthProvider, { useAuth } from "./auth/AuthContext";
 import { NotificationProvider } from "./components/NotificationSystem.jsx";
 import DesktopNotificationManager from "./components/DesktopNotificationManager.jsx";
 import NotificationManager from "./components/NotificationManager.jsx";
-// import { ThemeProvider, useTheme } from "./contexts/ThemeContext.jsx";
 import { useRealtimeNotifications } from "./hooks/useRealtimeNotifications.js";
-import Login from "./auth/Login";
-import ResetPassword from "./auth/ResetPassword";
-
-import Dashboard from "./components/Dashboard.jsx";
-import UserDashboard from "./components/UserDashboard.jsx";
-import Inventory from "./components/Inventory.jsx";
-import Loans from "./components/Loans.jsx";
-import Repairs from "./components/Repairs.jsx";
-import Statistics from "./components/Statistics.jsx";
-import AdvancedStats from "./components/AdvancedStats.jsx";
-import SystemStatus from "./components/SystemStatus.jsx";
-import UserManagement from "./components/UserManagement.jsx";
-import Penalties from "./components/Penalties.jsx";
-import NotificationsPanel from "./components/NotificationsPanel.jsx";
-import Footer from "./components/Footer.jsx";
-import UserArea from "./user/UserArea.jsx";
-import MobileMenu from "./components/MobileMenu.jsx";
 import { NotificationPanelProvider } from "./contexts/NotificationPanelContext.jsx";
+
+// Code splitting: pagine caricate on demand (chunk separati in build)
+const Login = lazy(() => import("./auth/Login"));
+const ResetPassword = lazy(() => import("./auth/ResetPassword"));
+const Dashboard = lazy(() => import("./components/Dashboard.jsx"));
+const Inventory = lazy(() => import("./components/Inventory.jsx"));
+const Loans = lazy(() => import("./components/Loans.jsx"));
+const Repairs = lazy(() => import("./components/Repairs.jsx"));
+const Statistics = lazy(() => import("./components/Statistics.jsx"));
+const SystemStatus = lazy(() => import("./components/SystemStatus.jsx"));
+const UserManagement = lazy(() => import("./components/UserManagement.jsx"));
+const Penalties = lazy(() => import("./components/Penalties.jsx"));
+const NotificationsPanel = lazy(() => import("./components/NotificationsPanel.jsx"));
+const Footer = lazy(() => import("./components/Footer.jsx"));
+const UserArea = lazy(() => import("./user/UserArea.jsx"));
+const MobileMenu = lazy(() => import("./components/MobileMenu.jsx"));
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[200px] text-gray-500">
+      <div className="animate-pulse">Caricamento...</div>
+    </div>
+  );
+}
 
 // App principale con design moderno
 function AppInner() {
@@ -401,50 +407,62 @@ function AppInner() {
    >
    <div className="flex-1 flex flex-col">
      <main className="flex-1 p-4 lg:p-6 main-content">
-         {tab === 'dashboard' && <Dashboard onNavigate={handleTabChange} />}
-         {tab === 'inventario' && <Inventory />}
-         {tab === 'prestiti' && <Loans 
-          selectedRequestFromNotification={selectedRequestFromNotification} 
-          onRequestHandled={() => setSelectedRequestFromNotification(null)}
-          initialTab={loansInitialTab}
-          onTabSet={() => setLoansInitialTab(null)}
-        />}
-         {tab === 'riparazioni' && <Repairs />}
-         {tab === 'penalita' && <Penalties />}
-         {tab === 'utenti' && <UserManagement />}
-         {tab === 'statistiche' && <Statistics />}
-         {tab === 'sistema' && <SystemStatus />}
+         <Suspense fallback={<PageFallback />}>
+           {tab === 'dashboard' && <Dashboard onNavigate={handleTabChange} />}
+           {tab === 'inventario' && <Inventory />}
+           {tab === 'prestiti' && <Loans 
+            selectedRequestFromNotification={selectedRequestFromNotification} 
+            onRequestHandled={() => setSelectedRequestFromNotification(null)}
+            initialTab={loansInitialTab}
+            onTabSet={() => setLoansInitialTab(null)}
+          />}
+           {tab === 'riparazioni' && <Repairs />}
+           {tab === 'penalita' && <Penalties />}
+           {tab === 'utenti' && <UserManagement />}
+           {tab === 'statistiche' && <Statistics />}
+           {tab === 'sistema' && <SystemStatus />}
+         </Suspense>
      </main>
      
            {/* Footer - Hidden when mobile menu is open */}
-           {!mobileMenuOpen && <Footer onSystemClick={() => setTab('sistema')} />}
+           {!mobileMenuOpen && (
+             <Suspense fallback={null}>
+               <Footer onSystemClick={() => setTab('sistema')} />
+             </Suspense>
+           )}
    </div>
    </NotificationPanelProvider>
  ) : (
-   <UserArea />
+   <Suspense fallback={<PageFallback />}>
+     <UserArea />
+   </Suspense>
  )}
  
  {/* Notifications Panel */}
- <NotificationsPanel
-   isOpen={notificationsOpen}
-   onClose={() => setNotificationsOpen(false)}
-   notifications={notifications}
-   onMarkAsRead={handleMarkAsRead}
-   onDelete={handleDeleteNotification}
-   onClick={handleNotificationClick}
- />
+ <Suspense fallback={null}>
+   <NotificationsPanel
+     isOpen={notificationsOpen}
+     onClose={() => setNotificationsOpen(false)}
+     notifications={notifications}
+     onMarkAsRead={handleMarkAsRead}
+     onDelete={handleDeleteNotification}
+     onClick={handleNotificationClick}
+   />
+ </Suspense>
  
  {/* Mobile Menu for Admin */}
  {isAdmin && (
-   <MobileMenu
-     isOpen={mobileMenuOpen}
-     onClose={() => setMobileMenuOpen(false)}
-     sidebarItems={adminSidebarItems}
-     activeView={tab}
-     onNavigate={handleTabChange}
-     user={user}
-     logout={logout}
-   />
+   <Suspense fallback={null}>
+     <MobileMenu
+       isOpen={mobileMenuOpen}
+       onClose={() => setMobileMenuOpen(false)}
+       sidebarItems={adminSidebarItems}
+       activeView={tab}
+       onNavigate={handleTabChange}
+       user={user}
+       logout={logout}
+     />
+   </Suspense>
  )}
  
  {/* <NotificationManager /> */}
@@ -530,10 +548,15 @@ function Gate() {
   };
 
   if (!isAuthenticated) {
-    if (resetToken) {
-      return <ResetPassword token={resetToken} onSuccess={handleResetSuccess} onBack={handleResetBack} />;
-    }
-    return <Login branding="LABA – Service" />;
+    return (
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-500">Caricamento...</div>}>
+        {resetToken ? (
+          <ResetPassword token={resetToken} onSuccess={handleResetSuccess} onBack={handleResetBack} />
+        ) : (
+          <Login branding="LABA – Service" />
+        )}
+      </Suspense>
+    );
   }
   return <AppInner />;
 }

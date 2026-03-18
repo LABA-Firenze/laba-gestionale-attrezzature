@@ -170,17 +170,19 @@ export async function initDatabase() {
     );
   `);
 
-  // Inserisci admin user se non esiste
-  const adminExists = db.prepare('SELECT id FROM users WHERE email = ?').get('admin');
-  if (!adminExists) {
-    const hashedPassword = bcrypt.hashSync('laba2025', 10);
-    
-    db.prepare(`
-      INSERT INTO users (email, password_hash, name, surname, ruolo, corso_accademico)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run('admin', hashedPassword, 'Admin', 'Sistema', 'admin', 'Tutti');
-    
-    console.log('Admin user creato: admin / laba2025');
+  // Inserisci admin user solo se configurato da env (niente password in codice)
+  const initAdminEmail = process.env.INIT_ADMIN_EMAIL || null;
+  const initAdminPassword = process.env.INIT_ADMIN_PASSWORD || null;
+  if (initAdminEmail && initAdminPassword) {
+    const adminExists = db.prepare('SELECT id FROM users WHERE email = ?').get(initAdminEmail);
+    if (!adminExists) {
+      const hashedPassword = bcrypt.hashSync(initAdminPassword, 10);
+      db.prepare(`
+        INSERT INTO users (email, password_hash, name, surname, ruolo, corso_accademico)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).run(initAdminEmail, hashedPassword, 'Admin', 'Sistema', 'admin', 'Tutti');
+      console.log('Admin user creato (da INIT_ADMIN_EMAIL)');
+    }
   }
 
   // Inserisci corsi accademici LABA
@@ -224,7 +226,6 @@ export async function initDatabase() {
 
   console.log('Database inizializzato con successo!');
   console.log('Schema unificato creato con tutte le tabelle');
-  console.log('Admin user: admin / laba2025');
   console.log('Corsi inseriti:', corsiLABA.length);
   console.log('Categorie inserite:', categorie.length);
 }

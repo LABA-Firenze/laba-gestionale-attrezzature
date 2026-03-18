@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import db from '../utils/db.js';
 
 const r = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+const JWT_SECRET = process.env.JWT_SECRET || '[use-env-in-production]';
 
 function getPayload(req) {
   const auth = req.headers.authorization || '';

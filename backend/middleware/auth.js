@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken';
 import { query } from '../utils/postgres.js';
 import { normalizeUser, normalizeRole } from '../utils/roles.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+// Stessa logica di auth.js: in produzione deve essere impostato da env.
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'dev-secret-change-me');
 
 export async function requireAuth(req, res, next) {
   try {
@@ -14,6 +15,9 @@ export async function requireAuth(req, res, next) {
       return res.status(401).json({ error: 'Non autorizzato' });
     }
     
+    if (!JWT_SECRET) {
+      return res.status(503).json({ error: 'Server non configurato (JWT_SECRET)' });
+    }
     const payload = jwt.verify(token, JWT_SECRET);
     
     if (payload?.id === -1 || (payload?.email || '').toLowerCase() === 'admin') {

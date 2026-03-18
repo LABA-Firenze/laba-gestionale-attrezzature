@@ -559,8 +559,8 @@ r.get('/:loanId/units', requireAuth, async (req, res) => {
   }
 });
 
-// Endpoint temporaneo per aggiornare prestiti esistenti con unità mancanti
-r.get('/fix-units', async (req, res) => {
+// Endpoint temporaneo per aggiornare prestiti esistenti con unità mancanti (solo admin)
+r.get('/fix-units', requireAuth, requireRole('admin'), async (req, res) => {
   try {
     // Trova prestiti senza unità specificate per FX3
     const prestiti = await query(`

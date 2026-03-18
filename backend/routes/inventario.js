@@ -21,6 +21,19 @@ function getUserCourse(req) {
   return req.user?.corso_accademico || null;
 }
 
+// Verifica che l'utente possa accedere all'inventario (admin/supervisor vedono tutto; user solo se nel suo corso)
+async function userCanAccessInventario(req, inventarioId) {
+  const role = (req.user?.ruolo || '').toLowerCase();
+  if (role === 'admin' || role === 'supervisor') return true;
+  const corso = getUserCourse(req);
+  if (!corso) return false;
+  const rows = await query(
+    'SELECT 1 FROM inventario_corsi WHERE inventario_id = $1 AND corso = $2 LIMIT 1',
+    [inventarioId, corso]
+  );
+  return rows.length > 0;
+}
+
 // GET /api/inventario - Solo per admin
 r.get('/', requireAuth, requireRole('admin'), async (req, res) => {
   try {
@@ -33,6 +46,7 @@ r.get('/', requireAuth, requireRole('admin'), async (req, res) => {
         COALESCE(json_agg(DISTINCT ic.corso) FILTER (WHERE ic.corso IS NOT NULL), '[]') AS corsi_assegnati,
         ${UNITI_DISPONIBILI_OGGI} AS unita_disponibili,
         CASE
+          WHEN EXISTS(SELECT 1 FROM riparazioni r WHERE r.inventario_id = i.id AND r.stato = 'in_corso') THEN 'in_riparazione'
           WHEN i.in_manutenzione = TRUE THEN 'in_manutenzione'
           WHEN ${UNITI_DISPONIBILI_OGGI} = 0 THEN 'non_disponibile'
           ELSE 'disponibile'
@@ -200,6 +214,7 @@ r.get('/:id', requireAuth, async (req, res) => {
              STRING_AGG(ic.corso, ',') as corsi_assegnati,
              ${UNITI_DISPONIBILI_OGGI} as unita_disponibili,
              CASE 
+               WHEN EXISTS(SELECT 1 FROM riparazioni r WHERE r.inventario_id = i.id AND r.stato = 'in_corso') THEN 'in_riparazione'
                WHEN i.in_manutenzione = true THEN 'in_manutenzione'
                WHEN ${UNITI_DISPONIBILI_OGGI} = 0 THEN 'non_disponibile'
                ELSE 'disponibile'
@@ -213,7 +228,10 @@ r.get('/:id', requireAuth, async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ error: 'Not found' });
     }
-    
+    const canAccess = await userCanAccessInventario(req, id);
+    if (!canAccess) {
+      return res.status(403).json({ error: 'Non autorizzato a visualizzare questo oggetto' });
+    }
     res.json(result[0]);
   } catch (error) {
     console.error('Errore GET inventario by id:', error);
@@ -673,6 +691,10 @@ r.delete('/:id', requireAuth, requireRole('admin'), async (req, res) => {
 r.get('/:id/units', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
+    const canAccess = await userCanAccessInventario(req, id);
+    if (!canAccess) {
+      return res.status(403).json({ error: 'Non autorizzato a visualizzare le unità di questo oggetto' });
+    }
     const result = await query(`
       SELECT iu.id, iu.codice_univoco, iu.stato, iu.note, iu.inventario_id, iu.prestito_corrente_id,
              i.nome as item_name,
@@ -698,6 +720,10 @@ r.get('/:id/units', requireAuth, async (req, res) => {
 r.get('/:id/disponibili', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
+    const canAccess = await userCanAccessInventario(req, id);
+    if (!canAccess) {
+      return res.status(403).json({ error: 'Non autorizzato a visualizzare le unità disponibili di questo oggetto' });
+    }
     const result = await query(`
       SELECT 
         iu.id,

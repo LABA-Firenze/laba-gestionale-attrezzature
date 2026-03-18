@@ -8,15 +8,22 @@ import { normalizeUser, normalizeRole } from '../utils/roles.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
 
 const r = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+// In produzione JWT_SECRET deve essere impostato (es. variabile d'ambiente su Railway).
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'dev-secret-change-me');
+if (process.env.NODE_ENV === 'production' && !JWT_SECRET) {
+  console.error('❌ JWT_SECRET mancante. Impostalo in produzione.');
+}
 
-// === Special admin (non persistente richiesto) ===
-const SPECIAL_ADMIN_USERNAME = 'admin';
-const SPECIAL_ADMIN_PASSWORD = 'laba2025';
+// === Special admin (solo se configurato da env, niente credenziali in codice) ===
+const SPECIAL_ADMIN_USERNAME = process.env.SPECIAL_ADMIN_USERNAME || null;
+const SPECIAL_ADMIN_PASSWORD = process.env.SPECIAL_ADMIN_PASSWORD || null;
+const specialAdminEnabled = !!(SPECIAL_ADMIN_USERNAME && SPECIAL_ADMIN_PASSWORD);
+
 function isSpecialAdminLogin(identifier, password) {
+  if (!specialAdminEnabled) return false;
   const id = (identifier || '').trim().toLowerCase();
   const pw = (password ?? '').toString().normalize('NFKC').replace(/\u00A0/g, ' ').trim();
-  return id === SPECIAL_ADMIN_USERNAME && pw === SPECIAL_ADMIN_PASSWORD;
+  return id === SPECIAL_ADMIN_USERNAME.toLowerCase() && pw === SPECIAL_ADMIN_PASSWORD;
 }
 function specialAdminUser() {
   return {
@@ -30,6 +37,7 @@ function specialAdminUser() {
 }
 
 function signUser(user) {
+  if (!JWT_SECRET) throw new Error('JWT_SECRET non configurato');
   const u = normalizeUser(user);
   const payload = {
     id: u.id,
