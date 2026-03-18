@@ -14,7 +14,8 @@ const Footer = ({ onSystemClick }) => {
             </div>
           </div>
           
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-gray-600 flex flex-col items-end gap-1">
+            <a href="https://www.laba.biz/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Privacy e Cookie Policy</a>
             <p>Versione 2.1 (build 2.1)</p>
             <p>© 2026 LABA Firenze</p>
           </div>
@@ -25,6 +26,7 @@ const Footer = ({ onSystemClick }) => {
           <div className="flex items-center space-x-2">
             <img src="/logoSito.svg" alt="LABA Logo" className="h-6 w-auto" />
             <div className="text-xs text-gray-600">
+              <a href="https://www.laba.biz/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline block">Privacy</a>
               <p className="font-medium">v2.1</p>
               <p>© 2026 LABA</p>
             </div>

@@ -4,6 +4,8 @@ import { useAuth } from './AuthContext';
 import ForgotPassword from './ForgotPassword';
 import InstructionsModal from '../components/InstructionsModal';
 
+const PRIVACY_POLICY_URL = 'https://www.laba.biz/privacy-policy';
+
 const Login = ({ branding = "LABA Gestione" }) => {
  const [isLogin, setIsLogin] = useState(true);
  const [formData, setFormData] = useState({
@@ -15,6 +17,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  matricola: '',
  corso_accademico: ''
  });
+ const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState(null);
  const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -208,6 +211,25 @@ const Login = ({ branding = "LABA Gestione" }) => {
  </select>
  </div>
  </div>
+
+ <div className="flex items-start gap-3">
+ <input
+ id="accept-privacy"
+ name="accept-privacy"
+ type="checkbox"
+ required
+ checked={acceptedPrivacy}
+ onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+ className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+ />
+ <label htmlFor="accept-privacy" className="text-sm text-gray-700">
+ Accetto la{' '}
+ <a href={PRIVACY_POLICY_URL} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+ Privacy Policy
+ </a>
+ {' '}e la Cookie Policy di LABA.
+ </label>
+ </div>
  </>
  )}
 
@@ -225,7 +247,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
  <div>
  <button
  type="submit"
- disabled={loading}
+ disabled={loading || (!isLogin && !acceptedPrivacy)}
  className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl active:translate-y-0"
  >
  {loading ? (
@@ -258,6 +280,7 @@ const Login = ({ branding = "LABA Gestione" }) => {
        setIsLogin(!isLogin);
        setError(null);
        setFormData({ email: '', password: '', name: '', surname: '', matricola: '', corso_accademico: '' });
+       setAcceptedPrivacy(false);
      }}
      className="w-full py-2.5 px-4 rounded-full text-sm font-medium text-gray-700 bg-gray-100/80 hover:bg-gray-200/80 border border-gray-200/80 transition-colors"
    >
@@ -286,7 +309,12 @@ const Login = ({ branding = "LABA Gestione" }) => {
  <InstructionsModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />
 
  {/* Footer */}
- <div className="text-center pt-2">
+ <div className="text-center pt-2 space-y-1">
+   <p className="text-xs text-gray-500">
+     <a href={PRIVACY_POLICY_URL} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+       Privacy e Cookie Policy
+     </a>
+   </p>
    <p className="text-xs text-gray-500">
      © 2026 {branding}. Tutti i diritti riservati.
    </p>
