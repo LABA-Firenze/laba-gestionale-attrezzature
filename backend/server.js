@@ -31,7 +31,7 @@ import penaltiesRouter from "./routes/penalties.js";
 import excelRouter from "./routes/excel.js";
 import cronRouter from "./routes/cron.js";
 import { initDatabase, query } from './utils/postgres.js';
-import supabase from './utils/supabaseStorage.js';
+import getSupabase from './utils/supabaseStorage.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -85,13 +85,10 @@ app.get("/api/keepalive", async (_, res) => {
     // Usa una tabella dedicata 'keepalive_log' che non contiene dati sensibili
     // RLS è abilitato con policy permissiva (vedi migrations/rls_keepalive_policies.sql)
     let restActivity = null;
+    const supabase = getSupabase();
     if (supabase) {
       try {
-        const supabaseUrl = process.env.SUPABASE_URL || 'https://kzqabwmtpmlhaueqiuoc.supabase.co';
-        console.log('🔄 Chiamata REST Supabase su tabella keepalive_log...', {
-          url: supabaseUrl,
-          hasAnonKey: !!process.env.SUPABASE_ANON_KEY
-        });
+        console.log('🔄 Chiamata REST Supabase su tabella keepalive_log...');
         // Query su tabella dedicata (senza dati sensibili, RLS con policy permissiva)
         const result = await supabase
           .from('keepalive_log')

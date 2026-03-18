@@ -1,34 +1,54 @@
 // backend/utils/supabaseStorage.js - Gestione Supabase Storage
+// Nessuna credenziale in codice: usare variabili d'ambiente (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_STORAGE_S3_*).
 import { createClient } from '@supabase/supabase-js';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
-// Configurazione Supabase
-const supabaseUrl = process.env.SUPABASE_URL || 'https://kzqabwmtpmlhaueqiuoc.supabase.co';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6cWFid210cG1saGF1ZXFpdW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUzMjQ4NzEsImV4cCI6MjA1MDkwMDg3MX0.8Qj6bFqMXLt_RqGu0MmqN1gb436H1vYcKLCB8cmTLIQ';
+function getSupabaseConfig() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !supabaseKey) return null;
+  return { supabaseUrl, supabaseKey };
+}
 
-// Configurazione Storage S3-compatibile
-const storageConfig = {
-  endpoint: 'https://kzqabwmtpmlhaueqiuoc.storage.supabase.co/storage/v1/s3',
-  region: 'eu-north-1',
-  accessKeyId: '691b84b6f38906ede34b322272b930df',
-  secretAccessKey: '403b92241f8caba92ccc04c5a0426f98a5c503c0a2216551bd28ee04d57dac2c'
-};
+function getS3Config() {
+  const endpoint = process.env.SUPABASE_STORAGE_S3_ENDPOINT;
+  const region = process.env.SUPABASE_STORAGE_S3_REGION || 'eu-north-1';
+  const accessKeyId = process.env.SUPABASE_STORAGE_S3_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.SUPABASE_STORAGE_S3_SECRET_ACCESS_KEY;
+  if (!endpoint || !accessKeyId || !secretAccessKey) return null;
+  return { endpoint, region, accessKeyId, secretAccessKey };
+}
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+let _supabase = null;
+let _s3Client = null;
 
-// Client S3 per Supabase Storage
-const s3Client = new S3Client({
-  endpoint: storageConfig.endpoint,
-  region: storageConfig.region,
-  credentials: {
-    accessKeyId: storageConfig.accessKeyId,
-    secretAccessKey: storageConfig.secretAccessKey
-  },
-  forcePathStyle: true // Necessario per Supabase Storage
-});
+function getSupabase() {
+  const cfg = getSupabaseConfig();
+  if (!cfg) return null;
+  if (!_supabase) _supabase = createClient(cfg.supabaseUrl, cfg.supabaseKey);
+  return _supabase;
+}
+
+function getS3Client() {
+  const cfg = getS3Config();
+  if (!cfg) return null;
+  if (!_s3Client) {
+    _s3Client = new S3Client({
+      endpoint: cfg.endpoint,
+      region: cfg.region,
+      credentials: { accessKeyId: cfg.accessKeyId, secretAccessKey: cfg.secretAccessKey },
+      forcePathStyle: true,
+    });
+  }
+  return _s3Client;
+}
 
 // Upload file a Supabase Storage tramite S3
 export async function uploadFile(bucket, filePath, fileBuffer, contentType) {
+  const s3 = getS3Client();
+  if (!s3) {
+    throw new Error('Storage S3 non configurato (imposta SUPABASE_STORAGE_S3_* in env).');
+  }
   try {
     const command = new PutObjectCommand({
       Bucket: bucket,
@@ -36,10 +56,7 @@ export async function uploadFile(bucket, filePath, fileBuffer, contentType) {
       Body: fileBuffer,
       ContentType: contentType
     });
-
-    const result = await s3Client.send(command);
-    console.log('File caricato su Supabase Storage:', result);
-    
+    const result = await s3.send(command);
     return {
       path: filePath,
       fullPath: `${bucket}/${filePath}`,
@@ -53,13 +70,10 @@ export async function uploadFile(bucket, filePath, fileBuffer, contentType) {
 
 // Download file da Supabase Storage tramite S3
 export async function downloadFile(bucket, filePath) {
+  const s3 = getS3Client();
+  if (!s3) throw new Error('Storage S3 non configurato (imposta SUPABASE_STORAGE_S3_* in env).');
   try {
-    const command = new GetObjectCommand({
-      Bucket: bucket,
-      Key: filePath
-    });
-
-    const result = await s3Client.send(command);
+    const result = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: filePath }));
     return result.Body;
   } catch (error) {
     console.error('Errore download file:', error);
@@ -69,14 +83,10 @@ export async function downloadFile(bucket, filePath) {
 
 // Elimina file da Supabase Storage tramite S3
 export async function deleteFile(bucket, filePath) {
+  const s3 = getS3Client();
+  if (!s3) throw new Error('Storage S3 non configurato (imposta SUPABASE_STORAGE_S3_* in env).');
   try {
-    const command = new DeleteObjectCommand({
-      Bucket: bucket,
-      Key: filePath
-    });
-
-    await s3Client.send(command);
-    console.log('File eliminato da Supabase Storage:', filePath);
+    await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: filePath }));
     return true;
   } catch (error) {
     console.error('Errore eliminazione file:', error);
@@ -86,8 +96,10 @@ export async function deleteFile(bucket, filePath) {
 
 // Ottieni URL pubblico del file
 export function getPublicUrl(bucket, filePath) {
-  // Per Supabase Storage, l'URL pubblico è costruito così:
-  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${filePath}`;
+  const cfg = getSupabaseConfig();
+  if (!cfg) return null;
+  return `${cfg.supabaseUrl}/storage/v1/object/public/${bucket}/${filePath}`;
 }
 
-export default supabase;
+// Export: usa getSupabase() per ottenere il client (null se env non configurata)
+export default getSupabase;
