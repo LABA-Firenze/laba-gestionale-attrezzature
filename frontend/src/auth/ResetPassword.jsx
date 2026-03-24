@@ -43,7 +43,7 @@ const ResetPassword = ({ token, onSuccess, onBack }) => {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
-        <div className="max-w-md w-full bg-white rounded-full shadow-xl border border-gray-100 p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-xl border border-gray-100 p-8 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -64,7 +64,7 @@ const ResetPassword = ({ token, onSuccess, onBack }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
-      <div className="max-w-md w-full bg-white rounded-full shadow-xl border border-gray-100 p-8">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-xl border border-gray-100 p-8">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@ const ResetPassword = ({ token, onSuccess, onBack }) => {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-full">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-800 text-sm">{error}</p>
           </div>
         )}

@@ -10,8 +10,10 @@ import Footer from '../components/Footer';
 import MobileMenu from '../components/MobileMenu';
 import NotificationsPanel from '../components/NotificationsPanel';
 import InstructionsPage from '../components/InstructionsPage';
+import AccountAreaModal from '../components/AccountAreaModal';
+
 // UserBadge Component (simplified to avoid overlap)
-function UserBadge() {
+function UserBadge({ onOpenAccount }) {
   const { user, logout, roleLabel } = useAuth();
   if (!user) return null;
   
@@ -19,8 +21,13 @@ function UserBadge() {
   
   return (
     <div className="p-4 border-t border-gray-200 user-badge">
-      <div className="flex items-center space-x-3 mb-3">
-        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+      <div
+        className={`flex items-center space-x-3 mb-3 ${onOpenAccount ? 'cursor-pointer hover:bg-gray-50 -m-2 p-2 rounded-lg transition-colors' : ''}`}
+        onClick={onOpenAccount}
+        role={onOpenAccount ? 'button' : undefined}
+        aria-label={onOpenAccount ? 'Apri il mio account' : undefined}
+      >
+        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
           <span className="text-white font-semibold text-sm">{initials}</span>
         </div>
         <div className="flex-1 min-w-0">
@@ -47,6 +54,7 @@ const UserArea = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const { user, logout } = useAuth();
 
 
@@ -134,7 +142,7 @@ const UserArea = () => {
             ))}
           </nav>
           
-          <UserBadge />
+          <UserBadge onOpenAccount={() => setShowAccountModal(true)} />
         </div>
 
         {/* Main Content Area with Footer */}
@@ -156,7 +164,12 @@ const UserArea = () => {
           onNavigate={(id) => { setActiveView(id); setMobileMenuOpen(false); }}
           user={user}
           logout={logout}
+          onOpenAccount={() => { setShowAccountModal(true); setMobileMenuOpen(false); }}
         />
+
+        {showAccountModal && (
+          <AccountAreaModal isOpen={showAccountModal} onClose={() => setShowAccountModal(false)} />
+        )}
 
         {/* Notifications Panel */}
         <NotificationsPanel

@@ -345,6 +345,75 @@ r.delete('/password-reset-requests/:email', requireAuth, requireRole('admin'), a
   }
 });
 
+// GET /api/auth/me/export - Export dati personali (GDPR portabilità)
+r.get('/me/export', requireAuth, async (req, res) => {
+  try {
+    if (req.user.id === -1) {
+      return res.status(400).json({ error: 'Account speciale non esportabile' });
+    }
+    const [userRow, loans, requests, reports] = await Promise.all([
+      query('SELECT id, email, name, surname, phone, matricola, corso_accademico, ruolo, created_at FROM users WHERE id = $1', [req.user.id]),
+      query(`
+        SELECT p.id, p.data_uscita, p.data_rientro, p.stato, i.nome as articolo_nome
+        FROM prestiti p
+        LEFT JOIN inventario i ON i.id = p.inventario_id
+        LEFT JOIN richieste r ON r.id = p.richiesta_id
+        WHERE r.utente_id = $1 OR p.chi LIKE $2 OR p.chi = $3 OR p.chi LIKE $4
+        ORDER BY p.id DESC
+      `, [req.user.id, `%${req.user.email}%`, req.user.email, `%${req.user.name || ''} ${req.user.surname || ''}%`]),
+      query('SELECT r.id, r.dal, r.al, r.stato, i.nome as oggetto_nome FROM richieste r LEFT JOIN inventario i ON i.id = r.inventario_id WHERE r.utente_id = $1 ORDER BY r.id DESC', [req.user.id]),
+      query('SELECT id, tipo, note, created_at FROM segnalazioni WHERE user_id = $1 ORDER BY id DESC', [req.user.id])
+    ]);
+    const userData = userRow[0] ? { ...userRow[0], password_hash: undefined } : null;
+    res.json({
+      esportato_il: new Date().toISOString(),
+      utente: userData,
+      prestiti: loans || [],
+      richieste: requests || [],
+      segnalazioni: reports || []
+    });
+  } catch (error) {
+    console.error('Errore export dati:', error);
+    res.status(500).json({ error: 'Errore nell\'esportazione dati' });
+  }
+});
+
+// POST /api/auth/me/delete-account - Elimina account (diritto all'oblio GDPR)
+r.post('/me/delete-account', requireAuth, async (req, res) => {
+  try {
+    if (req.user.id === -1) {
+      return res.status(403).json({ error: 'Impossibile eliminare l\'account amministratore' });
+    }
+    const userId = req.user.id;
+
+    // Verifica prestiti attivi
+    const activeLoans = await query(
+      'SELECT COUNT(*) as n FROM prestiti p LEFT JOIN richieste r ON r.id = p.richiesta_id WHERE (r.utente_id = $1 OR p.chi LIKE $2) AND LOWER(COALESCE(p.stato,\'\')) = \'attivo\'',
+      [userId, `%${req.user.email}%`]
+    );
+    if (activeLoans[0]?.n > 0) {
+      return res.status(400).json({ error: 'Hai prestiti ancora attivi. Restituisci tutti gli articoli prima di eliminare l\'account.' });
+    }
+
+    // Ordine: libera FK prestiti->richieste, poi elimina
+    const userRichieste = await query('SELECT id FROM richieste WHERE utente_id = $1', [userId]);
+    const richiestaIds = (userRichieste || []).map((r) => r.id);
+    if (richiestaIds.length > 0) {
+      await query('UPDATE prestiti SET richiesta_id = NULL WHERE richiesta_id = ANY($1)', [richiestaIds]);
+    }
+    await query('DELETE FROM segnalazioni WHERE user_id = $1', [userId]);
+    await query('DELETE FROM richieste WHERE utente_id = $1', [userId]);
+    await query('UPDATE prestiti SET chi = \'[account eliminato]\' WHERE chi LIKE $1 OR chi = $2', [`%${req.user.email}%`, req.user.email]);
+    await query('DELETE FROM password_reset_requests WHERE email = $1', [req.user.email]);
+    await query('DELETE FROM users WHERE id = $1', [userId]);
+
+    res.json({ message: 'Account eliminato con successo' });
+  } catch (error) {
+    console.error('Errore eliminazione account:', error);
+    res.status(500).json({ error: 'Errore nell\'eliminazione dell\'account' });
+  }
+});
+
 // GET /api/auth/users - Reindirizza a /api/users (admin only)
 r.get('/users', requireAuth, requireRole('admin'), async (req, res) => {
   try {

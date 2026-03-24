@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../auth/AuthContext';
 
-const UserProfile = ({ onClose, onUpdate }) => {
+const UserProfile = ({ onClose, onUpdate, embedded = false }) => {
  const { user, api } = useAuth();
  const [formData, setFormData] = useState({
  phone: '',
@@ -132,10 +132,9 @@ const UserProfile = ({ onClose, onUpdate }) => {
  }
  };
 
- return (
- <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[9999] p-4">
- <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
- {/* Header */}
+ const content = (
+ <>
+ {!embedded && (
  <div className="flex items-center justify-between p-6 border-b border-gray-200">
  <h2 className="text-xl font-semibold text-gray-900">Profilo Personale</h2>
  <button
@@ -147,6 +146,7 @@ const UserProfile = ({ onClose, onUpdate }) => {
  </svg>
  </button>
  </div>
+ )}
 
  {/* Tabs */}
  <div className="border-b border-gray-200">
@@ -385,6 +385,15 @@ const UserProfile = ({ onClose, onUpdate }) => {
  </div>
  )}
  </div>
+ </>
+ );
+
+ if (embedded) return content;
+
+ return (
+ <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[9999] p-4">
+ <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+ {content}
  </div>
  </div>
  );

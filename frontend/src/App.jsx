@@ -22,6 +22,7 @@ const NotificationsPanel = lazy(() => import("./components/NotificationsPanel.js
 const Footer = lazy(() => import("./components/Footer.jsx"));
 const UserArea = lazy(() => import("./user/UserArea.jsx"));
 const MobileMenu = lazy(() => import("./components/MobileMenu.jsx"));
+const AccountAreaModal = lazy(() => import("./components/AccountAreaModal.jsx"));
 
 function PageFallback() {
   return (
@@ -237,6 +238,7 @@ function AppInner() {
 
   const [tab, setTab] = useState(getCurrentTab());
   const [loansInitialTab, setLoansInitialTab] = useState(null);
+  const [showAccountModal, setShowAccountModal] = useState(false);
 
  // Funzione per cambiare tab e aggiornare URL
  const handleTabChange = (newTab, options = {}) => {
@@ -315,7 +317,7 @@ function AppInner() {
  <NavButton icon="👤" label="Area Utente" tab="utente" currentTab={tab} onClick={setTab} />
  )}
  </nav>
- <UserBadge />
+ <UserBadge onOpenAccount={() => { setShowAccountModal(true); setSidebarOpen(false); }} />
  </div>
  </div>
 
@@ -342,7 +344,7 @@ function AppInner() {
  <NavButton icon={<ChartBarIcon className="icon" />} label="Statistiche" tab="statistiche" currentTab={tab} onClick={handleTabChange} />
  <NavButton icon={<ComputerDesktopIcon className="icon" />} label="Stato del Sistema" tab="sistema" currentTab={tab} onClick={handleTabChange} />
 </nav>
- <UserBadge />
+ <UserBadge onOpenAccount={() => setShowAccountModal(true)} />
  </div>
  )}
 
@@ -446,7 +448,13 @@ function AppInner() {
        onNavigate={handleTabChange}
        user={user}
        logout={logout}
+       onOpenAccount={() => { setShowAccountModal(true); setMobileMenuOpen(false); }}
      />
+   </Suspense>
+ )}
+ {showAccountModal && (
+   <Suspense fallback={null}>
+     <AccountAreaModal isOpen={showAccountModal} onClose={() => setShowAccountModal(false)} />
    </Suspense>
  )}
  
@@ -485,27 +493,40 @@ function NavButton({ icon, label, tab, currentTab, onClick, badge = null }) {
 }
 
 // Badge utente
-function UserBadge() {
+function UserBadge({ onOpenAccount }) {
  const { user, logout, roleLabel } = useAuth();
  if (!user) return null;
  
  const initials = (user.name?.[0] || "?") + (user.surname?.[0] || "");
+ const userBlock = (
+   <div className="flex items-center space-x-3 mb-3">
+     <div
+       className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${onOpenAccount ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
+       style={{ backgroundColor: '#033157' }}
+       onClick={onOpenAccount}
+       role={onOpenAccount ? 'button' : undefined}
+       aria-label={onOpenAccount ? 'Apri il mio account' : undefined}
+     >
+       <span className="text-white font-semibold text-sm">{initials}</span>
+     </div>
+     <div className="flex-1 min-w-0">
+       <p
+         className={`text-sm font-medium text-gray-800 truncate ${onOpenAccount ? 'cursor-pointer hover:text-blue-600 hover:underline' : ''}`}
+         onClick={onOpenAccount}
+         role={onOpenAccount ? 'button' : undefined}
+       >
+         {user.name} {user.surname}
+       </p>
+       <p className="text-xs text-gray-500 truncate">
+         {roleLabel} • {user.email}
+       </p>
+     </div>
+   </div>
+ );
  
  return (
  <div className="p-4 border-t border-gray-200 user-badge">
- <div className="flex items-center space-x-3 mb-3">
-        <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor: '#033157'}}>
-          <span className="text-white font-semibold text-sm">{initials}</span>
-        </div>
- <div className="flex-1 min-w-0">
- <p className="text-sm font-medium text-gray-800 truncate">
- {user.name} {user.surname}
- </p>
- <p className="text-xs text-gray-500 truncate">
- {roleLabel} • {user.email}
- </p>
- </div>
- </div>
+ {userBlock}
  <button 
  onClick={logout}
         className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-200 ease border border-gray-200 "
