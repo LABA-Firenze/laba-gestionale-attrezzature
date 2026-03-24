@@ -362,7 +362,7 @@ r.get('/me/export', requireAuth, async (req, res) => {
         ORDER BY p.id DESC
       `, [req.user.id, `%${req.user.email}%`, req.user.email, `%${req.user.name || ''} ${req.user.surname || ''}%`]),
       query('SELECT r.id, r.dal, r.al, r.stato, i.nome as oggetto_nome FROM richieste r LEFT JOIN inventario i ON i.id = r.inventario_id WHERE r.utente_id = $1 ORDER BY r.id DESC', [req.user.id]),
-      query('SELECT id, tipo, note, created_at FROM segnalazioni WHERE user_id = $1 ORDER BY id DESC', [req.user.id])
+      query('SELECT id, tipo, messaggio, urgenza, stato, created_at FROM segnalazioni WHERE user_id = $1 ORDER BY id DESC', [req.user.id])
     ]);
     const userData = userRow[0] ? { ...userRow[0], password_hash: undefined } : null;
     res.json({
