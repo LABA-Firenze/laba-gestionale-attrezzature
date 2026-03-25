@@ -227,31 +227,45 @@ r.post('/reset-password', async (req, res) => {
       return res.status(400).json({ error: 'Token e password richiesti' });
     }
 
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const normalizedToken = String(token).trim();
+    const tokenHash = crypto.createHash('sha256').update(normalizedToken).digest('hex');
 
-    // Check if reset request exists and is valid.
-    // Compatibilità retroattiva: accetta sia token hashato (nuovo) sia raw (vecchi link già inviati).
+    // Cerca il token anche fuori da "pending" per distinguere meglio i casi:
+    // - non trovato
+    // - già usato/completato/cancellato
+    // - scaduto
+    // Compatibilità retroattiva: accetta token hashato (nuovo) e raw (vecchi link).
     const result = await query(`
       SELECT * FROM password_reset_requests
       WHERE token IN ($1, $2)
-        AND COALESCE(status, 'pending') = 'pending'
-        AND expires_at > NOW()
       ORDER BY created_at DESC
       LIMIT 1
-    `, [tokenHash, token]);
+    `, [tokenHash, normalizedToken]);
 
     if (result.length === 0) {
       return res.status(400).json({ error: 'Token non valido o scaduto' });
     }
 
-    const email = result[0].email;
+    const resetRequest = result[0];
+    const requestStatus = (resetRequest.status || '').trim().toLowerCase();
+    const normalizedStatus = requestStatus === '' ? 'pending' : requestStatus;
+    const isExpired = new Date(resetRequest.expires_at).getTime() <= Date.now();
+
+    if (normalizedStatus !== 'pending') {
+      return res.status(400).json({ error: 'Questo link di reset non e piu valido. Richiedi un nuovo link.' });
+    }
+    if (isExpired) {
+      return res.status(400).json({ error: 'Token non valido o scaduto' });
+    }
+
+    const email = resetRequest.email;
 
     // Update password
     const hashedPassword = bcrypt.hashSync(password, 10);
     await query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashedPassword, email]);
 
     // Mark reset request as used
-    await query('UPDATE password_reset_requests SET status = $1 WHERE id = $2', ['used', result[0].id]);
+    await query('UPDATE password_reset_requests SET status = $1 WHERE id = $2', ['used', resetRequest.id]);
 
     res.json({ message: 'Password aggiornata con successo' });
   } catch (error) {
