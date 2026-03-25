@@ -198,8 +198,8 @@ r.post('/forgot-password', authLimiter, async (req, res) => {
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
     await query(`
-      INSERT INTO password_reset_requests (email, token, expires_at)
-      VALUES ($1, $2, $3)
+      INSERT INTO password_reset_requests (email, token, expires_at, status)
+      VALUES ($1, $2, $3, 'pending')
     `, [email, tokenHash, expiresAt]);
 
     const frontendUrl = (process.env.FRONTEND_URL || process.env.APP_URL || 'https://attrezzatura.laba.biz').replace(/\/$/, '');
@@ -232,8 +232,12 @@ r.post('/reset-password', async (req, res) => {
     // Check if reset request exists and is valid.
     // Compatibilità retroattiva: accetta sia token hashato (nuovo) sia raw (vecchi link già inviati).
     const result = await query(`
-      SELECT * FROM password_reset_requests 
-      WHERE token IN ($1, $2) AND status = 'pending' AND expires_at > NOW()
+      SELECT * FROM password_reset_requests
+      WHERE token IN ($1, $2)
+        AND COALESCE(status, 'pending') = 'pending'
+        AND expires_at > NOW()
+      ORDER BY created_at DESC
+      LIMIT 1
     `, [tokenHash, token]);
 
     if (result.length === 0) {
