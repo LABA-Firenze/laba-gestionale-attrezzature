@@ -1,6 +1,7 @@
 // backend/routes/auth.js - PostgreSQL Version
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
+import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { query } from '../utils/postgres.js';
@@ -191,13 +192,15 @@ r.post('/forgot-password', authLimiter, async (req, res) => {
       return res.json({ message: 'Se l\'email è registrata, riceverai un link per il reset della password' });
     }
 
-    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+    // Token random: in DB salviamo SOLO hash SHA-256 (best practice)
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
     await query(`
       INSERT INTO password_reset_requests (email, token, expires_at)
       VALUES ($1, $2, $3)
-    `, [email, token, expiresAt]);
+    `, [email, tokenHash, expiresAt]);
 
     const frontendUrl = (process.env.FRONTEND_URL || process.env.APP_URL || 'https://attrezzatura.laba.biz').replace(/\/$/, '');
     const resetLink = `${frontendUrl}/?resetToken=${encodeURIComponent(token)}`;
@@ -224,26 +227,27 @@ r.post('/reset-password', async (req, res) => {
       return res.status(400).json({ error: 'Token e password richiesti' });
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const email = decoded.email;
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // Check if reset request exists and is valid
+    // Check if reset request exists and is valid.
+    // Compatibilità retroattiva: accetta sia token hashato (nuovo) sia raw (vecchi link già inviati).
     const result = await query(`
       SELECT * FROM password_reset_requests 
-      WHERE email = $1 AND token = $2 AND status = 'pending' AND expires_at > NOW()
-    `, [email, token]);
+      WHERE token IN ($1, $2) AND status = 'pending' AND expires_at > NOW()
+    `, [tokenHash, token]);
 
     if (result.length === 0) {
       return res.status(400).json({ error: 'Token non valido o scaduto' });
     }
+
+    const email = result[0].email;
 
     // Update password
     const hashedPassword = bcrypt.hashSync(password, 10);
     await query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashedPassword, email]);
 
     // Mark reset request as used
-    await query('UPDATE password_reset_requests SET status = $1 WHERE token = $2', ['used', token]);
+    await query('UPDATE password_reset_requests SET status = $1 WHERE id = $2', ['used', result[0].id]);
 
     res.json({ message: 'Password aggiornata con successo' });
   } catch (error) {

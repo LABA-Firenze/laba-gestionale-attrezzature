@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "backend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3001",
+  "backendAuthType": "Bearer token",
+  "backendCredential": "eyJhbGcieyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6LTEsImVtYWlsIjoiYWRtaW4iLCJydW9sbyI6ImFkbWluIiwiY29yc29fYWNjYWRlbWljbyI6bnVsbCwiaWF0IjoxNzU3OTM4MTk2LCJleHAiOjE3NTg1NDI5OTZ9.ZtyRfU0OETs4hJE2-jy-7X4X43swT01eJ3lUIaSrHL8OiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6LTEsImVtYWlsIjoiYWRtaW4iLCJydW9sbyI6ImFkbWluIiwiY29yc29fYWNjYWRlbWljbyI6bnVsbCwiaWF0IjoxNzU3NTMzMDgxLCJleHAiOjE3NTgxMzc4ODF9.Xx5LkpSmUzsVvbzQDTBrZdkPuqVmZM3MhCd8XOndpaE",
+  "executionArgs": {
+    "projectName": "LABA_gestionale",
+    "projectPath": "/Users/simone/Desktop/LABA_gestionale",
+    "testIds": [],
+    "additionalInstruction": "Test complete functionality of the LABA equipment management system including login, inventory management, loan requests, user management, and statistics dashboard",
+    "envs": {
+      "API_KEY": ""
+    }
+  }
+}

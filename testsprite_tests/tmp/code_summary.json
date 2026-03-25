@@ -1,0 +1,55 @@
+{
+  "tech_stack": ["JavaScript", "React", "Node.js", "Express", "PostgreSQL", "Vite", "TailwindCSS", "JWT"],
+  "features": [
+    {
+      "name": "Authentication API",
+      "description": "Sistema di autenticazione con JWT per login, registrazione e gestione utenti",
+      "files": ["backend/routes/auth.js", "backend/middleware/auth.js", "frontend/src/auth/AuthContext.jsx", "frontend/src/auth/Login.jsx"]
+    },
+    {
+      "name": "Inventory Management API",
+      "description": "Gestione inventario attrezzature con CRUD operations, categorie e filtri avanzati",
+      "files": ["backend/routes/inventario.js", "backend/models/inventario.js", "frontend/src/components/Inventory.jsx"]
+    },
+    {
+      "name": "Loans Management API",
+      "description": "Gestione prestiti e richieste con approvazione, rifiuto e tracking",
+      "files": ["backend/routes/prestiti.js", "backend/routes/richieste.js", "frontend/src/components/Loans.jsx"]
+    },
+    {
+      "name": "User Management API",
+      "description": "Gestione utenti con ruoli admin e studente",
+      "files": ["backend/routes/users.js", "frontend/src/components/UserManagement.jsx"]
+    },
+    {
+      "name": "Statistics API",
+      "description": "API per statistiche e dashboard con dati aggregati",
+      "files": ["backend/routes/stats.js", "frontend/src/components/Statistics.jsx", "frontend/src/components/Dashboard.jsx"]
+    },
+    {
+      "name": "Repairs Management API",
+      "description": "Gestione riparazioni e segnalazioni guasti",
+      "files": ["backend/routes/riparazioni.js", "backend/routes/segnalazioni.js", "frontend/src/components/Repairs.jsx"]
+    },
+    {
+      "name": "Categories API",
+      "description": "Gestione categorie inventario",
+      "files": ["backend/routes/categorie.js", "frontend/src/components/AdvancedFilters.jsx"]
+    },
+    {
+      "name": "Courses API",
+      "description": "Gestione corsi accademici",
+      "files": ["backend/routes/corsi.js"]
+    },
+    {
+      "name": "Notifications API",
+      "description": "Sistema notifiche e avvisi",
+      "files": ["backend/routes/avvisi.js", "frontend/src/components/NotificationSystem.jsx", "frontend/src/hooks/useRealtimeNotifications.js"]
+    },
+    {
+      "name": "Health Check API",
+      "description": "API per verificare lo stato del sistema",
+      "files": ["backend/server.js"]
+    }
+  ]
+}

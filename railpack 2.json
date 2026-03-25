@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "steps": {
+    "install-backend": {
+      "commands": [
+        "cd backend",
+        "npm install"
+      ],
+      "caches": ["node-modules-backend"]
+    },
+    "install-frontend": {
+      "commands": [
+        "cd frontend",
+        "npm install"
+      ],
+      "caches": ["node-modules-frontend"]
+    },
+    "build-frontend": {
+      "inputs": [{ "step": "install-frontend" }],
+      "commands": [
+        "cd frontend",
+        "npm run build"
+      ]
+    }
+  },
+  "deploy": {
+    "base": {
+      "image": "ghcr.io/railwayapp/railpack-runtime:latest"
+    },
+    "inputs": [
+      {
+        "step": "install-backend",
+        "include": ["backend/**"]
+      },
+      {
+        "step": "build-frontend",
+        "include": ["frontend/dist/**"]
+      }
+    ],
+    "startCommand": "cd backend && node server.js",
+    "variables": {
+      "NODE_ENV": "production"
+    }
+  }
+}
