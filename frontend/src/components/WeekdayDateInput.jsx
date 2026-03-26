@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { isLoanDateDebugEnabled } from '../utils/loanDateDebug';
 
 /**
  * Calendario custom per date.
@@ -48,6 +49,48 @@ const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0
     if (disabledSet.size && disabledSet.has(toStr(d))) return false;
     return true;
   };
+
+  const wasOpenRef = useRef(false);
+  useEffect(() => {
+    const becameOpen = open && !wasOpenRef.current;
+    wasOpenRef.current = open;
+    if (!becameOpen || !isLoanDateDebugEnabled()) return;
+
+    const label = name || placeholder || 'WeekdayDateInput';
+    const trace = (y, mo, day) => {
+      const dt = new Date(y, mo - 1, day);
+      const s = toStr(dt);
+      const reasons = [];
+      if (isDisabledDay(dt)) reasons.push(`giorno settimana disabilitato: getDay()=${dt.getDay()} (0=dom … 6=sab), disabledDays=${JSON.stringify(disabledDays)}`);
+      if (minD && dt < minD) reasons.push(`prima di minDate (${minDate})`);
+      if (maxD && dt > maxD) reasons.push(`dopo maxDate (${maxDate})`);
+      if (disabledSet.has(s)) reasons.push(`in disabledDates`);
+      return { ymd: s, ok: reasons.length === 0, blocchi: reasons.length ? reasons : ['—'] };
+    };
+
+    const samples = [
+      [2026, 3, 28],
+      [2026, 3, 29],
+      [2026, 3, 30],
+      [2026, 3, 31]
+    ];
+    const righe = {};
+    for (const [y, mo, day] of samples) {
+      const key = `${y}-${String(mo).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      righe[key] = trace(y, mo, day);
+    }
+
+    // eslint-disable-next-line no-console
+    console.info(`[LABA datePicker] ${label}`, {
+      minDate,
+      maxDate,
+      disabledDays,
+      nota: 'getDay() JS: 0=dom, 1=lun, … 6=sab; disabledDays [0] = solo domenica',
+      disabledDatesCount: disabledDates?.length ?? 0,
+      disabledDatesPrime15: (disabledDates || []).slice(0, 15),
+      campioneMarzo2026: righe
+    });
+  }, [open, minDate, maxDate, disabledDays, disabledDates, name, placeholder]);
 
   const buildCalendar = () => {
     const year = viewMonth.getFullYear();
