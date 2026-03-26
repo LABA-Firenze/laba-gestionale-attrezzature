@@ -144,16 +144,28 @@ const fetchAvailableUnits = async (itemId) => {
 
 // handleUnitsSelected removed - navigation now handled by footer buttons
 
- // Date occupate dalle unità selezionate (per disabilitarle nel date picker)
+ // Date occupate dalle unità selezionate (per disabilitarle nel date picker).
+ // Usa solo YYYY-MM-DD in calendario locale: toISOString() può slittare di un giorno (UTC vs fuso orario).
+ const formatYmdLocal = (d) =>
+   d.getFullYear() +
+   '-' +
+   String(d.getMonth() + 1).padStart(2, '0') +
+   '-' +
+   String(d.getDate()).padStart(2, '0');
+
  const getDisabledDatesFromUnits = (units) => {
    const allDates = new Set();
-   (units || []).forEach(unit => {
+   (units || []).forEach((unit) => {
      if (!unit?.prestito_data_uscita || !unit?.prestito_data_rientro) return;
-     const dal = new Date(unit.prestito_data_uscita);
-     const al = new Date(unit.prestito_data_rientro);
-     const curr = new Date(dal);
-     while (curr <= al) {
-       allDates.add(curr.toISOString().split('T')[0]);
+     const dalStr = String(unit.prestito_data_uscita).slice(0, 10);
+     const alStr = String(unit.prestito_data_rientro).slice(0, 10);
+     if (!/^\d{4}-\d{2}-\d{2}$/.test(dalStr) || !/^\d{4}-\d{2}-\d{2}$/.test(alStr)) return;
+     const [ys, ms, ds] = dalStr.split('-').map(Number);
+     const [ye, me, de] = alStr.split('-').map(Number);
+     const end = new Date(ye, me - 1, de);
+     const curr = new Date(ys, ms - 1, ds);
+     while (curr <= end) {
+       allDates.add(formatYmdLocal(curr));
        curr.setDate(curr.getDate() + 1);
      }
    });

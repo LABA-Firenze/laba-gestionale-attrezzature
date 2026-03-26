@@ -45,12 +45,16 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   // Date occupate dalla unità (prestito attivo o richiesta in attesa) — disabilitate nel date picker
   const dateRangeToArray = (dalStr, alStr) => {
     if (!dalStr || !alStr) return [];
-    const dal = new Date(dalStr);
-    const al = new Date(alStr);
+    const da = String(dalStr).slice(0, 10);
+    const a = String(alStr).slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(da) || !/^\d{4}-\d{2}-\d{2}$/.test(a)) return [];
+    const [ys, ms, ds] = da.split('-').map(Number);
+    const [ye, me, de] = a.split('-').map(Number);
+    const end = new Date(ye, me - 1, de);
+    const curr = new Date(ys, ms - 1, ds);
     const arr = [];
-    const curr = new Date(dal);
-    while (curr <= al) {
-      arr.push(curr.toISOString().split('T')[0]);
+    while (curr <= end) {
+      arr.push(toLocalYmd(curr));
       curr.setDate(curr.getDate() + 1);
     }
     return arr;
