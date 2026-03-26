@@ -2,42 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon, PhotoIcon, CheckIcon, ListBulletIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
-import { toLocalYmd, maxEndDateExternalThreeDay, isValidExternalThreeDayRange } from '../utils/externalBookingDates';
+import { toLocalYmd } from '../utils/externalBookingDates';
+
+/** Default data inizio (oggi, locale) — admin: nessun altro vincolo sulle date (solo utenti). */
+function todayYmd() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return toLocalYmd(d);
+}
 
 const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
  const [step, setStep] = useState(1); // 1: Seleziona oggetto, 2: Seleziona utente, 3: Seleziona unità, 4: Tipo utilizzo, 5: Date
  const [inventory, setInventory] = useState([]);
- 
- // Primo giorno utile = domani, mai sabato/domenica (se sabato → lunedì)
- const getMinStartDate = () => {
-   const d = new Date();
-   d.setDate(d.getDate() + 1);
-   d.setHours(0, 0, 0, 0);
-   while (d.getDay() === 0 || d.getDay() === 6) {
-     d.setDate(d.getDate() + 1);
-   }
-   return toLocalYmd(d);
- };
- // Parsing YYYY-MM-DD in timezone locale
- const getDayOfWeekLocal = (dateStr) => {
-   if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return -1;
-   const [y, m, d] = dateStr.split('-').map(Number);
-   return new Date(y, m - 1, d).getDay();
- };
  const [users, setUsers] = useState([]);
  const [selectedItem, setSelectedItem] = useState(null);
  const [selectedUser, setSelectedUser] = useState(null);
  const [selectedUnits, setSelectedUnits] = useState([]);
  const [availableUnits, setAvailableUnits] = useState([]);
- const [dateRange, setDateRange] = useState(() => {
-   const d = new Date();
-   d.setDate(d.getDate() + 1);
-   d.setHours(0, 0, 0, 0);
-   while (d.getDay() === 0 || d.getDay() === 6) {
-     d.setDate(d.getDate() + 1);
-   }
-   return { dal: toLocalYmd(d), al: '' };
- });
+ const [dateRange, setDateRange] = useState(() => ({ dal: todayYmd(), al: '' }));
  const [manualUser, setManualUser] = useState({
  name: '',
  surname: '',
@@ -134,19 +116,10 @@ const fetchAvailableUnits = async (itemId) => {
 
 // handleUnitsSelected removed - navigation now handled by footer buttons
 
- // Prestito diretto admin: non passiamo date occupate al calendario — altrimenti il primo giorno utile
- // (minDate, es. lun dopo il weekend) può coincidere con un giorno "occupato" nel range API e restare non cliccabile.
-
  const handleCreateLoan = async () => {
  if (!selectedItem || (!selectedUser && !isManualUser) || selectedUnits.length === 0 || !dateRange.dal || !dateRange.al) {
  setError('Compila tutti i campi obbligatori');
  return;
- }
-
- const startDay = getDayOfWeekLocal(dateRange.dal);
- if (startDay === 0 || startDay === 6) {
-   setError('Sabato e domenica non sono validi per iniziare un prestito. Solo giorni feriali (lun-ven).');
-   return;
  }
 
  // Validazione per oggetti "entrambi"
@@ -155,13 +128,8 @@ const fetchAvailableUnits = async (itemId) => {
    return;
  }
 
- const isPrestitoEsterno =
-   selectedItem.tipo_prestito !== 'solo_interno' &&
-   !(selectedItem.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno');
- if (isPrestitoEsterno && !isValidExternalThreeDayRange(dateRange.dal, dateRange.al)) {
-   setError(
-     'Prestito esterno: massimo 3 giorni inclusi dall’inizio (es. ven→lun se il 3° giorno cade di domenica).'
-   );
+ if (dateRange.al < dateRange.dal) {
+   setError('La data di fine non può essere prima della data di inizio');
    return;
  }
 
@@ -205,9 +173,9 @@ const fetchAvailableUnits = async (itemId) => {
  setSelectedUser(null);
  setSelectedUnits([]);
  setAvailableUnits([]);
- setDateRange({ 
- dal: getMinStartDate(), 
- al: '' 
+ setDateRange({
+ dal: todayYmd(),
+ al: ''
  });
  setManualUser({
  name: '',
@@ -671,11 +639,6 @@ const fetchAvailableUnits = async (itemId) => {
    name="dal"
    value={dateRange.dal}
    onChange={(val) => {
-     const minStart = getMinStartDate();
-     if (val < minStart) {
-       setError('Il noleggio può iniziare al più presto dal giorno successivo');
-       return;
-     }
      setError(null);
      setDateRange(prev => ({
        ...prev,
@@ -683,7 +646,7 @@ const fetchAvailableUnits = async (itemId) => {
        al: (selectedItem?.tipo_prestito === 'solo_interno' || (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')) ? val : prev.al
      }));
    }}
-   minDate={getMinStartDate()}
+   disabledDays={[]}
    disabledDates={[]}
    required
    placeholder="Seleziona data inizio"
@@ -704,31 +667,15 @@ const fetchAvailableUnits = async (itemId) => {
           (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')) 
          ? dateRange.dal : dateRange.al}
 onChange={(val) => {
-  if (val < dateRange.dal) {
+  if (dateRange.dal && val < dateRange.dal) {
     setError('La data di fine non può essere prima della data di inizio');
-    return;
-  }
-  const isPrestitoEsterno =
-    selectedItem?.tipo_prestito !== 'solo_interno' &&
-    !(selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno');
-  if (isPrestitoEsterno && !isValidExternalThreeDayRange(dateRange.dal, val)) {
-    setError(
-      'Prestito esterno: massimo 3 giorni inclusi dall’inizio (es. ven→lun se il 3° giorno è domenica).'
-    );
     return;
   }
   setError(null);
   setDateRange((prev) => ({ ...prev, al: val }));
- }}
-   minDate={dateRange.dal || getMinStartDate()}
-   maxDate={
-     dateRange.dal &&
-     selectedItem?.tipo_prestito !== 'solo_interno' &&
-     !(selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')
-       ? maxEndDateExternalThreeDay(dateRange.dal)
-       : undefined
-   }
-   disabledDays={[0]}
+}}
+   minDate={dateRange.dal || undefined}
+   disabledDays={[]}
    disabledDates={[]}
    disabled={selectedItem?.tipo_prestito === 'solo_interno' || 
             (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')}

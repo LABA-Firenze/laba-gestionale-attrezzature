@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon, ExclamationCircleIcon, RectangleStackIcon, ArrowLeftIcon, ArrowRightIcon, ListBulletIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
-import { toLocalYmd, parseLocalYmd, maxEndDateExternalThreeDay, isValidExternalThreeDayRange } from '../utils/externalBookingDates';
+import {
+  toLocalYmd,
+  parseLocalYmd,
+  maxEndDateExternalThreeDay,
+  isValidExternalThreeDayRange,
+  firstWeekdaySelectableNotInDisabled,
+} from '../utils/externalBookingDates';
 
 const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   const [step, setStep] = useState(1); // 1: Oggetto, 2: ID Univoco, 3: Tipo Utilizzo, 4: Date e Note
@@ -68,6 +74,9 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     return [...new Set(combined)].sort();
   };
   const disabledDates = selectedUnit ? getDisabledDatesForUnit(selectedUnit) : [];
+  const minDalDate = selectedUnit
+    ? firstWeekdaySelectableNotInDisabled(getMinStartDate(), disabledDates)
+    : getMinStartDate();
 
   useEffect(() => {
     if (isOpen) {
@@ -98,6 +107,21 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
       }
     }
   }, [isOpen, selectedItem]);
+
+  // Se l'unità ha occupazioni, il primo "domani feriale" può cadere ancora nel range disabilitato:
+  // alza dal al primo feriale libero (coerente con minDate del picker).
+  useEffect(() => {
+    if (!isOpen || step !== 4 || !selectedUnit) return;
+    const base = getMinStartDate();
+    const dis = getDisabledDatesForUnit(selectedUnit);
+    const minDal = firstWeekdaySelectableNotInDisabled(base, dis);
+    setDateRange((prev) => {
+      if (!prev.dal || prev.dal < minDal || dis.includes(prev.dal)) {
+        return { ...prev, dal: minDal, al: '' };
+      }
+      return prev;
+    });
+  }, [isOpen, step, selectedUnit]);
 
   const fetchInventory = async () => {
     try {
@@ -679,7 +703,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                     name="dal"
                     value={dateRange.dal}
                     onChange={(val) => handleInputChange({ target: { name: 'dal', value: val } })}
-                    minDate={getMinStartDate()}
+                    minDate={minDalDate}
                     disabledDates={disabledDates}
                     required
                     placeholder="Seleziona data inizio"
@@ -700,7 +724,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                            (selectedObject.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')) 
                           ? dateRange.dal : dateRange.al}
                     onChange={(val) => handleInputChange({ target: { name: 'al', value: val } })}
-                    minDate={dateRange.dal || getMinStartDate()}
+                    minDate={dateRange.dal || minDalDate}
                     maxDate={
                       dateRange.dal &&
                       !(

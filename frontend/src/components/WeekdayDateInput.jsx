@@ -20,12 +20,19 @@ const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0
     return base;
   });
 
+  // Con value vuoto (es. "data fine"), il mese mostrato deve seguire minDate quando cambia
+  // (es. utente imposta "dal" in aprile ma il calendario era ancora su marzo → tutti i giorni grigi).
   useEffect(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
       setViewMonth(new Date(y, m - 1, 1));
+      return;
     }
-  }, [value]);
+    if (minDate && /^\d{4}-\d{2}-\d{2}$/.test(minDate)) {
+      const [y, m] = minDate.split('-').map(Number);
+      setViewMonth(new Date(y, m - 1, 1));
+    }
+  }, [value, minDate]);
   const containerRef = useRef(null);
 
   const parseDate = (str) => {

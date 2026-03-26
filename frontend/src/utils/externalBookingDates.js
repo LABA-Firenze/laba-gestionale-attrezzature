@@ -58,3 +58,20 @@ export function isValidExternalThreeDayRange(dalStr, alStr) {
   if (!maxStr || alStr > maxStr) return false;
   return isValidDuration;
 }
+
+/**
+ * Primo giorno feriale (lun–ven) a partire da baseYmd che non è in disabled (occupazioni).
+ * Evita minDate ∈ disabledDates nel date picker lato utente.
+ */
+export function firstWeekdaySelectableNotInDisabled(baseYmd, disabledDates) {
+  const set = new Set(disabledDates || []);
+  let d = parseLocalYmd(baseYmd);
+  if (!d) return baseYmd;
+  for (let i = 0; i < 366; i++) {
+    const ymd = toLocalYmd(d);
+    const w = d.getDay();
+    if (w !== 0 && w !== 6 && !set.has(ymd)) return ymd;
+    d.setDate(d.getDate() + 1);
+  }
+  return toLocalYmd(d);
+}
