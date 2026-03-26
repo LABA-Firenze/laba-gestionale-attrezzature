@@ -134,34 +134,8 @@ const fetchAvailableUnits = async (itemId) => {
 
 // handleUnitsSelected removed - navigation now handled by footer buttons
 
- // Date occupate dalle unità selezionate (per disabilitarle nel date picker).
- // Usa solo YYYY-MM-DD in calendario locale: toISOString() può slittare di un giorno (UTC vs fuso orario).
- const formatYmdLocal = (d) =>
-   d.getFullYear() +
-   '-' +
-   String(d.getMonth() + 1).padStart(2, '0') +
-   '-' +
-   String(d.getDate()).padStart(2, '0');
-
- const getDisabledDatesFromUnits = (units) => {
-   const allDates = new Set();
-   (units || []).forEach((unit) => {
-     if (!unit?.prestito_data_uscita || !unit?.prestito_data_rientro) return;
-     const dalStr = String(unit.prestito_data_uscita).slice(0, 10);
-     const alStr = String(unit.prestito_data_rientro).slice(0, 10);
-     if (!/^\d{4}-\d{2}-\d{2}$/.test(dalStr) || !/^\d{4}-\d{2}-\d{2}$/.test(alStr)) return;
-     const [ys, ms, ds] = dalStr.split('-').map(Number);
-     const [ye, me, de] = alStr.split('-').map(Number);
-     const end = new Date(ye, me - 1, de);
-     const curr = new Date(ys, ms - 1, ds);
-     while (curr <= end) {
-       allDates.add(formatYmdLocal(curr));
-       curr.setDate(curr.getDate() + 1);
-     }
-   });
-   return [...allDates];
- };
- const disabledDates = getDisabledDatesFromUnits(selectedUnits);
+ // Prestito diretto admin: non passiamo date occupate al calendario — altrimenti il primo giorno utile
+ // (minDate, es. lun dopo il weekend) può coincidere con un giorno "occupato" nel range API e restare non cliccabile.
 
  const handleCreateLoan = async () => {
  if (!selectedItem || (!selectedUser && !isManualUser) || selectedUnits.length === 0 || !dateRange.dal || !dateRange.al) {
@@ -710,7 +684,7 @@ const fetchAvailableUnits = async (itemId) => {
      }));
    }}
    minDate={getMinStartDate()}
-   disabledDates={disabledDates}
+   disabledDates={[]}
    required
    placeholder="Seleziona data inizio"
    className="w-full px-3 py-2"
@@ -755,7 +729,7 @@ onChange={(val) => {
        : undefined
    }
    disabledDays={[0]}
-   disabledDates={disabledDates}
+   disabledDates={[]}
    disabled={selectedItem?.tipo_prestito === 'solo_interno' || 
             (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')}
    required
