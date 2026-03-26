@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
+import WeekdayDateInput from './WeekdayDateInput';
 
 const ActivityLog = ({ isOpen, onClose }) => {
  const [activities, setActivities] = useState([]);
@@ -134,21 +135,25 @@ const ActivityLog = ({ isOpen, onClose }) => {
 
  <div>
  <label className="block text-sm font-medium text-gray-700 mb-1">Data da</label>
- <input
- type="date"
+ <WeekdayDateInput
+ disabledDays={[]}
  value={filters.dateFrom}
- onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
+ onChange={(v) => setFilters(prev => ({ ...prev, dateFrom: v }))}
+ maxDate={filters.dateTo || undefined}
+ className="rounded-full text-sm"
+ placeholder="Da…"
  />
  </div>
 
  <div>
  <label className="block text-sm font-medium text-gray-700 mb-1">Data a</label>
- <input
- type="date"
+ <WeekdayDateInput
+ disabledDays={[]}
  value={filters.dateTo}
- onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
- className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 text-sm"
+ onChange={(v) => setFilters(prev => ({ ...prev, dateTo: v }))}
+ minDate={filters.dateFrom || undefined}
+ className="rounded-full text-sm"
+ placeholder="A…"
  />
  </div>
  </div>

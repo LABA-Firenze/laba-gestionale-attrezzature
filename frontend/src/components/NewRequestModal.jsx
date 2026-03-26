@@ -35,6 +35,13 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     const [y, m, d] = dateStr.split('-').map(Number);
     return new Date(y, m - 1, d).getDay();
   };
+  /** YYYY-MM-DD in timezone locale (evita shift di un giorno con toISOString/UTC). */
+  const toLocalYmd = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
   // Date occupate dalla unità (prestito attivo o richiesta in attesa) — disabilitate nel date picker
   const dateRangeToArray = (dalStr, alStr) => {
     if (!dalStr || !alStr) return [];
@@ -251,7 +258,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
       await api.post('/api/richieste', {
         unit_id: selectedUnit.id,
         dal: dateRange.dal,
-        al: dataFine.toISOString().split('T')[0],
+        al: toLocalYmd(dataFine),
         note: note,
         tipo_utilizzo: selectedObject.tipo_prestito === 'entrambi' ? tipoUtilizzo : null
       });

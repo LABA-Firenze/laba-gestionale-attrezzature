@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 /**
  * Calendario custom per date.
@@ -61,11 +62,12 @@ const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0
   };
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false);
     };
-    if (open) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, [open]);
 
   const selectedDate = parseDate(value);
@@ -84,63 +86,78 @@ const WeekdayDateInput = ({ value, onChange, minDate, maxDate, disabledDays = [0
         required={required}
         className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
       />
-      {open && (
-        <div className="absolute z-50 mt-1 left-0 bg-white border border-gray-200 rounded-lg shadow-lg p-3 w-[min(280px,calc(100vw-2rem))]">
-          <div className="flex items-center justify-between mb-2">
-            <button
-              type="button"
-              onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1))}
-              className="p-1 hover:bg-gray-100 rounded"
+      {open &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[10050] flex items-center justify-center p-4 bg-black/40"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Seleziona data"
+            onMouseDown={(e) => {
+              if (e.target === e.currentTarget) setOpen(false);
+            }}
+          >
+            <div
+              className="bg-white border border-gray-200 rounded-xl shadow-2xl p-4 w-[min(320px,calc(100vw-2rem))]"
+              onMouseDown={(e) => e.stopPropagation()}
             >
-              ‹
-            </button>
-            <span className="text-sm font-medium capitalize">
-              {viewMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}
-            </span>
-            <button
-              type="button"
-              onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1))}
-              className="p-1 hover:bg-gray-100 rounded"
-            >
-              ›
-            </button>
-          </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-500 mb-1">
-            {['L', 'M', 'M', 'G', 'V', 'S', 'D'].map((l) => (
-              <div key={l}>{l}</div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-1">
-            {days.map((d, i) => {
-              if (!d) return <div key={`e-${i}`} />;
-              const disabled = !canSelect(d);
-              const selected = isSameDay(d, selectedDate);
-              return (
+              <div className="flex items-center justify-between mb-2">
                 <button
-                  key={d.getTime()}
                   type="button"
-                  disabled={disabled}
-                  onClick={() => {
-                    if (!disabled) {
-                      onChange(toStr(d));
-                      setOpen(false);
-                    }
-                  }}
-                  className={`w-8 h-8 rounded text-sm ${
-                    disabled
-                      ? 'text-gray-300 cursor-not-allowed'
-                      : selected
-                        ? 'bg-blue-600 text-white'
-                        : 'hover:bg-blue-100 text-gray-900'
-                  }`}
+                  onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1))}
+                  className="p-1 hover:bg-gray-100 rounded"
                 >
-                  {d.getDate()}
+                  ‹
                 </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                <span className="text-sm font-medium capitalize">
+                  {viewMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1))}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  ›
+                </button>
+              </div>
+              <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-500 mb-1">
+                {['L', 'M', 'M', 'G', 'V', 'S', 'D'].map((l) => (
+                  <div key={l}>{l}</div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-1">
+                {days.map((d, i) => {
+                  if (!d) return <div key={`e-${i}`} />;
+                  const disabled = !canSelect(d);
+                  const selected = isSameDay(d, selectedDate);
+                  return (
+                    <button
+                      key={d.getTime()}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => {
+                        if (!disabled) {
+                          onChange(toStr(d));
+                          setOpen(false);
+                        }
+                      }}
+                      className={`w-8 h-8 rounded text-sm ${
+                        disabled
+                          ? 'text-gray-300 cursor-not-allowed'
+                          : selected
+                            ? 'bg-blue-600 text-white'
+                            : 'hover:bg-blue-100 text-gray-900'
+                      }`}
+                    >
+                      {d.getDate()}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

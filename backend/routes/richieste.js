@@ -101,6 +101,9 @@ r.post('/', requireAuth, async (req, res) => {
     
     if (unit_id) {
       // Verifica che l'unità esista, non sia già riservata da un'altra richiesta in attesa, e non abbia prestiti attivi che sovrappongono [dal, al]
+      // Sovrapposizione intervalli [dal, al] e [data_uscita, data_rientro] (date inclusive):
+      // si sovrappongono se NON (al < data_uscita OR (data_rientro NOT NULL E dal > data_rientro)).
+      // Se data_rientro è NULL (prestito aperto), vale solo: al >= data_uscita.
       const unitResult = await query(`
         SELECT iu.inventario_id FROM inventario_unita iu
         WHERE iu.id = $1
@@ -109,8 +112,10 @@ r.post('/', requireAuth, async (req, res) => {
           SELECT 1 FROM prestiti p
           WHERE p.id = iu.prestito_corrente_id
           AND LOWER(TRIM(COALESCE(p.stato,''))) = 'attivo'
-          AND p.data_uscita <= $2
-          AND (p.data_rientro IS NULL OR p.data_rientro >= $3)
+          AND NOT (
+            $2::date < p.data_uscita::date
+            OR (p.data_rientro IS NOT NULL AND $3::date > p.data_rientro::date)
+          )
         )
       `, [unit_id, al, dal]);
       if (unitResult.length === 0) {
