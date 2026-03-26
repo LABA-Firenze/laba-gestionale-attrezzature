@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon, PhotoIcon, CheckIcon, ListBulletIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
+import { toLocalYmd, maxEndDateExternalThreeDay, isValidExternalThreeDayRange } from '../utils/externalBookingDates';
 
 const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
  const [step, setStep] = useState(1); // 1: Seleziona oggetto, 2: Seleziona utente, 3: Seleziona unità, 4: Tipo utilizzo, 5: Date
@@ -11,29 +12,17 @@ const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
  const getMinStartDate = () => {
    const d = new Date();
    d.setDate(d.getDate() + 1);
+   d.setHours(0, 0, 0, 0);
    while (d.getDay() === 0 || d.getDay() === 6) {
      d.setDate(d.getDate() + 1);
    }
-   return d.toISOString().split('T')[0];
+   return toLocalYmd(d);
  };
  // Parsing YYYY-MM-DD in timezone locale
  const getDayOfWeekLocal = (dateStr) => {
    if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return -1;
    const [y, m, d] = dateStr.split('-').map(Number);
    return new Date(y, m - 1, d).getDay();
- };
- // Funzione per slittare la domenica a lunedì
- const skipSunday = (dateStr) => {
-   if (!dateStr) return dateStr;
-   const date = new Date(dateStr);
-   const dayOfWeek = date.getDay(); // 0 = domenica, 1 = lunedì, ..., 6 = sabato
-   
-   if (dayOfWeek === 0) { // Domenica
-     // Slitta a lunedì
-     date.setDate(date.getDate() + 1);
-   }
-   
-   return date.toISOString().split('T')[0]; // Ritorna in formato YYYY-MM-DD
  };
  const [users, setUsers] = useState([]);
  const [selectedItem, setSelectedItem] = useState(null);
@@ -43,10 +32,11 @@ const AdvancedLoanModal = ({ isOpen, onClose, onSuccess }) => {
  const [dateRange, setDateRange] = useState(() => {
    const d = new Date();
    d.setDate(d.getDate() + 1);
+   d.setHours(0, 0, 0, 0);
    while (d.getDay() === 0 || d.getDay() === 6) {
      d.setDate(d.getDate() + 1);
    }
-   return { dal: d.toISOString().split('T')[0], al: '' };
+   return { dal: toLocalYmd(d), al: '' };
  });
  const [manualUser, setManualUser] = useState({
  name: '',
@@ -188,6 +178,16 @@ const fetchAvailableUnits = async (itemId) => {
  // Validazione per oggetti "entrambi"
  if (selectedItem.tipo_prestito === 'entrambi' && !tipoUtilizzo) {
    setError('Seleziona il tipo di utilizzo');
+   return;
+ }
+
+ const isPrestitoEsterno =
+   selectedItem.tipo_prestito !== 'solo_interno' &&
+   !(selectedItem.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno');
+ if (isPrestitoEsterno && !isValidExternalThreeDayRange(dateRange.dal, dateRange.al)) {
+   setError(
+     'Prestito esterno: massimo 3 giorni inclusi dall’inizio (es. ven→lun se il 3° giorno cade di domenica).'
+   );
    return;
  }
 
@@ -730,16 +730,30 @@ const fetchAvailableUnits = async (itemId) => {
           (selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')) 
          ? dateRange.dal : dateRange.al}
 onChange={(val) => {
-  const newAl = val;
-  if (newAl < dateRange.dal) {
+  if (val < dateRange.dal) {
     setError('La data di fine non può essere prima della data di inizio');
     return;
   }
-  // Admin: nessun limite di durata, può noleggiare per qualsiasi periodo
+  const isPrestitoEsterno =
+    selectedItem?.tipo_prestito !== 'solo_interno' &&
+    !(selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno');
+  if (isPrestitoEsterno && !isValidExternalThreeDayRange(dateRange.dal, val)) {
+    setError(
+      'Prestito esterno: massimo 3 giorni inclusi dall’inizio (es. ven→lun se il 3° giorno è domenica).'
+    );
+    return;
+  }
   setError(null);
-  setDateRange(prev => ({ ...prev, al: newAl }));
+  setDateRange((prev) => ({ ...prev, al: val }));
  }}
    minDate={dateRange.dal || getMinStartDate()}
+   maxDate={
+     dateRange.dal &&
+     selectedItem?.tipo_prestito !== 'solo_interno' &&
+     !(selectedItem?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')
+       ? maxEndDateExternalThreeDay(dateRange.dal)
+       : undefined
+   }
    disabledDays={[0]}
    disabledDates={disabledDates}
    disabled={selectedItem?.tipo_prestito === 'solo_interno' || 

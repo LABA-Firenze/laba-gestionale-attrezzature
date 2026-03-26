@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon, ExclamationCircleIcon, RectangleStackIcon, ArrowLeftIcon, ArrowRightIcon, ListBulletIcon, ExclamationTriangleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import WeekdayDateInput from './WeekdayDateInput';
+import { toLocalYmd, parseLocalYmd, maxEndDateExternalThreeDay, isValidExternalThreeDayRange } from '../utils/externalBookingDates';
 
 const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   const [step, setStep] = useState(1); // 1: Oggetto, 2: ID Univoco, 3: Tipo Utilizzo, 4: Date e Note
@@ -15,13 +16,20 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   const getMinStartDate = () => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
+    d.setHours(0, 0, 0, 0);
     while (d.getDay() === 0 || d.getDay() === 6) {
       d.setDate(d.getDate() + 1);
     }
-    return d.toISOString().split('T')[0];
+    return toLocalYmd(d);
   };
   const [dateRange, setDateRange] = useState({
-    dal: (() => { const d = new Date(); d.setDate(d.getDate() + 1); while (d.getDay() === 0 || d.getDay() === 6) { d.setDate(d.getDate() + 1); } return d.toISOString().split('T')[0]; })(),
+    dal: (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      d.setHours(0, 0, 0, 0);
+      while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+      return toLocalYmd(d);
+    })(),
     al: ''
   });
   const [note, setNote] = useState('');
@@ -34,13 +42,6 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return -1;
     const [y, m, d] = dateStr.split('-').map(Number);
     return new Date(y, m - 1, d).getDay();
-  };
-  /** YYYY-MM-DD in timezone locale (evita shift di un giorno con toISOString/UTC). */
-  const toLocalYmd = (d) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
   };
   // Date occupate dalla unità (prestito attivo o richiesta in attesa) — disabilitate nel date picker
   const dateRangeToArray = (dalStr, alStr) => {
@@ -67,20 +68,6 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     return [...new Set(combined)].sort();
   };
   const disabledDates = selectedUnit ? getDisabledDatesForUnit(selectedUnit) : [];
-
-  // Funzione per slittare la domenica a lunedì
-  const skipSunday = (dateStr) => {
-    if (!dateStr) return dateStr;
-    const date = new Date(dateStr);
-    const dayOfWeek = date.getDay(); // 0 = domenica, 1 = lunedì, ..., 6 = sabato
-    
-    if (dayOfWeek === 0) { // Domenica
-      // Slitta a lunedì
-      date.setDate(date.getDate() + 1);
-    }
-    
-    return date.toISOString().split('T')[0]; // Ritorna in formato YYYY-MM-DD
-  };
 
   useEffect(() => {
     if (isOpen) {
@@ -177,16 +164,21 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
     setLoading(true);
     setError(null);
 
-    // Validazione date frontend
-    const dataInizio = new Date(dateRange.dal);
+    // Validazione date frontend (parse locale: no new Date("YYYY-MM-DD") da UTC)
+    const dataInizio = parseLocalYmd(dateRange.dal);
     let dataFine;
     
     if (selectedObject.tipo_prestito === 'solo_interno') {
-      dataFine = new Date(dateRange.dal); // Stesso giorno per uso interno
+      dataFine = parseLocalYmd(dateRange.dal);
     } else if (selectedObject.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno') {
-      dataFine = new Date(dateRange.dal); // Stesso giorno se scelto interno
+      dataFine = parseLocalYmd(dateRange.dal);
     } else {
-      dataFine = new Date(dateRange.al); // Data normale per esterno
+      dataFine = parseLocalYmd(dateRange.al);
+    }
+    if (!dataInizio || !dataFine) {
+      setError('Date non valide');
+      setLoading(false);
+      return;
     }
     
     const domani = new Date();
@@ -223,35 +215,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
         return;
       }
     } else {
-      // Validazione limite massimo 3 giorni per prestiti esterni
-      // Calcola la durata in giorni: dal giorno di inizio al giorno di fine (inclusi)
-      // Es: dal 22 al 24 = 3 giorni (22, 23, 24)
-      const diffTime = dataFine.getTime() - dataInizio.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 per includere il giorno di inizio
-      
-      // Gestione speciale per slittamento domenica -> lunedì
-      // Se la data di fine è lunedì e il giorno precedente era domenica, 
-      // e la durata originale fino alla domenica era 3 giorni, allora è valido (4 giorni totali)
-      const fineDayOfWeek = dataFine.getDay(); // 0 = domenica, 1 = lunedì
-      let isValidDuration = diffDays <= 3;
-      
-      if (fineDayOfWeek === 1) { // Lunedì
-        const previousDay = new Date(dataFine);
-        previousDay.setDate(previousDay.getDate() - 1);
-        const previousDayOfWeek = previousDay.getDay();
-        
-        if (previousDayOfWeek === 0) { // Se il giorno precedente era domenica
-          // Calcola la durata originale fino alla domenica (il 3° giorno)
-          const durataOriginale = Math.floor((previousDay.getTime() - dataInizio.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-          
-          // Se la durata originale era 3 giorni (es. Ven->Dom) e la fine è lunedì, è valido
-          if (durataOriginale === 3 && diffDays === 4) {
-            isValidDuration = true;
-          }
-        }
-      }
-      
-      if (!isValidDuration) {
+      if (!isValidExternalThreeDayRange(dateRange.dal, dateRange.al)) {
         setError('Il prestito massimo consentito è di 3 giorni dalla data di inizio (o 4 se include domenica)');
         setLoading(false);
         return;
@@ -318,60 +282,25 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
         const newValue = value;
         const newRange = { ...prev, [name]: newValue };
         
-        // Validazione per data fine: max 3 giorni dalla data di inizio (o 4 se il 3° giorno è domenica)
+        // Prestito esterno: max 3 giorni inclusi (ven→lun se +2 cade domenica). Mai toISOString su YYYY-MM-DD.
         if (name === 'al' && newRange.dal) {
-          const startDate = new Date(newRange.dal);
-          const selectedEndDate = new Date(value);
-          
-          // Calcola la durata in giorni (inclusi inizio e fine)
-          const diffTime = selectedEndDate.getTime() - startDate.getTime();
-          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 per includere il giorno di inizio
-          
-          // Calcola la data massima (3 giorni dalla data di inizio)
-          const maxDate = new Date(startDate);
-          maxDate.setDate(maxDate.getDate() + 2); // +2 perché includiamo inizio e fine (es: 22->24 = 3 giorni)
-          
-          // Se il 3° giorno (maxDate) è domenica, il max diventa lunedì (4 giorni totali)
-          if (maxDate.getDay() === 0) { // Domenica
-            maxDate.setDate(maxDate.getDate() + 1); // Slitta a lunedì
-          }
-          
-          const maxDateStr = maxDate.toISOString().split('T')[0];
-          
-          // Validazione: controlla se la durata è valida
-          let isValidDuration = diffDays <= 3;
-          
-          // Gestione speciale per slittamento domenica -> lunedì
-          const selectedDayOfWeek = selectedEndDate.getDay();
-          if (selectedDayOfWeek === 1) { // Lunedì
-            const previousDay = new Date(selectedEndDate);
-            previousDay.setDate(previousDay.getDate() - 1);
-            const previousDayOfWeek = previousDay.getDay();
-            
-            if (previousDayOfWeek === 0) { // Se il giorno precedente era domenica
-              // Calcola la durata originale fino alla domenica (il 3° giorno)
-              const durataOriginale = Math.floor((previousDay.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-              
-              // Se la durata originale era 3 giorni e la fine è lunedì, è valido (4 giorni totali)
-              if (durataOriginale === 3 && diffDays === 4) {
-                isValidDuration = true;
-              }
+          const isExternal =
+            selectedObject?.tipo_prestito !== 'solo_interno' &&
+            !(selectedObject?.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno');
+          if (isExternal) {
+            let alVal = value;
+            const selEnd = parseLocalYmd(value);
+            if (selEnd && selEnd.getDay() === 0) {
+              const mon = new Date(selEnd);
+              mon.setDate(mon.getDate() + 1);
+              alVal = toLocalYmd(mon);
+            }
+            newRange.al = alVal;
+            if (!isValidExternalThreeDayRange(newRange.dal, newRange.al)) {
+              setError('Il noleggio può durare massimo 3 giorni dalla data di inizio (o 4 se include domenica)');
+              return prev;
             }
           }
-          
-          if (!isValidDuration || value > maxDateStr) {
-            setError('Il noleggio può durare massimo 3 giorni dalla data di inizio (o 4 se include domenica)');
-            return prev; // Non aggiornare se supera il limite
-          }
-          
-          // Slitta automaticamente la domenica a lunedì
-          if (selectedDayOfWeek === 0) { // Domenica
-            const mondayDate = new Date(selectedEndDate);
-            mondayDate.setDate(mondayDate.getDate() + 1);
-            newRange.al = mondayDate.toISOString().split('T')[0];
-          }
-          
-          // Pulisci errori se la validazione passa
           setError(null);
         }
         
@@ -772,11 +701,15 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
                           ? dateRange.dal : dateRange.al}
                     onChange={(val) => handleInputChange({ target: { name: 'al', value: val } })}
                     minDate={dateRange.dal || getMinStartDate()}
-                    maxDate={dateRange.dal ? (() => {
-                      const maxDate = new Date(dateRange.dal);
-                      maxDate.setDate(maxDate.getDate() + 2);
-                      return skipSunday(maxDate.toISOString().split('T')[0]);
-                    })() : undefined}
+                    maxDate={
+                      dateRange.dal &&
+                      !(
+                        selectedObject.tipo_prestito === 'solo_interno' ||
+                        (selectedObject.tipo_prestito === 'entrambi' && tipoUtilizzo === 'interno')
+                      )
+                        ? maxEndDateExternalThreeDay(dateRange.dal)
+                        : undefined
+                    }
                     disabledDays={[0]}
                     disabledDates={disabledDates}
                     disabled={selectedObject.tipo_prestito === 'solo_interno' || 
