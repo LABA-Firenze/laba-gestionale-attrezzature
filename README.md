@@ -1,4 +1,4 @@
-# 🎓 LABA Gestionale Attrezzature v2.1.0
+# LABA Gestionale Attrezzature v2.1.0
 
 **Sistema completo di gestione attrezzature per il laboratorio LABA Firenze**
 
@@ -7,42 +7,42 @@
 [![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://postgresql.org/)
 
-## 📋 Indice
+## Indice
 
-- [🎯 Panoramica](#-panoramica)
-- [✨ Funzionalità](#-funzionalità)
-- [🏗️ Architettura](#️-architettura)
-- [🚀 Quick Start](#-quick-start)
-- [🔧 Configurazione](#-configurazione)
-- [📱 Interfaccia Utente](#-interfaccia-utente)
-- [🔌 API Endpoints](#-api-endpoints)
-- [🗄️ Database Schema](#️-database-schema)
-- [📦 Deploy](#-deploy)
-- [🛠️ Sviluppo](#️-sviluppo)
-- [📊 Monitoraggio](#-monitoraggio)
-- [🤝 Contribuire](#-contribuire)
+- [Panoramica](#-panoramica)
+- [Funzionalità](#-funzionalità)
+- [Architettura](#-architettura)
+- [Quick Start](#-quick-start)
+- [Configurazione](#-configurazione)
+- [Interfaccia Utente](#-interfaccia-utente)
+- [API Endpoints](#-api-endpoints)
+- [Database Schema](#-database-schema)
+- [Deploy](#-deploy)
+- [Sviluppo](#-sviluppo)
+- [Monitoraggio](#-monitoraggio)
+- [Contribuire](#-contribuire)
 
-## 🎯 Panoramica
+## Panoramica
 
 Il **LABA Gestionale Attrezzature** è un sistema web completo per la gestione delle attrezzature del laboratorio LABA Firenze. Il sistema permette agli studenti di richiedere prestiti di attrezzature, agli amministratori di gestire inventario e utenti, e fornisce un'interfaccia moderna e responsive per tutti i dispositivi.
 
-### 🎨 Design Philosophy
+### Design Philosophy
 
 - **Mobile-First**: Interfaccia completamente responsive
 - **User-Centric**: Esperienza ottimizzata per studenti e amministratori
 - **Real-Time**: Notifiche e aggiornamenti in tempo reale
 - **Modern UI**: Design pulito e professionale con animazioni fluide
 
-## ✨ Funzionalità
+## Funzionalità
 
-### 👨‍🎓 **Area Studenti**
+### **Area Studenti**
 - **Dashboard Personalizzata**: Panoramica prestiti attivi, richieste e segnalazioni
 - **Catalogo Attrezzature**: Visualizzazione filtrata per corso accademico
 - **Gestione Prestiti**: Richiesta, visualizzazione e tracciamento prestiti
 - **Segnalazione Guasti**: Sistema integrato per report problemi
 - **Profilo Utente**: Gestione dati personali e preferenze
 
-### 👨‍💼 **Area Amministratori**
+### **Area Amministratori**
 - **Gestione Inventario**: CRUD completo per attrezzature e unità
 - **Gestione Utenti**: Creazione, modifica e amministrazione utenti
 - **Gestione Prestiti**: Approvazione, modifica e tracciamento richieste
@@ -50,7 +50,7 @@ Il **LABA Gestionale Attrezzature** è un sistema web completo per la gestione d
 - **Sistema Notifiche**: Centro notifiche integrato
 - **Monitoraggio Sistema**: Stato API, performance e incidenti
 
-### 🔧 **Funzionalità Tecniche**
+### **Funzionalità Tecniche**
 - **Autenticazione JWT**: Sistema sicuro con refresh token
 - **Responsive Design**: Ottimizzato per mobile, tablet e desktop
 - **Real-Time Updates**: Notifiche push e aggiornamenti live
@@ -58,7 +58,7 @@ Il **LABA Gestionale Attrezzature** è un sistema web completo per la gestione d
 - **QR Code**: Generazione automatica per identificazione rapida
 - **Export Excel**: Esportazione dati per analisi
 
-## 🏗️ Architettura
+## Architettura
 
 ### **Frontend** (React + Vite)
 ```
@@ -101,7 +101,7 @@ backend/
 - **Categorie**: Organizzazione gerarchica
 - **Segnalazioni**: Sistema report guasti
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisiti
 - Node.js 20+ 
@@ -159,7 +159,7 @@ cd frontend && npm run dev
 - **Backend API**: http://localhost:3001
 - **Admin**: admin@labafirenze.com / laba2025
 
-## 🔧 Configurazione
+## Configurazione
 
 ### **Variabili d'Ambiente Backend**
 ```env
@@ -200,7 +200,7 @@ EMAIL_FROM=service@labafirenze.com
 EMAIL_FROM_NAME=LABA Firenze - Gestionale Attrezzature
 
 # OPZIONE 2: Mailgun API REST (Consigliato - 5000 email/mese gratis)
-# 1. Crea account su https://www.mailgun.com (già fatto ✅)
+# 1. Crea account su https://www.mailgun.com (già fatto)
 # 2. Verifica il dominio aggiungendo i record DNS richiesti
 # 3. Vai su Sending → Sending keys → API keys
 # 4. Copia la "Sending API key" (formato: xxxxx-xxxxx-xxxxx)
@@ -271,7 +271,7 @@ CREATE TABLE inventario (
 );
 ```
 
-## 📱 Interfaccia Utente
+## Interfaccia Utente
 
 ### **Design System**
 - **Colori**: Palette blu professionale con gradienti
@@ -291,7 +291,7 @@ CREATE TABLE inventario (
 - **Tables**: Responsive con azioni contestuali
 - **Cards**: Layout mobile ottimizzato
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### **Autenticazione**
 ```http
@@ -357,7 +357,7 @@ GET /api/stats/inventario    # Stats inventario
 GET /api/stats/prestiti      # Stats prestiti
 ```
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### **Tabelle Principali**
 
@@ -443,7 +443,7 @@ stato           VARCHAR(20) DEFAULT 'aperta'
 created_at      TIMESTAMP DEFAULT NOW()
 ```
 
-## 📦 Deploy
+## Deploy
 
 ### **Railway (Raccomandato)**
 
@@ -500,7 +500,7 @@ git push heroku main
 - **Backend**: Deploy su Railway
 - **Database**: PostgreSQL su Railway
 
-## 🛠️ Sviluppo
+## Sviluppo
 
 ### **Scripts Disponibili**
 
@@ -545,7 +545,7 @@ git push origin feature/nuova-funzionalita
 - **Components**: PascalCase per React components
 - **API**: RESTful con nomi plurali
 
-## 📊 Monitoraggio
+## Monitoraggio
 
 ### **Sistema Status**
 - **Endpoint**: `/api/status`
@@ -563,7 +563,7 @@ git push origin feature/nuova-funzionalita
 - **Database**: Query optimization
 - **CDN**: Static assets su Railway
 
-## 🤝 Contribuire
+## Contribuire
 
 ### **Come Contribuire**
 
@@ -585,13 +585,13 @@ git push origin feature/nuova-funzionalita
 ### **Issue Template**
 
 ```markdown
-## 🐛 Bug Report
+## Bug Report
 **Descrizione**: Breve descrizione del bug
 **Riproduzione**: Passi per riprodurre
 **Comportamento Atteso**: Cosa dovrebbe succedere
 **Screenshots**: Se applicabile
 
-## ✨ Feature Request
+## Feature Request
 **Descrizione**: Descrizione della feature
 **Use Case**: Perché è necessaria
 **Mockup**: Se disponibile
@@ -599,18 +599,18 @@ git push origin feature/nuova-funzionalita
 
 ---
 
-## 📞 Supporto
+## Supporto
 
 - **Email**: simone.azzinelli@labafirenze.com
 - **GitHub Issues**: [Crea una issue](https://github.com/SAzzinelli/laba-gestionale-attrezzature/issues)
 - **Documentazione**: [Wiki del progetto](https://github.com/SAzzinelli/laba-gestionale-attrezzature/wiki)
 
-## 📄 Licenza
+## Licenza
 
 Questo progetto è proprietario di **LABA Firenze**. Tutti i diritti riservati.
 
 ---
 
-**Sviluppato con ❤️ per LABA Firenze**
+**Sviluppato per LABA Firenze**
 
 *Versione 2.1 - Build 2.1 - 2026*
