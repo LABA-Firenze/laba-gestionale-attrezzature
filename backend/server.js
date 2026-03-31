@@ -60,11 +60,40 @@ try {
 }
 
 // CORS: solo origini consentite (CORS_ORIGINS = lista separata da virgola, es. https://attrezzatura.laba.biz,http://localhost:5173)
-const corsOrigins = (process.env.CORS_ORIGINS || 'https://attrezzatura.laba.biz')
+function withWwwVariant(originUrl) {
+  try {
+    const u = new URL(originUrl);
+    const host = u.hostname;
+    if (host.startsWith('www.')) {
+      return [`${u.protocol}//${host.replace(/^www\./, '')}`];
+    }
+    return [`${u.protocol}//www.${host}`];
+  } catch (_) {
+    return [];
+  }
+}
+
+const rawCorsOrigins = (process.env.CORS_ORIGINS || 'https://attrezzatura.laba.biz')
   .split(',')
-  .map(s => s.trim())
+  .map((s) => s.trim())
   .filter(Boolean);
-app.use(cors({ origin: corsOrigins, credentials: true }));
+
+const allowAllOrigins = rawCorsOrigins.includes('*');
+const corsOrigins = new Set(
+  rawCorsOrigins
+    .filter((o) => o !== '*')
+    .flatMap((o) => [o, ...withWwwVariant(o)])
+);
+
+app.use(cors({
+  origin(origin, callback) {
+    if (allowAllOrigins) return callback(null, true);
+    if (!origin) return callback(null, true);
+    if (corsOrigins.has(origin)) return callback(null, true);
+    return callback(new Error(`Origin non consentita da CORS: ${origin}`), false);
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
