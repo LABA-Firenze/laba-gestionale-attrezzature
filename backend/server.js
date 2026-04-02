@@ -98,7 +98,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'Authorization'],
 }));
 app.use(express.json());
+// codeql[js/missing-token-validation]: CSRF double-submit nel middleware immediatamente successivo (`csrfProtection`, cookie `laba_csrf` + header `x-csrf-token`); vedi middleware/csrfDoubleSubmit.js
 app.use(cookieParser());
+app.use(csrfProtection);
 
 app.get('/api/csrf-token', csrfTokenHandler);
 
@@ -115,8 +117,6 @@ const globalLimiter = rateLimit({
   },
 });
 app.use(globalLimiter);
-
-app.use(csrfProtection);
 
 app.use(morgan("dev"));
 

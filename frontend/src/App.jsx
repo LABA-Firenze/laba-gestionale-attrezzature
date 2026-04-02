@@ -1,7 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { Squares2X2Icon, SquaresPlusIcon, ArrowsRightLeftIcon, WrenchScrewdriverIcon, ExclamationTriangleIcon, UsersIcon, ChartBarIcon, ComputerDesktopIcon, XMarkIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import AuthProvider, { useAuth } from "./auth/AuthContext";
-import { NotificationProvider } from "./components/NotificationSystem.jsx";
 import { useRealtimeNotifications } from "./hooks/useRealtimeNotifications.js";
 import { NotificationPanelProvider } from "./contexts/NotificationPanelContext.jsx";
 
