@@ -41,14 +41,12 @@ function getTransporter() {
       console.warn('⚠️ IMPORTANTE: Assicurati che la password per app di Gmail non abbia spazi nelle variabili d\'ambiente!');
     }
 
-    console.log('📧 Configurazione SMTP:', {
+    console.log('📧 Configurazione SMTP (senza segreti né lunghezze):', {
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_SECURE,
-      user: SMTP_USER,
       from: EMAIL_FROM,
-      fromName: EMAIL_FROM_NAME,
-      passwordLength: cleanPassword.length
+      fromName: EMAIL_FROM_NAME
     });
     
     transporter = nodemailer.createTransport({

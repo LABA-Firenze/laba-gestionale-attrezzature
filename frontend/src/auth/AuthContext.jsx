@@ -29,10 +29,18 @@ export default function AuthProvider({ children }) {
     return inst;
   }, []);
 
-  // Bootstrap: alla mount verifica sessione via cookie (GET /me)
+  // Bootstrap: token CSRF (double-submit) poi sessione (GET /me)
   useEffect(() => {
     let cancelled = false;
-    async function loadMe() {
+    async function boot() {
+      try {
+        const { data } = await api.get('/api/csrf-token');
+        if (!cancelled && data?.csrfToken) {
+          api.defaults.headers.common['X-CSRF-Token'] = data.csrfToken;
+        }
+      } catch (e) {
+        console.warn('Inizializzazione CSRF non riuscita:', e?.message || e);
+      }
       try {
         const { data } = await api.get('/api/auth/me');
         const u = data?.user ?? data ?? null;
@@ -43,7 +51,7 @@ export default function AuthProvider({ children }) {
         if (!cancelled) setLoading(false);
       }
     }
-    loadMe();
+    boot();
     return () => { cancelled = true; };
   }, [api]);
 

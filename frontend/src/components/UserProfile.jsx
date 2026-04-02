@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../auth/AuthContext';
 
 const UserProfile = ({ onClose, onUpdate, embedded = false }) => {
@@ -6,11 +6,6 @@ const UserProfile = ({ onClose, onUpdate, embedded = false }) => {
  const [formData, setFormData] = useState({
  phone: '',
  notifications: true
- });
- const [passwordData, setPasswordData] = useState({
- currentPassword: '',
- newPassword: '',
- confirmPassword: ''
  });
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState(null);
@@ -34,14 +29,6 @@ const UserProfile = ({ onClose, onUpdate, embedded = false }) => {
  }));
  };
 
- const handlePasswordChange = (e) => {
- const t = e.target;
- setPasswordData(prev => ({
- ...prev,
- [t.name]: t.value
- }));
- };
-
  const handleProfileUpdate = async (e) => {
  e.preventDefault();
  setLoading(true);
@@ -57,43 +44,6 @@ const UserProfile = ({ onClose, onUpdate, embedded = false }) => {
  setTimeout(() => {
  onUpdate();
  }, 1500);
-
- } catch (err) {
- setError(err.message);
- } finally {
- setLoading(false);
- }
- };
-
- const handlePasswordUpdate = async (e) => {
- e.preventDefault();
- setLoading(true);
- setError(null);
- setSuccess(null);
-
- if (passwordData.newPassword !== passwordData.confirmPassword) {
- setError('Le password non coincidono');
- setLoading(false);
- return;
- }
-
- if (passwordData.newPassword.length < 6) {
- setError('La password deve essere di almeno 6 caratteri');
- setLoading(false);
- return;
- }
-
- try {
- await api.post('/api/auth/forgot-password', {
- email: user.email,
- newPassword: passwordData.newPassword
- });
- setSuccess('Password aggiornata con successo!');
- setPasswordData({
- currentPassword: '',
- newPassword: '',
- confirmPassword: ''
- });
 
  } catch (err) {
  setError(err.message);

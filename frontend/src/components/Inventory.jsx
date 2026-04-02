@@ -41,17 +41,7 @@ const Inventory = () => {
   const [itemUnits, setItemUnits] = useState({}); // Cache per le unità degli oggetti
   const [showDeleteWarningModal, setShowDeleteWarningModal] = useState(false);
   const [deleteWarningMessage, setDeleteWarningMessage] = useState('');
- 
- // New item form state
- const [newItem, setNewItem] = useState({
- nome: '',
- categoria_id: '',
- note: '',
- quantita_totale: 1,
- scaffale: '',
- unita: []
- });
- 
+
   const { isAdmin, api } = useAuth();
 
   // Function to abbreviate course names

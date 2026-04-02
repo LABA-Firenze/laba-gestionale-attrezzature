@@ -33,6 +33,7 @@ import excelRouter from "./routes/excel.js";
 import cronRouter from "./routes/cron.js";
 import { initDatabase, query } from './utils/postgres.js';
 import getSupabase from './utils/supabaseStorage.js';
+import { csrfTokenHandler, csrfProtection } from './middleware/csrfDoubleSubmit.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -93,10 +94,13 @@ app.use(cors({
     if (corsOrigins.has(origin)) return callback(null, true);
     return callback(new Error(`Origin non consentita da CORS: ${origin}`), false);
   },
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'Authorization'],
 }));
 app.use(express.json());
 app.use(cookieParser());
+
+app.get('/api/csrf-token', csrfTokenHandler);
 
 // Rate limiting globale (mitiga CodeQL js/missing-rate-limiting su route API, static e SPA)
 const globalLimiter = rateLimit({
@@ -111,6 +115,8 @@ const globalLimiter = rateLimit({
   },
 });
 app.use(globalLimiter);
+
+app.use(csrfProtection);
 
 app.use(morgan("dev"));
 

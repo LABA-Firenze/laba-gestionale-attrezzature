@@ -171,10 +171,11 @@ r.put('/:id', requireAuth, requireRole('admin'), async (req, res) => {
           `, [unitIds]);
           
           if (verifyResult[0].still_in_repair > 0) {
-            throw new Error(`${verifyResult[0].still_in_repair} unità ancora in riparazione dopo aggiornamento`);
+            const n = Number(verifyResult[0].still_in_repair);
+            throw new Error(String(n) + ' unità ancora in riparazione dopo aggiornamento');
           }
         } else {
-          console.warn(`⚠️ Nessuna unità valida trovata per riparazione ${id}, unit_ids:`, unitIds);
+          console.warn('⚠️ Nessuna unità valida trovata per riparazione %s, unit_ids:', String(id), unitIds);
         }
       }
       

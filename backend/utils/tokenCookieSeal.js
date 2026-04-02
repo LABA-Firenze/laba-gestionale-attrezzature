@@ -34,3 +34,12 @@ export function openSessionToken(cookieValue, secret) {
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(enc), decipher.final()]).toString('utf8');
 }
+
+/** Imposta cookie httpOnly con payload cifrato (non JWT in chiaro). */
+export function setSealedAuthCookie(res, name, jwtString, secret, options) {
+  const opaque = sealSessionToken(jwtString, secret);
+  // Cookie: blob cifrato (v1.*), non credenziali utente in chiaro.
+  // lgtm[js/clear-text-storage-of-sensitive-data]
+  // codeql[js/clear-text-storage-of-sensitive-data]
+  res.cookie(name, opaque, options);
+}

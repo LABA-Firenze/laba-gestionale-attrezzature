@@ -8,7 +8,7 @@ import { query } from '../utils/postgres.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { normalizeUser, normalizeRole } from '../utils/roles.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
-import { sealSessionToken } from '../utils/tokenCookieSeal.js';
+import { setSealedAuthCookie } from '../utils/tokenCookieSeal.js';
 
 const r = Router();
 
@@ -65,8 +65,7 @@ const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 giorni
 
 function setAuthCookie(res, token) {
   if (!JWT_SECRET) throw new Error('JWT_SECRET non configurato');
-  const sealed = sealSessionToken(token, JWT_SECRET);
-  res.cookie(COOKIE_NAME, sealed, {
+  setSealedAuthCookie(res, COOKIE_NAME, token, JWT_SECRET, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

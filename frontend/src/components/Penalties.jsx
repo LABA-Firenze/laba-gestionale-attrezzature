@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ExclamationTriangleIcon, NoSymbolIcon, ClockIcon, CheckCircleIcon, XMarkIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import { TableSkeleton } from './SkeletonLoader';
@@ -7,7 +7,6 @@ import SectionTabs, { Tab } from './SectionTabs';
 
 const Penalties = () => {
   const [users, setUsers] = useState([]);
-  const [penalties, setPenalties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
@@ -32,10 +31,6 @@ const Penalties = () => {
       );
 
       setUsers(usersWithPenalties);
-      
-      const statsRes = await api.get('/api/penalties/stats');
-      const statsData = statsRes.data ?? [];
-      setPenalties(Array.isArray(statsData) ? statsData : []);
     } catch (err) {
       setError(err.message);
     } finally {

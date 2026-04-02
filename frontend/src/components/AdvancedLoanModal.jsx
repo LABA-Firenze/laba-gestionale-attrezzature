@@ -332,7 +332,7 @@ const fetchAvailableUnits = async (itemId) => {
  Utente Registrato
  </button>
  <button
- onClick={() => setIsManualUser(true)}
+ onClick={handleManualUser}
  className={`px-4 py-2 rounded-lg ${
  isManualUser 
  ? 'bg-blue-600 text-white' 
