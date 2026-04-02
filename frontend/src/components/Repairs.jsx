@@ -120,9 +120,6 @@ const handleCancelRepair = async (repairId) => {
  }
  
  try {
- const url = editingRepair ? `/api/riparazioni/${editingRepair.id}` : '/api/riparazioni';
- const method = editingRepair ? 'PUT' : 'POST';
-
  const submitData = {
    inventario_id: selectedObject.id,
    unit_id: selectedUnit.id,
@@ -170,9 +167,7 @@ const handleCancelRepair = async (repairId) => {
 
  // Filter repairs based on active tab
  const getFilteredRepairs = () => {
- let filtered = repairs;
- 
- // Filter by tab
+ let filtered;
  switch (activeTab) {
  case 'in_corso':
  filtered = repairs.filter(r => r.stato === 'in_corso');

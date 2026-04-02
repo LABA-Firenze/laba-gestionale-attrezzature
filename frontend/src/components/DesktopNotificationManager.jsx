@@ -2,22 +2,15 @@ import React, { useState, useEffect } from 'react';
 import notificationService from '../utils/notificationService';
 
 const DesktopNotificationManager = ({ children }) => {
- const [isEnabled, setIsEnabled] = useState(false);
- const [permissionStatus, setPermissionStatus] = useState(null);
  const [showPermissionPrompt, setShowPermissionPrompt] = useState(false);
 
  useEffect(() => {
- // Controlla lo stato iniziale delle notifiche
  const status = notificationService.getPermissionStatus();
- setPermissionStatus(status);
- setIsEnabled(status.enabled);
 
- // Se le notifiche non sono abilitate, mostra il prompt
  if (!status.enabled && status.supported) {
  setShowPermissionPrompt(true);
  }
 
- // Registra il service worker
  if (status.supported) {
  notificationService.registerServiceWorker().catch(console.error);
  }
@@ -27,10 +20,8 @@ const DesktopNotificationManager = ({ children }) => {
  try {
  const granted = await notificationService.requestPermission();
  if (granted) {
- setIsEnabled(true);
  setShowPermissionPrompt(false);
- 
- // Mostra notifica di test
+
  await notificationService.notifyGeneric(
  'Notifiche Abilitate!',
  'Ora riceverai notifiche per le attività importanti del sistema LABA.',
@@ -40,23 +31,6 @@ const DesktopNotificationManager = ({ children }) => {
  } catch (error) {
  console.error('Errore nell\'abilitazione delle notifiche:', error);
  alert('Errore nell\'abilitazione delle notifiche: ' + error.message);
- }
- };
-
- const handleDisableNotifications = () => {
- setShowPermissionPrompt(true);
- setIsEnabled(false);
- };
-
- const handleTestNotification = async () => {
- try {
- await notificationService.notifyGeneric(
- 'Test Notifica',
- 'Questa è una notifica di test del sistema LABA!',
- 'info'
- );
- } catch (error) {
- console.error('Errore nel test delle notifiche:', error);
  }
  };
 

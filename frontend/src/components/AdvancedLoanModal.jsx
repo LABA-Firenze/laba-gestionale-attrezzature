@@ -135,18 +135,16 @@ const fetchAvailableUnits = async (itemId) => {
 
  try {
  setLoading(true);
- 
- let userId = selectedUser?.id;
- 
- // Create manual user if needed
+
+ // Create manual user if needed (backend collega l’utente via flusso register)
  if (isManualUser) {
  const userResponse = await api.post('/api/auth/register', {
  ...manualUser,
  password: 'temp_password_' + Date.now() // Temporary password
  });
  const userData = userResponse.data ?? {};
- userId = userData.user?.id;
- if (!userId) throw new Error(userData.error || 'Errore nella creazione utente');
+ const newUserId = userData.user?.id;
+ if (!newUserId) throw new Error(userData.error || 'Errore nella creazione utente');
  }
 
  await api.post('/api/prestiti', {

@@ -25,7 +25,6 @@ const Inventory = () => {
  const [qrCodeItem, setQrCodeItem] = useState(null);
  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
  const [savedFilters, setSavedFilters] = useState([]);
- const [currentFilters, setCurrentFilters] = useState({});
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [newCategory, setNewCategory] = useState({ nome: '' });
   const [expandedItems, setExpandedItems] = useState(new Set());
@@ -36,8 +35,6 @@ const Inventory = () => {
   const [editCategoryName, setEditCategoryName] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('');
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState('');
- const [viewMode, setViewMode] = useState('list'); // only list view
  const [showUnitDetailModal, setShowUnitDetailModal] = useState(false);
  const [selectedUnit, setSelectedUnit] = useState(null);
   const [unitLoanDetails, setUnitLoanDetails] = useState(null);
@@ -407,10 +404,10 @@ const Inventory = () => {
     }
   };
 
-  // Handle apply filters
+  // Sincronizza filtri avanzati con ricerca e categoria (stessa logica della tabella)
   const handleApplyFilters = (filters) => {
-    setCurrentFilters(filters);
-    // Apply filters logic here
+    setSearchTerm(filters.search || '');
+    if (isAdmin) setSelectedCategoryFilter(filters.category || '');
   };
 
   // Handle save filter
@@ -1005,7 +1002,8 @@ onClick={() => setShowCategoryManager(false)}
  <AdvancedFilters
  isOpen={showAdvancedFilters}
  onClose={() => setShowAdvancedFilters(false)}
-            onApply={handleApplyFilters}
+            onApplyFilters={handleApplyFilters}
+            onLoadFilter={(saved) => handleApplyFilters(saved.filters)}
  savedFilters={savedFilters}
             onSaveFilter={handleSaveFilter}
             onDeleteFilter={handleDeleteFilter}

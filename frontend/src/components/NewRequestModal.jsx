@@ -41,7 +41,7 @@ const NewRequestModal = ({ isOpen, onClose, selectedItem, onSuccess }) => {
   const [note, setNote] = useState('');
   const [tipoUtilizzo, setTipoUtilizzo] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const { api, user } = useAuth();
+  const { api } = useAuth();
 
   // Parsing YYYY-MM-DD in timezone locale (evita bug sabato/domenica)
   const getDayOfWeekLocal = (dateStr) => {

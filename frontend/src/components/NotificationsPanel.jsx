@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function NotificationsPanel({ isOpen, onClose, notifications = [], onMarkAsRead, onDelete, onClick }) {
  const unreadCount = notifications.filter(n => !n.isRead).length;

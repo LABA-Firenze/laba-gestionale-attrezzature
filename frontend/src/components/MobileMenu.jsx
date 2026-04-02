@@ -4,27 +4,24 @@ import { XMarkIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outlin
 const MobileMenu = ({ isOpen, onClose, sidebarItems, activeView, onNavigate, user, logout, onOpenAccount }) => {
   if (!isOpen) return null;
 
+  // isOpen è sempre true qui (early return sopra): niente ternari ridondanti per CodeQL
   return (
-    <div className={`fixed inset-0 z-40 lg:hidden overflow-hidden transition-opacity duration-300 ease-in-out ${
-      isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-    }`}
-    style={{ display: isOpen ? 'block' : 'none' }}>
-      {/* Overlay with smooth fade animation like notifications */}
-      <div 
-        className={`absolute inset-0 backdrop-blur-md transition-all duration-300 ease-in-out ${
-          isOpen ? 'bg-black/50 opacity-100' : 'bg-black/0 opacity-0'
-        }`}
+    <div
+      className="fixed inset-0 z-40 lg:hidden overflow-hidden transition-opacity duration-300 ease-in-out opacity-100 pointer-events-auto"
+      style={{ display: 'block' }}
+    >
+      <div
+        className="absolute inset-0 backdrop-blur-md transition-all duration-300 ease-in-out bg-black/50 opacity-100"
         onClick={onClose}
       />
-      
-      {/* Mobile Menu - Smooth slide from bottom with fade and shadow */}
-      <div className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl transform transition-all duration-300 ease-in-out ${
-        isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-full opacity-0 scale-95'
-      }`}
-      style={{
-        filter: isOpen ? 'blur(0px)' : 'blur(2px)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-      }}>
+
+      <div
+        className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl transform transition-all duration-300 ease-in-out translate-y-0 opacity-100 scale-100"
+        style={{
+          filter: 'blur(0px)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
+      >
         {/* Handle bar */}
         <div className="flex justify-center pt-3 pb-2">
           <div className="w-12 h-1 bg-gray-300 rounded-full"></div>

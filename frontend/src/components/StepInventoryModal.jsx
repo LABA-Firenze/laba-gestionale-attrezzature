@@ -65,8 +65,8 @@ const StepInventoryModal = ({ isOpen, onClose, onSuccess, editingItem = null }) 
  setStep(1);
  setError(null);
  }
- } else if (!isOpen) {
- // Solo reset step e error quando si chiude
+ } else {
+ // Modal chiuso: reset step e error
  setStep(1);
  setError(null);
  }

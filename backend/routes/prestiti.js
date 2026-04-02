@@ -438,7 +438,7 @@ r.put('/:id/rifiuta', requireAuth, requireRole('admin'), async (req, res) => {
           itemName: reqData.inventario_nome || 'Attrezzatura',
           startDate: reqData.dal,
           endDate: reqData.al,
-          reason: motivazione || null
+          reason: motivazione
         });
         
         console.log(`✅ Email notifica rifiuto inviata a ${reqData.email} per richiesta ${id}`);

@@ -33,19 +33,6 @@ const Dashboard = ({ onNavigate }) => {
  const [scadenzeCollapsed, setScadenzeCollapsed] = useState(false);
    const { api, isAuthenticated, isAdmin, roleLabel } = useAuth();
 
- 
-  // Helper function to calculate time ago
-  const getTimeAgo = (dateString) => {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return "Ora";
-    if (diffInMinutes < 60) return `${diffInMinutes} minuti fa`;
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} ore fa`;
-    return `${Math.floor(diffInMinutes / 1440)} giorni fa`;
-  };
-
   // Helper function to safely format dates
   const formatDate = (dateString) => {
     if (!dateString) return 'Data non specificata';

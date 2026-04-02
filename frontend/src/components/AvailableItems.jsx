@@ -20,6 +20,7 @@ const AvailableItems = () => {
   const fetchItems = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await api.get('/api/inventario/disponibili');
       const data = response.data ?? [];
       setItems(Array.isArray(data) ? data : []);
@@ -111,6 +112,12 @@ const AvailableItems = () => {
         subtitle={`Sfoglia e richiedi articoli per il tuo corso: ${user?.corso_accademico || ''}`}
         meta={`${filteredItems.length} articoli trovati`}
       />
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+          {error}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">

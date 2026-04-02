@@ -7,9 +7,7 @@ import { sendPenaltyEmail } from '../utils/email.js';
 const router = Router();
 
 // Funzione per calcolare i giorni di ritardo
-// dataUscita è opzionale e viene usato per determinare se lo slittamento domenica->lunedì
-// ha causato un "4° giorno" che non dovrebbe essere penalizzato
-const calculateDelayDays = (dataRientro, dataRestituzione = new Date(), dataUscita = null) => {
+const calculateDelayDays = (dataRientro, dataRestituzione = new Date()) => {
   const rientroDate = new Date(dataRientro);
   const restituzioneDate = new Date(dataRestituzione);
   
@@ -18,40 +16,9 @@ const calculateDelayDays = (dataRientro, dataRestituzione = new Date(), dataUsci
     return 0;
   }
   
-  // Gestione speciale per slittamento domenica -> lunedì
-  // Se la data di rientro è lunedì e il giorno precedente era domenica,
-  // e la durata originale era 3 giorni, non c'è penalità se la restituzione è entro lunedì
-  const rientroDayOfWeek = rientroDate.getDay(); // 0 = domenica, 1 = lunedì, ..., 6 = sabato
-  
-  if (rientroDayOfWeek === 1) { // Lunedì
-    const previousDay = new Date(rientroDate);
-    previousDay.setDate(previousDay.getDate() - 1);
-    const previousDayOfWeek = previousDay.getDay();
-    
-    // Se il giorno precedente era domenica (0), potrebbe essere stato slittato
-    if (previousDayOfWeek === 0) {
-      // Se abbiamo la data di uscita, calcoliamo la durata originale (uscita -> domenica)
-      if (dataUscita) {
-        const uscitaDate = new Date(dataUscita);
-        uscitaDate.setHours(0, 0, 0, 0);
-        previousDay.setHours(0, 0, 0, 0);
-        const durataOriginale = Math.ceil((previousDay - uscitaDate) / (1000 * 60 * 60 * 24));
-        
-        // Se la durata originale era 3 giorni (es: venerdì->sabato->domenica = 3 giorni)
-        // e la restituzione è entro lunedì, non c'è penalità anche se tecnicamente sono 4 giorni
-        if (durataOriginale === 3 && restituzioneDate <= rientroDate) {
-          return 0; // Nessuna penalità per slittamento domenica -> lunedì
-        }
-      } else {
-        // Se non abbiamo la data di uscita, assumiamo che se la restituzione è entro lunedì
-        // e il giorno precedente era domenica, non c'è penalità
-        if (restituzioneDate <= rientroDate) {
-          return 0; // Nessuna penalità per slittamento domenica -> lunedì
-        }
-      }
-    }
-  }
-  
+  // Nota: una logica “domenica→lunedì” era presente ma i rami erano irraggiungibili dopo il check
+  // restituzioneDate <= rientroDate sopra (CodeQL: confronti sempre falsi). Rimosse.
+
   // Calcola i giorni di ritardo
   const diffTime = restituzioneDate - rientroDate;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

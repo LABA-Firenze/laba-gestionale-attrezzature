@@ -9,7 +9,7 @@ const ReportFault = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
-  const { api, user } = useAuth();
+  const { api } = useAuth();
 
   // Fetch user's reports
   const fetchReports = async () => {

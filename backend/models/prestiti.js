@@ -93,7 +93,7 @@ function assertAvailability({ inventario_id, dal, al, quantita=1, unita=[], excl
 
   // overlapping
   const loans = overlappingLoans({ inventario_id, dal: dal, al: al ?? null, exclude_id });
-  let { occByUnit, used, cap, genericUsed } = computeOccupation({ inv, loans });
+  let { occByUnit, genericUsed } = computeOccupation({ inv, loans });
 
   // --- integra riparazioni: unità e quantità in riparazione non sono prenotabili ---
   const repairs = listRepairs(inventario_id);

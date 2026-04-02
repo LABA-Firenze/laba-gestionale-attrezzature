@@ -3,8 +3,6 @@ import { useAuth } from '../auth/AuthContext';
 import PageHeader from './PageHeader';
 import SectionTabs, { Tab } from './SectionTabs';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
-
 const UserManagement = () => {
  const [users, setUsers] = useState([]);
  const [loading, setLoading] = useState(true);

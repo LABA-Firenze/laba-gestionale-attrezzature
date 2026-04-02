@@ -19,7 +19,6 @@ const UserDashboard = ({ onOpenNotifications }) => {
     recentReports: []
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [userPenalties, setUserPenalties] = useState({
     strikes: 0,
     isBlocked: false,
@@ -27,8 +26,6 @@ const UserDashboard = ({ onOpenNotifications }) => {
     penalties: []
   });
   const [showQuickRequestModal, setShowQuickRequestModal] = useState(false);
-  const [showRequestDetailModal, setShowRequestDetailModal] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
   const [showReportFaultModal, setShowReportFaultModal] = useState(false);
   const [welcomeSectionDismissed, setWelcomeSectionDismissed] = useState(false);
   const { api, user } = useAuth();
@@ -64,7 +61,6 @@ const UserDashboard = ({ onOpenNotifications }) => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      setError(null);
 
       const [inventoryRes, requestsRes, reportsRes, loansRes, penaltiesRes] = await Promise.all([
         api.get('/api/inventario/disponibili'),
@@ -108,7 +104,6 @@ const UserDashboard = ({ onOpenNotifications }) => {
 
     } catch (err) {
       console.error('Error fetching data:', err);
-      setError('Errore nel caricamento dei dati');
     } finally {
       setLoading(false);
     }
@@ -130,11 +125,6 @@ const UserDashboard = ({ onOpenNotifications }) => {
     } catch (error) {
       return 'Data non valida';
     }
-  };
-
-  const handleRequestClick = (request) => {
-    setSelectedRequest(request);
-    setShowRequestDetailModal(true);
   };
 
   if (loading) {

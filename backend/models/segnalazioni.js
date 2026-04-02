@@ -44,7 +44,7 @@ export function listSegnalazioni({ user_id=null, stato=null } = {}) {
 }
 
 export function closeSegnalazione(id, { handled_by=null }) {
-  const info = db.prepare(`
+  db.prepare(`
     UPDATE segnalazioni SET stato='chiusa', handled_by=?, handled_at=CURRENT_TIMESTAMP WHERE id=?
   `).run(handled_by, id);
   return getSegnalazione(id);
