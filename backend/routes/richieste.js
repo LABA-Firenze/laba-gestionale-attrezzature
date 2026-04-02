@@ -404,7 +404,7 @@ r.delete('/:id', requireAuth, async (req, res) => {
       console.log(`✅ Unità ${request.unit_id} liberata (richiesta cancellata)`);
     }
     
-    const result = await query('DELETE FROM richieste WHERE id = $1', [id]);
+    await query('DELETE FROM richieste WHERE id = $1', [id]);
     res.json({ message: 'Richiesta eliminata' });
   } catch (error) {
     console.error('Errore DELETE richiesta:', error);

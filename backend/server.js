@@ -13,6 +13,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 import path from "path";
 import { fileURLToPath } from "url";
 import inventarioRouter from "./routes/inventario.js";
@@ -96,6 +97,21 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Rate limiting globale (mitiga CodeQL js/missing-rate-limiting su route API, static e SPA)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: Number(process.env.RATE_LIMIT_MAX_PER_IP || 600),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Troppe richieste da questo indirizzo, riprova tra poco." },
+  skip: (req) => {
+    const p = req.path || "";
+    return p === "/health" || p === "/api/health";
+  },
+});
+app.use(globalLimiter);
+
 app.use(morgan("dev"));
 
 app.get("/api/health", (_, res) => res.json({ ok: true, version: "2.1", build: "2.1" }));

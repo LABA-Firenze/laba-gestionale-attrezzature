@@ -97,7 +97,7 @@ const NotificationContainer = () => {
 };
 
 const NotificationItem = ({ notification, onRemove }) => {
- const { id, type, message, title, duration } = notification;
+ const { type, message, title } = notification;
 
  const getTypeStyles = () => {
  switch (type) {
@@ -160,7 +160,7 @@ const NotificationItem = ({ notification, onRemove }) => {
  </div>
  <div className="ml-4 flex-shrink-0 flex">
  <button
- onClick={() => onRemove(id)}
+ onClick={() => onRemove(notification.id)}
  className="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors duration-200"
  >
  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

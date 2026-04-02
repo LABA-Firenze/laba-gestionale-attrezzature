@@ -10,6 +10,7 @@ import { query } from '../utils/postgres.js';
 const NOME_CERCATO = 'OTTICA SONY FE 105MM 4/18';
 
 async function main() {
+  console.log('Articolo di riferimento:', NOME_CERCATO);
   console.log('--- 1) CURRENT_DATE (come la vede il DB) ---');
   const dateRow = await query('SELECT CURRENT_DATE as oggi, CURRENT_TIMESTAMP as now_rome');
   console.log(dateRow[0]);

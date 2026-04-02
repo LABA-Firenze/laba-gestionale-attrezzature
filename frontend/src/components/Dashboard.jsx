@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CubeIcon, ClipboardDocumentListIcon, WrenchScrewdriverIcon, ExclamationTriangleIcon, ChevronDownIcon, ArrowTrendingDownIcon, CalendarIcon, XMarkIcon, InformationCircleIcon, UserIcon } from '@heroicons/react/24/outline';
+import { CubeIcon, ClipboardDocumentListIcon, WrenchScrewdriverIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import StepInventoryModal from './StepInventoryModal';
 import QuickRequestModal from './QuickRequestModal';
@@ -1072,87 +1072,5 @@ return (
   </div>
 );
 };
-
-// Stat Card Component
-function StatCard({ title, value, description }) {
- const iconMap = {
- 'Inventario': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
- </svg>
- ),
- 'Richieste': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
- </svg>
- ),
- 'Riparazioni': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
- </svg>
- ),
- 'Segnalazioni': (
- <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
- </svg>
- )
- };
-
- const colorMap = {
- 'Inventario': 'bg-gradient-to-br from-blue-100 to-blue-200 ',
- 'Richieste': 'bg-gradient-to-br from-purple-100 to-purple-200 ', 
- 'Riparazioni': 'bg-gradient-to-br from-orange-100 to-orange-200 ',
- 'Segnalazioni': 'bg-gradient-to-br from-red-100 to-red-200 '
- };
-
- return (
- <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:scale-105 transition-transform p-6">
- <div className="flex items-center">
- <div className={`w-12 h-12 ${colorMap[title]} rounded-full flex items-center justify-center ${
- title === 'Inventario' ? 'text-blue-600' :
- title === 'Richieste' ? 'text-purple-600' :
- title === 'Riparazioni' ? 'text-orange-600' :
- 'text-red-600'
- } shadow-lg`}>
- {iconMap[title]}
- </div>
- <div className="ml-4">
- <p className="text-sm font-medium text-gray-700">{title}</p>
- <p className="text-2xl font-bold text-gray-900">{value}</p>
- </div>
- </div>
- <p className="text-xs text-gray-500 mt-2">{description}</p>
- </div>
- );
-}
-
-
-// Quick Action Button Component 
-function QuickActionButton({ title, description, icon, onClick, color = 'blue' }) {
- const colorClasses = {
- blue: 'bg-gradient-to-br from-blue-500 to-blue-600',
- green: 'bg-gradient-to-br from-green-500 to-green-600', 
- orange: 'bg-gradient-to-br from-orange-500 to-orange-600',
- purple: 'bg-gradient-to-br from-purple-500 to-purple-600'
- };
-
- return (
- <button
- onClick={onClick}
- className="card card-clickable text-left w-full hover:scale-105 transition-transform"
- >
- <div className="flex items-center">
- <div className={`w-12 h-12 ${colorClasses[color]} rounded-full flex items-center justify-center text-white mr-4 shadow-lg`}>
- {icon}
- </div>
- <div>
- <p className="font-semibold text-primary">{title}</p>
- <p className="text-sm text-secondary">{description}</p>
- </div>
- </div>
- </button>
- );
-}
 
 export default Dashboard;

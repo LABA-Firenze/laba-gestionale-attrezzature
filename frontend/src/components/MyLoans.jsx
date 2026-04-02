@@ -14,7 +14,7 @@ const MyLoans = () => {
   const [showNewRequestModal, setShowNewRequestModal] = useState(false);
   const [activeTab, setActiveTab] = useState('active');
   const [cancellingRequestId, setCancellingRequestId] = useState(null);
-  const { api, user } = useAuth();
+  const { api } = useAuth();
 
   // Fetch user's loans and requests
   const fetchData = async () => {

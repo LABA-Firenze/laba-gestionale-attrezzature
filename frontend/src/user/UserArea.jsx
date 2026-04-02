@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Squares2X2Icon, ClockIcon, CubeIcon, ExclamationTriangleIcon, InformationCircleIcon, BellIcon, Bars3Icon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../auth/AuthContext';
 import UserDashboard from '../components/UserDashboard';
 import MyLoans from '../components/MyLoans';
 import AvailableItems from '../components/AvailableItems';
 import ReportFault from '../components/ReportFault';
-import SystemStatus from '../components/SystemStatus.jsx';
 import Footer from '../components/Footer';
 import MobileMenu from '../components/MobileMenu';
 import NotificationsPanel from '../components/NotificationsPanel';

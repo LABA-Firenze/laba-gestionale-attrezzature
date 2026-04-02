@@ -1,7 +1,7 @@
 // backend/scripts/test_credentials.js
 // Usage: node backend/scripts/test_credentials.js <email> <password>
 import { verifyCredentials } from '../models/users.js';
-import db from '../utils/db.js'; // ensure DB is initialized with the same path
+import '../utils/db.js'; // side effect: inizializza DB con lo stesso path dei modelli
 
 const [,, email, password] = process.argv;
 if (!email || !password) {

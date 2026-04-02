@@ -2,19 +2,8 @@
 import { Router } from 'express';
 import { query } from '../utils/postgres.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
-import multer from 'multer';
 import * as XLSX from 'xlsx';
-import { uploadFile, deleteFile } from '../utils/supabaseStorage.js';
-
 const r = Router();
-
-// Configurazione multer per upload file - solo memoria per Railway
-const upload = multer({ 
-  storage: multer.memoryStorage(),
-  limits: { 
-    fileSize: 10 * 1024 * 1024 // 10MB max
-  }
-});
 
 // GET /api/excel/inventario/export - Export inventario completo
 r.get('/inventario/export', requireAuth, requireRole('admin'), async (req, res) => {

@@ -25,12 +25,11 @@ function getTransporter() {
   if (!transporter) {
     if (!SMTP_PASSWORD) {
       console.warn('⚠️ SMTP_PASSWORD non configurata. Le email non verranno inviate.');
-      console.warn('⚠️ Configurazione SMTP:', {
+      console.warn('⚠️ Configurazione SMTP (senza credenziali):', {
         host: SMTP_HOST,
         port: SMTP_PORT,
         secure: SMTP_SECURE,
-        user: SMTP_USER,
-        passwordSet: !!SMTP_PASSWORD
+        passwordConfigured: !!SMTP_PASSWORD
       });
       return null;
     }
@@ -1471,9 +1470,7 @@ export async function testEmailConnection() {
     console.log('🔍 Tentativo connessione a SMTP...', {
       host: SMTP_HOST,
       port: SMTP_PORT,
-      secure: SMTP_SECURE,
-      user: SMTP_USER,
-      passwordLength: SMTP_PASSWORD ? SMTP_PASSWORD.replace(/\s+/g, '').length : 0
+      secure: SMTP_SECURE
     });
     
     // Timeout di 20 secondi per la verifica SMTP

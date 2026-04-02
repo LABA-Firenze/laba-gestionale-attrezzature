@@ -366,8 +366,7 @@ router.post('/check-and-assign', requireAuth, requireRole('admin'), async (req, 
     }
     
     // Calcola i giorni di ritardo
-    // Passa anche data_uscita per gestire correttamente lo slittamento domenica->lunedì
-    const delayDays = calculateDelayDays(prestito.data_rientro, new Date(), prestito.data_uscita);
+    const delayDays = calculateDelayDays(prestito.data_rientro, new Date());
     
     if (delayDays <= 0) {
       return res.json({

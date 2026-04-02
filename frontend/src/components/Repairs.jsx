@@ -11,7 +11,6 @@ const Repairs = () => {
  const [loading, setLoading] = useState(true);
  const [error, setError] = useState(null);
  const [showAddModal, setShowAddModal] = useState(false);
- const [editingRepair, setEditingRepair] = useState(null);
  const [activeTab, setActiveTab] = useState('in_corso');
  const [searchTerm, setSearchTerm] = useState('');
  const [step, setStep] = useState(1); // 1: Oggetto, 2: ID Specifico, 3: Dettagli
@@ -129,11 +128,7 @@ const handleCancelRepair = async (repairId) => {
    stato: formData.stato
  };
 
- if (editingRepair) {
- await api.put(`/api/riparazioni/${editingRepair.id}`, submitData);
- } else {
  await api.post('/api/riparazioni', submitData);
- }
  await fetchData();
  setShowAddModal(false);
  resetModal();
@@ -619,7 +614,7 @@ const handleCancelRepair = async (repairId) => {
                   type="submit"
                   className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                 >
-                  {editingRepair ? 'Aggiorna' : 'Crea Riparazione'}
+                  Crea Riparazione
                 </button>
                 </div>
               </div>

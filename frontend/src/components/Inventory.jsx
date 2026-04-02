@@ -38,7 +38,6 @@ const Inventory = () => {
  const [showUnitDetailModal, setShowUnitDetailModal] = useState(false);
  const [selectedUnit, setSelectedUnit] = useState(null);
   const [unitLoanDetails, setUnitLoanDetails] = useState(null);
-  const [loans, setLoans] = useState([]);
   const [itemUnits, setItemUnits] = useState({}); // Cache per le unità degli oggetti
   const [showDeleteWarningModal, setShowDeleteWarningModal] = useState(false);
   const [deleteWarningMessage, setDeleteWarningMessage] = useState('');
@@ -90,14 +89,9 @@ const Inventory = () => {
  const fetchInventory = async () => {
  try {
  setLoading(true);
- const [inventoryRes, loansRes] = await Promise.all([
-        api.get('/api/inventario'),
-        api.get('/api/prestiti?all=1')
- ]);
+ const inventoryRes = await api.get('/api/inventario');
  const inventoryData = inventoryRes.data ?? [];
- const loansData = loansRes.data ?? [];
  setInventory(inventoryData);
- setLoans(loansData);
  } catch (err) {
  setError(err.message);
  } finally {

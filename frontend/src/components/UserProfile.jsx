@@ -35,10 +35,10 @@ const UserProfile = ({ onClose, onUpdate, embedded = false }) => {
  };
 
  const handlePasswordChange = (e) => {
- const { name, value } = e.target;
+ const t = e.target;
  setPasswordData(prev => ({
  ...prev,
- [name]: value
+ [t.name]: t.value
  }));
  };
 

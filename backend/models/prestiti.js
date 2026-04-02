@@ -110,8 +110,8 @@ function assertAvailability({ inventario_id, dal, al, quantita=1, unita=[], excl
   }
   // aggiorna i conteggi con le riparazioni
   genericUsed += repGeneric;
-  used = genericUsed + occByUnit.size;
-  cap = Math.max(0, (inv.quantita_totale || 0) - used);
+  const used = genericUsed + occByUnit.size;
+  const cap = Math.max(0, (inv.quantita_totale || 0) - used);
 
   // 1) unità richieste devono esistere e non essere già occupate
   const conflicts = [];
@@ -135,7 +135,7 @@ function assertAvailability({ inventario_id, dal, al, quantita=1, unita=[], excl
   const reqQty = Math.max(1, Number(quantita) || 1);
   const named = reqUnits.length;
   const extra = Math.max(0, reqQty - named);
-  const availableForExtra = Math.max(0, (inv.quantita_totale || 0) - (genericUsed + occByUnit.size + named));
+  const availableForExtra = Math.max(0, cap - named);
   if (extra > availableForExtra) {
     const msg = `Capienza insufficiente: richiesti ${reqQty}, disponibili ${availableForExtra + named} nel periodo`;
     const e = new Error(msg); e.code = 400; throw e;

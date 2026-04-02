@@ -3,7 +3,7 @@ import { useAuth } from '../auth/AuthContext';
 
 const NotificationManager = () => {
  const [permission, setPermission] = useState(Notification.permission);
- const [isSupported, setIsSupported] = useState('Notification' in window);
+ const isSupported = 'Notification' in window;
  const { isAdmin } = useAuth();
 
  useEffect(() => {
