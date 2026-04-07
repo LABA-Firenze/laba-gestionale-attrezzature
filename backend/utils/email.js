@@ -1386,6 +1386,49 @@ export async function sendPasswordResetEmail({ to, resetLink }) {
 }
 
 /**
+ * Email di prova dalla pagina admin "Stato del sistema" (test SMTP/Mailgun).
+ */
+export async function sendTestEmailTo(to) {
+  const subject = 'Test email — LABA Gestionale Attrezzature';
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:24px;line-height:1.5">
+    <p>Questa è un'<strong>email di prova</strong> inviata dalla pagina <em>Stato del sistema</em>.</p>
+    <p>Se la ricevi, l'invio tramite Mailgun o SMTP è configurato correttamente.</p>
+    <p style="color:#666;font-size:12px;margin-top:24px">LABA Firenze — Gestionale attrezzature</p>
+  </body></html>`;
+  const text =
+    'Email di prova — LABA Gestionale Attrezzature.\nSe la ricevi, SMTP/Mailgun è ok.\n';
+
+  try {
+    if (MAILGUN_API_KEY) {
+      const result = await sendViaMailgunAPI({ to, subject, html, text });
+      return {
+        success: true,
+        messageId: result.id || result.message,
+        method: 'Mailgun API',
+      };
+    }
+    const emailTransporter = getTransporter();
+    if (!emailTransporter) {
+      return {
+        success: false,
+        error: 'Nessun metodo di invio email configurato (Mailgun o SMTP)',
+      };
+    }
+    const info = await emailTransporter.sendMail({
+      from: `"${EMAIL_FROM_NAME}" <${EMAIL_FROM}>`,
+      to,
+      subject,
+      html,
+      text,
+    });
+    return { success: true, messageId: info.messageId, method: 'SMTP' };
+  } catch (error) {
+    console.error('sendTestEmailTo:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
  * Test connessione email (Mailgun API o SMTP)
  */
 export async function testEmailConnection() {

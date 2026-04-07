@@ -31,6 +31,7 @@ import usersRouter from "./routes/users.js";
 import penaltiesRouter from "./routes/penalties.js";
 import excelRouter from "./routes/excel.js";
 import cronRouter from "./routes/cron.js";
+import debugRouter from "./routes/debug.js";
 import { initDatabase, query } from './utils/postgres.js';
 import getSupabase from './utils/supabaseStorage.js';
 import { csrfTokenHandler, csrfProtection } from './middleware/csrfDoubleSubmit.js';
@@ -227,6 +228,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/penalties", penaltiesRouter);
 app.use("/api/excel", excelRouter);
 app.use("/api/cron", cronRouter);
+app.use("/api/debug", debugRouter);
 
 // serve frontend build if built
 const __filename = fileURLToPath(import.meta.url);
