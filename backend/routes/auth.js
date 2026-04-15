@@ -87,8 +87,9 @@ r.post('/login', authLimiter, async (req, res) => {
     }
 
     let userPayload;
+    let token;
     if (isSpecialAdminLogin(email, password)) {
-      const token = signUser(specialAdminUser());
+      token = signUser(specialAdminUser());
       setAuthCookie(res, token);
       userPayload = specialAdminUser();
     } else {
@@ -101,7 +102,7 @@ r.post('/login', authLimiter, async (req, res) => {
       if (!isValid) {
         return res.status(401).json({ error: 'Credenziali non valide' });
       }
-      const token = signUser(user);
+      token = signUser(user);
       setAuthCookie(res, token);
       userPayload = {
         id: user.id,
@@ -112,7 +113,8 @@ r.post('/login', authLimiter, async (req, res) => {
         corso_accademico: user.corso_accademico
       };
     }
-    res.json({ user: userPayload });
+    // Compatibilità mobile: oltre al cookie httpOnly restituiamo anche il token nel body.
+    res.json({ token, user: userPayload });
   } catch (error) {
     console.error('Errore login:', error);
     res.status(500).json({ error: 'Errore interno del server' });
@@ -168,7 +170,8 @@ r.post('/register', authLimiter, async (req, res) => {
     const user = normalizeUser(result[0]);
     const token = signUser(user);
     setAuthCookie(res, token);
-    res.status(201).json({ user });
+    // Compatibilità mobile: oltre al cookie httpOnly restituiamo anche il token nel body.
+    res.status(201).json({ token, user });
   } catch (error) {
     console.error('Errore registrazione:', error);
     res.status(500).json({ error: 'Errore interno del server' });
