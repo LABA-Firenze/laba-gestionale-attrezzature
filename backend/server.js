@@ -40,6 +40,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
 
+app.disable('x-powered-by');
+
 function getCronToken(req) {
   return req.get('x-cron-token');
 }
@@ -93,16 +95,44 @@ const corsOrigins = new Set(
     .flatMap((o) => [o, ...withWwwVariant(o)])
 );
 
+const securityCsp =
+  "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; " +
+  "script-src 'self'; style-src 'self' 'unsafe-inline'; " +
+  "img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: wss:";
+
+app.use((req, res, next) => {
+  const origin = req.get('origin');
+  if (req.method === 'OPTIONS' && origin && !allowAllOrigins && !corsOrigins.has(origin)) {
+    return res.status(403).json({ error: 'Origin non consentita da CORS' });
+  }
+  next();
+});
+
 app.use(cors({
   origin(origin, callback) {
     if (allowAllOrigins) return callback(null, true);
     if (!origin) return callback(null, true);
     if (corsOrigins.has(origin)) return callback(null, true);
-    return callback(new Error(`Origin non consentita da CORS: ${origin}`), false);
+    return callback(null, false);
   },
   credentials: true,
   allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'Authorization'],
 }));
+
+app.use((req, res, next) => {
+  // Baseline hardening headers with low compatibility risk.
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  res.setHeader('Content-Security-Policy', securityCsp);
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+  next();
+});
 app.use(express.json());
 // codeql[js/missing-token-validation]: CSRF double-submit nel middleware immediatamente successivo (`csrfProtection`, cookie `laba_csrf` + header `x-csrf-token`); vedi middleware/csrfDoubleSubmit.js
 app.use(cookieParser());

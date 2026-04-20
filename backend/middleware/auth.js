@@ -1,7 +1,7 @@
 // backend/middleware/auth.js
 import jwt from 'jsonwebtoken';
 import { query } from '../utils/postgres.js';
-import { normalizeUser, normalizeRole } from '../utils/roles.js';
+import { normalizeUser, normalizeRole, sanitizeUser } from '../utils/roles.js';
 import { openSessionToken } from '../utils/tokenCookieSeal.js';
 
 // Stessa logica di auth.js: in produzione deve essere impostato da env.
@@ -33,12 +33,17 @@ export async function requireAuth(req, res, next) {
 
     const payload = jwt.verify(token, JWT_SECRET);
     
-    const users = await query('SELECT * FROM users WHERE id = $1', [payload.id]);
+    const users = await query(`
+      SELECT id, email, name, surname, phone, matricola, ruolo, corso_accademico,
+             created_at, updated_at, penalty_strikes, is_blocked, blocked_reason, blocked_at, blocked_by
+      FROM users
+      WHERE id = $1
+    `, [payload.id]);
     if (users.length === 0) {
       return res.status(401).json({ error: 'Non autorizzato' });
     }
     
-    req.user = normalizeUser(users[0]);
+    req.user = sanitizeUser(normalizeUser(users[0]));
     next();
   } catch (error) {
     console.error('Auth error:', error);

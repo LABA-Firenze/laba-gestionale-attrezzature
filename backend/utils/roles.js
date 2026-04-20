@@ -23,5 +23,11 @@ export function normalizeUser(user) {
   return { ...user, ruolo };
 }
 
+export function sanitizeUser(user) {
+  if (!user) return user;
+  const { password_hash, ...safeUser } = user;
+  return safeUser;
+}
+
 
 

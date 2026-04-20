@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { query } from '../utils/postgres.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
-import { normalizeUser, normalizeRole } from '../utils/roles.js';
+import { normalizeUser, normalizeRole, sanitizeUser } from '../utils/roles.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
 import { setSealedAuthCookie } from '../utils/tokenCookieSeal.js';
 
@@ -17,6 +17,13 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
   message: { error: 'Troppi tentativi. Riprova tra 15 minuti.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+const passwordResetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Troppi tentativi di reset password. Riprova tra 15 minuti.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -64,7 +71,12 @@ r.post('/login', authLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Email e password richiesti' });
     }
 
-    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await query(`
+      SELECT id, email, password_hash, name, surname, phone, matricola, ruolo, corso_accademico,
+             created_at, updated_at, penalty_strikes, is_blocked, blocked_reason, blocked_at, blocked_by
+      FROM users
+      WHERE email = $1
+    `, [email]);
     if (result.length === 0) {
       return res.status(401).json({ error: 'Credenziali non valide' });
     }
@@ -152,7 +164,7 @@ r.post('/register', authLimiter, async (req, res) => {
 
 // GET /api/auth/me
 r.get('/me', requireAuth, (req, res) => {
-  res.json(req.user);
+  res.json(sanitizeUser(req.user));
 });
 
 // POST /api/auth/forgot-password - Self-service: invia email con link per reset
@@ -197,7 +209,7 @@ r.post('/forgot-password', authLimiter, async (req, res) => {
 });
 
 // POST /api/auth/reset-password
-r.post('/reset-password', async (req, res) => {
+r.post('/reset-password', passwordResetLimiter, async (req, res) => {
   try {
     const { token, password } = req.body || {};
     if (!token || !password) {
@@ -360,7 +372,7 @@ r.get('/me/export', requireAuth, async (req, res) => {
       query('SELECT r.id, r.dal, r.al, r.stato, i.nome as oggetto_nome FROM richieste r LEFT JOIN inventario i ON i.id = r.inventario_id WHERE r.utente_id = $1 ORDER BY r.id DESC', [req.user.id]),
       query('SELECT id, tipo, messaggio, urgenza, stato, created_at FROM segnalazioni WHERE user_id = $1 ORDER BY id DESC', [req.user.id])
     ]);
-    const userData = userRow[0] ? { ...userRow[0], password_hash: undefined } : null;
+    const userData = userRow[0] ? sanitizeUser(userRow[0]) : null;
     res.json({
       esportato_il: new Date().toISOString(),
       utente: userData,
