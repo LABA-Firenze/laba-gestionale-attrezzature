@@ -1177,7 +1177,7 @@ const getStatusBadge = (status) => {
          <textarea
            value={rejectReason}
            onChange={(e) => setRejectReason(e.target.value)}
-           className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+          className="w-full px-4 py-3 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
            rows={4}
            placeholder="Motivo del rifiuto..."
            required
