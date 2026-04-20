@@ -6,9 +6,20 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { query } from '../utils/postgres.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
 import { normalizeUser, normalizeRole, sanitizeUser } from '../utils/roles.js';
+import {
+  adminResetPasswordBodySchema,
+  emailParamSchema,
+  forgotPasswordBodySchema,
+  loginBodySchema,
+  registerBodySchema,
+  resetPasswordBodySchema,
+} from '../validation/authSchemas.js';
+import { validatePasswordStrength } from '../utils/passwordPolicy.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
 import { setSealedAuthCookie } from '../utils/tokenCookieSeal.js';
+import logger from '../utils/logger.js';
 
 const r = Router();
 
@@ -67,7 +78,7 @@ function clearAuthCookie(res) {
 }
 
 // POST /api/auth/login — imposta cookie httpOnly, risponde solo con { user }
-r.post('/login', authLimiter, async (req, res) => {
+r.post('/login', authLimiter, validate({ body: loginBodySchema }), async (req, res) => {
   try {
     const { email, password } = req.body || {};
     if (!email || !password) {
@@ -81,11 +92,13 @@ r.post('/login', authLimiter, async (req, res) => {
       WHERE email = $1
     `, [email]);
     if (result.length === 0) {
+      logger.warn({ event: 'login_failed_user_not_found', email, ip: req.ip }, 'Tentativo login fallito');
       return res.status(401).json({ error: 'Credenziali non valide' });
     }
     const user = normalizeUser(result[0]);
     const isValid = bcrypt.compareSync(password, user.password_hash);
     if (!isValid) {
+      logger.warn({ event: 'login_failed_wrong_password', email, userId: user.id, ip: req.ip }, 'Tentativo login fallito');
       return res.status(401).json({ error: 'Credenziali non valide' });
     }
     const token = signUser(user);
@@ -99,9 +112,10 @@ r.post('/login', authLimiter, async (req, res) => {
       corso_accademico: user.corso_accademico
     };
     // Security hardening: il JWT resta solo nel cookie httpOnly.
+    logger.info({ event: 'login_success', userId: user.id, ruolo: user.ruolo, ip: req.ip }, 'Login completato');
     res.json({ user: userPayload });
   } catch (error) {
-    console.error('Errore login:', error);
+    logger.error({ err: error, event: 'login_error', ip: req.ip }, 'Errore login');
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
@@ -114,15 +128,16 @@ r.post('/logout', requireAuth, async (req, res) => {
       [req.user.id]
     );
     clearAuthCookie(res);
+    logger.info({ event: 'logout_success', userId: req.user.id, ip: req.ip }, 'Logout completato');
     res.json({ ok: true });
   } catch (error) {
-    console.error('Errore logout:', error);
+    logger.error({ err: error, event: 'logout_error', userId: req.user?.id, ip: req.ip }, 'Errore logout');
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
 
 // POST /api/auth/register (pubblico o con admin: se non autenticato, ruolo sempre 'user')
-r.post('/register', authLimiter, async (req, res) => {
+r.post('/register', authLimiter, validate({ body: registerBodySchema }), async (req, res) => {
   try {
     const { email, password, name, surname, phone, matricola, corso_accademico, ruolo } = req.body || {};
     
@@ -134,6 +149,11 @@ r.post('/register', authLimiter, async (req, res) => {
     const existing = await query('SELECT id FROM users WHERE email = $1', [email]);
     if (existing.length > 0) {
       return res.status(400).json({ error: 'Utente già esistente' });
+    }
+
+    const passwordPolicy = validatePasswordStrength(password, { email });
+    if (!passwordPolicy.ok) {
+      return res.status(400).json({ error: passwordPolicy.message });
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -169,7 +189,7 @@ r.post('/register', authLimiter, async (req, res) => {
     // Security hardening: il JWT resta solo nel cookie httpOnly.
     res.status(201).json({ user });
   } catch (error) {
-    console.error('Errore registrazione:', error);
+    logger.error({ err: error, event: 'register_error', ip: req.ip }, 'Errore registrazione');
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
@@ -180,7 +200,7 @@ r.get('/me', requireAuth, (req, res) => {
 });
 
 // POST /api/auth/forgot-password - Self-service: invia email con link per reset
-r.post('/forgot-password', authLimiter, async (req, res) => {
+r.post('/forgot-password', authLimiter, validate({ body: forgotPasswordBodySchema }), async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email) {
@@ -209,19 +229,20 @@ r.post('/forgot-password', authLimiter, async (req, res) => {
     const emailResult = await sendPasswordResetEmail({ to: email, resetLink });
 
     if (!emailResult.success) {
-      console.error('Errore invio email reset:', emailResult.error);
+      logger.error({ event: 'forgot_password_email_error', email, error: emailResult.error }, 'Errore invio email reset');
       return res.status(500).json({ error: 'Impossibile inviare l\'email. Riprova più tardi o contatta l\'assistenza.' });
     }
 
+    logger.info({ event: 'forgot_password_requested', email, ip: req.ip }, 'Richiesta reset password ricevuta');
     res.json({ message: 'Se l\'email è registrata, riceverai un link per il reset della password' });
   } catch (error) {
-    console.error('Errore forgot password:', error);
+    logger.error({ err: error, event: 'forgot_password_error', ip: req.ip }, 'Errore forgot password');
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
 
 // POST /api/auth/reset-password
-r.post('/reset-password', passwordResetLimiter, async (req, res) => {
+r.post('/reset-password', passwordResetLimiter, validate({ body: resetPasswordBodySchema }), async (req, res) => {
   try {
     const { token, password } = req.body || {};
     if (!token || !password) {
@@ -261,6 +282,11 @@ r.post('/reset-password', passwordResetLimiter, async (req, res) => {
 
     const email = resetRequest.email;
 
+    const passwordPolicy = validatePasswordStrength(password, { email });
+    if (!passwordPolicy.ok) {
+      return res.status(400).json({ error: passwordPolicy.message });
+    }
+
     // Update password
     const hashedPassword = bcrypt.hashSync(password, 10);
     await query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashedPassword, email]);
@@ -268,9 +294,10 @@ r.post('/reset-password', passwordResetLimiter, async (req, res) => {
     // Mark reset request as used
     await query('UPDATE password_reset_requests SET status = $1 WHERE id = $2', ['used', resetRequest.id]);
 
+    logger.info({ event: 'password_reset_success', email, ip: req.ip }, 'Password aggiornata tramite reset');
     res.json({ message: 'Password aggiornata con successo' });
   } catch (error) {
-    console.error('Errore reset password:', error);
+    logger.error({ err: error, event: 'reset_password_error', ip: req.ip }, 'Errore reset password');
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
@@ -302,7 +329,7 @@ r.get('/password-reset-requests', requireAuth, requireRole('admin'), async (req,
 });
 
 // POST /api/auth/admin-reset-password (admin only)
-r.post('/admin-reset-password', requireAuth, requireRole('admin'), async (req, res) => {
+r.post('/admin-reset-password', requireAuth, requireRole('admin'), validate({ body: adminResetPasswordBodySchema }), async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     
@@ -316,6 +343,11 @@ r.post('/admin-reset-password', requireAuth, requireRole('admin'), async (req, r
       return res.status(404).json({ error: 'Utente non trovato' });
     }
     
+    const passwordPolicy = validatePasswordStrength(newPassword, { email });
+    if (!passwordPolicy.ok) {
+      return res.status(400).json({ error: passwordPolicy.message });
+    }
+
     // Hash della nuova password
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
     
@@ -339,7 +371,7 @@ r.post('/admin-reset-password', requireAuth, requireRole('admin'), async (req, r
 });
 
 // DELETE /api/auth/password-reset-requests/:email (admin only) - Annulla richiesta
-r.delete('/password-reset-requests/:email', requireAuth, requireRole('admin'), async (req, res) => {
+r.delete('/password-reset-requests/:email', requireAuth, requireRole('admin'), validate({ params: emailParamSchema }), async (req, res) => {
   try {
     const { email } = req.params;
     
@@ -359,7 +391,7 @@ r.delete('/password-reset-requests/:email', requireAuth, requireRole('admin'), a
       ['cancelled', email, 'pending']
     );
     
-    console.log(`✅ Richiesta reset password annullata per ${email}`);
+    logger.info({ event: 'password_reset_request_cancelled', email, adminUserId: req.user?.id }, 'Richiesta reset password annullata');
     
     res.json({ message: 'Richiesta di reset password annullata' });
   } catch (error) {

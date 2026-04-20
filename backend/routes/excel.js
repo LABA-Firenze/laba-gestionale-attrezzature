@@ -3,7 +3,14 @@ import { Router } from 'express';
 import { query } from '../utils/postgres.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import * as XLSX from 'xlsx';
+import logger from '../utils/logger.js';
 const r = Router();
+
+const MAX_IMPORT_FILE_BYTES = 2 * 1024 * 1024; // 2 MB
+const ALLOWED_EXCEL_MIME_TYPES = new Set([
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+]);
 
 // GET /api/excel/inventario/export - Export inventario completo
 r.get('/inventario/export', requireAuth, requireRole('admin'), async (req, res) => {
@@ -78,7 +85,7 @@ r.get('/inventario/export', requireAuth, requireRole('admin'), async (req, res) 
     
     res.send(excelBuffer);
   } catch (error) {
-    console.error('Errore export Excel inventario:', error);
+    logger.error({ err: error }, 'Errore export Excel inventario');
     res.status(500).json({ error: 'Errore durante l\'export Excel' });
   }
 });
@@ -90,34 +97,53 @@ r.post('/inventario/import', requireAuth, requireRole('admin'), async (req, res)
     const { fileName, fileSize, fileType, fileData } = req.body;
     
     if (!fileName || !fileData) {
-      console.log('ERRORE: Dati file mancanti');
+      logger.warn({ event: 'excel_import_invalid_payload', userId: req.user?.id }, 'Dati file mancanti');
       return res.status(400).json({ error: 'File Excel richiesto' });
     }
 
-    console.log('File ricevuto:', fileName, fileSize, 'bytes');
+    const normalizedFileName = String(fileName).toLowerCase().trim();
+    const normalizedMime = String(fileType || '').toLowerCase().trim();
+    if (!normalizedFileName.endsWith('.xlsx') && !normalizedFileName.endsWith('.xls')) {
+      return res.status(400).json({ error: 'Formato file non supportato' });
+    }
+    if (normalizedMime && !ALLOWED_EXCEL_MIME_TYPES.has(normalizedMime)) {
+      return res.status(400).json({ error: 'MIME type non consentito' });
+    }
     
     // Converti base64 in buffer
     const base64Data = fileData.split(',')[1]; // Rimuovi il prefisso data:application/...
+    if (!base64Data) {
+      return res.status(400).json({ error: 'Contenuto file non valido' });
+    }
     const fileBuffer = Buffer.from(base64Data, 'base64');
-    
-    console.log('File processato in memoria, dimensione buffer:', fileBuffer.length, 'bytes');
+    if (!Number.isFinite(fileBuffer.length) || fileBuffer.length === 0) {
+      return res.status(400).json({ error: 'File vuoto o non valido' });
+    }
+    if (fileBuffer.length > MAX_IMPORT_FILE_BYTES || (fileSize && Number(fileSize) > MAX_IMPORT_FILE_BYTES)) {
+      return res.status(413).json({ error: 'File troppo grande (max 2MB)' });
+    }
 
     // Leggi file Excel
-    console.log('Tentativo di leggere file Excel...');
-    console.log('File size:', fileSize, 'bytes');
-    console.log('File mimetype:', fileType);
-    console.log('File name:', fileName);
-    
-    const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
-    console.log('Workbook creato, sheet names:', workbook.SheetNames);
+    const workbook = XLSX.read(fileBuffer, {
+      type: 'buffer',
+      dense: true,
+      cellStyles: false,
+      cellNF: false,
+      cellHTML: false,
+      cellFormula: false,
+      WTF: false,
+    });
     
     const sheetName = workbook.SheetNames[0];
+    if (!sheetName) {
+      return res.status(400).json({ error: 'File Excel non valido: foglio mancante' });
+    }
     const worksheet = workbook.Sheets[sheetName];
-    console.log('Worksheet caricato:', sheetName);
     
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-    console.log('JSON data length:', jsonData.length);
-    console.log('Prima riga:', jsonData[0]);
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: null });
+    if (jsonData.length > 5000) {
+      return res.status(413).json({ error: 'File troppo grande: massimo 5000 righe' });
+    }
     
     if (jsonData.length === 0) {
       return res.status(400).json({ error: 'File Excel vuoto' });
@@ -258,7 +284,13 @@ r.post('/inventario/import', requireAuth, requireRole('admin'), async (req, res)
       }
     }
 
-    console.log('Import completato, file processato completamente in memoria');
+    logger.info({
+      event: 'excel_import_completed',
+      userId: req.user?.id,
+      totalRows: results.total,
+      successRows: results.success,
+      errorRows: results.errors.length,
+    }, 'Import inventario completato');
 
     res.json({
       message: `Import completato: ${results.success}/${results.total} elementi processati`,
@@ -268,7 +300,7 @@ r.post('/inventario/import', requireAuth, requireRole('admin'), async (req, res)
     });
 
   } catch (error) {
-    console.error('Errore import Excel inventario:', error);
+    logger.error({ err: error, userId: req.user?.id }, 'Errore import Excel inventario');
     res.status(500).json({ error: 'Errore durante l\'import Excel' });
   }
 });
@@ -331,7 +363,7 @@ r.get('/inventario/template', requireAuth, requireRole('admin'), async (req, res
     
     res.send(excelBuffer);
   } catch (error) {
-    console.error('Errore generazione template Excel:', error);
+    logger.error({ err: error }, 'Errore generazione template Excel');
     res.status(500).json({ error: 'Errore durante la generazione del template' });
   }
 });
