@@ -55,6 +55,7 @@ export async function initDatabase() {
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
+        session_version INTEGER NOT NULL DEFAULT 0,
         name VARCHAR(255) NOT NULL,
         surname VARCHAR(255) NOT NULL,
         phone VARCHAR(50),
@@ -194,6 +195,8 @@ export async function initDatabase() {
       ALTER TABLE users ADD COLUMN IF NOT EXISTS blocked_reason TEXT;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS blocked_at TIMESTAMP;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS blocked_by INTEGER REFERENCES users(id);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS session_version INTEGER NOT NULL DEFAULT 0;
+      CREATE INDEX IF NOT EXISTS idx_users_session_version ON users (id, session_version);
       
       -- Tabella penalità dettagliate
       CREATE TABLE IF NOT EXISTS user_penalties (

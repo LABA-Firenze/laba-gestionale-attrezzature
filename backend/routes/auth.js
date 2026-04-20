@@ -15,10 +15,11 @@ const r = Router();
 // Rate limit su login/register/forgot-password per mitigare brute-force
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 5,
   message: { error: 'Troppi tentativi. Riprova tra 15 minuti.' },
   standardHeaders: true,
   legacyHeaders: false,
+  keyGenerator: (req) => `${req.ip}:${String(req.body?.email || '').trim().toLowerCase()}`,
 });
 const passwordResetLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -36,11 +37,13 @@ if (process.env.NODE_ENV === 'production' && !JWT_SECRET) {
 function signUser(user) {
   if (!JWT_SECRET) throw new Error('JWT_SECRET non configurato');
   const u = normalizeUser(user);
+  if (u.session_version == null) throw new Error('session_version mancante');
   const payload = {
     id: u.id,
     email: u.email,
     ruolo: u.ruolo,
-    corso_accademico: u.corso_accademico
+    corso_accademico: u.corso_accademico,
+    session_version: Number(u.session_version)
   };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 }
@@ -72,7 +75,7 @@ r.post('/login', authLimiter, async (req, res) => {
     }
 
     const result = await query(`
-      SELECT id, email, password_hash, name, surname, phone, matricola, ruolo, corso_accademico,
+      SELECT id, email, password_hash, name, surname, phone, matricola, ruolo, corso_accademico, session_version,
              created_at, updated_at, penalty_strikes, is_blocked, blocked_reason, blocked_at, blocked_by
       FROM users
       WHERE email = $1
@@ -104,9 +107,18 @@ r.post('/login', authLimiter, async (req, res) => {
 });
 
 // POST /api/auth/logout — rimuove il cookie
-r.post('/logout', (req, res) => {
-  clearAuthCookie(res);
-  res.json({ ok: true });
+r.post('/logout', requireAuth, async (req, res) => {
+  try {
+    await query(
+      `UPDATE users SET session_version = session_version + 1, updated_at = NOW() WHERE id = $1`,
+      [req.user.id]
+    );
+    clearAuthCookie(res);
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('Errore logout:', error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
 });
 
 // POST /api/auth/register (pubblico o con admin: se non autenticato, ruolo sempre 'user')
@@ -148,7 +160,7 @@ r.post('/register', authLimiter, async (req, res) => {
     const result = await query(`
       INSERT INTO users (email, password_hash, name, surname, phone, matricola, corso_accademico, ruolo)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id, email, name, surname, ruolo, corso_accademico
+      RETURNING id, email, name, surname, ruolo, corso_accademico, session_version
     `, [email, hashedPassword, name, surname, phone || null, matricola || null, corso_accademico || null, storedRole]);
 
     const user = normalizeUser(result[0]);

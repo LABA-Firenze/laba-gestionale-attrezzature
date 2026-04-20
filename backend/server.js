@@ -41,6 +41,7 @@ const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
 
 app.disable('x-powered-by');
+app.set('trust proxy', 1);
 
 function getCronToken(req) {
   return req.get('x-cron-token');

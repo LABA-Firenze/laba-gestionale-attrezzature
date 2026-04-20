@@ -34,13 +34,16 @@ export async function requireAuth(req, res, next) {
     const payload = jwt.verify(token, JWT_SECRET);
     
     const users = await query(`
-      SELECT id, email, name, surname, phone, matricola, ruolo, corso_accademico,
+      SELECT id, email, name, surname, phone, matricola, ruolo, corso_accademico, session_version,
              created_at, updated_at, penalty_strikes, is_blocked, blocked_reason, blocked_at, blocked_by
       FROM users
       WHERE id = $1
     `, [payload.id]);
     if (users.length === 0) {
       return res.status(401).json({ error: 'Non autorizzato' });
+    }
+    if (payload.session_version == null || Number(payload.session_version) !== Number(users[0].session_version)) {
+      return res.status(401).json({ error: 'Sessione revocata' });
     }
     
     req.user = sanitizeUser(normalizeUser(users[0]));
