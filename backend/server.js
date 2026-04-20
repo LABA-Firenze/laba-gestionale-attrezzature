@@ -40,6 +40,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
 
+function getCronToken(req) {
+  return req.get('x-cron-token');
+}
+
 // In produzione JWT_SECRET è obbligatorio (niente fallback per evitare token forgery).
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
   console.error('❌ JWT_SECRET mancante. In produzione deve essere impostato (es. Railway Variables).');
@@ -81,7 +85,8 @@ const rawCorsOrigins = (process.env.CORS_ORIGINS || 'https://attrezzatura.laba.b
   .map((s) => s.trim())
   .filter(Boolean);
 
-const allowAllOrigins = rawCorsOrigins.includes('*');
+const allowAllOrigins =
+  process.env.NODE_ENV !== 'production' && rawCorsOrigins.some((origin) => origin === '*');
 const corsOrigins = new Set(
   rawCorsOrigins
     .filter((o) => o !== '*')
@@ -124,10 +129,11 @@ app.use(morgan("dev"));
 app.get("/api/health", (_, res) => res.json({ ok: true, version: "2.1", build: "2.1" }));
 
 // Keepalive endpoint per mantenere attivo il database Supabase
-// In produzione richiede ?token=CRON_SECRET_TOKEN (stesso token dei cron su cron-job.org)
+// Richiede header X-Cron-Token
 app.get("/api/keepalive", async (req, res) => {
   const cronToken = process.env.CRON_SECRET_TOKEN;
-  if (cronToken && req.query.token !== cronToken) {
+  const providedToken = getCronToken(req);
+  if (cronToken && providedToken !== cronToken) {
     return res.status(401).json({ error: 'Token non valido' });
   }
   try {

@@ -17,6 +17,8 @@ const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
 const SMTP_SECURE = process.env.SMTP_SECURE === 'true' || SMTP_PORT === 465;
 const SMTP_USER = process.env.SMTP_USER || 'service@labafirenze.com';
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
+const SMTP_ALLOW_INSECURE_TLS =
+  process.env.SMTP_ALLOW_INSECURE_TLS === 'true' && process.env.NODE_ENV !== 'production';
 
 // Crea transporter (lazy initialization)
 let transporter = null;
@@ -58,7 +60,7 @@ function getTransporter() {
         pass: cleanPassword
       },
       tls: {
-        rejectUnauthorized: false // Necessario per alcuni server SMTP o ambienti di sviluppo
+        rejectUnauthorized: !SMTP_ALLOW_INSECURE_TLS
       },
       connectionTimeout: 20000, // 20 secondi per stabilire connessione (aumentato per Gmail)
       greetingTimeout: 20000, // 20 secondi per greeting

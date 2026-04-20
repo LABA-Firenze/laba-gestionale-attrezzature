@@ -6,14 +6,19 @@ import { sendReminderEmail } from '../utils/email.js';
 
 const r = Router();
 
+function getCronToken(req) {
+  return req.get('x-cron-token');
+}
+
 // GET /api/cron/send-reminders
 // Endpoint da chiamare alle 18:00 ogni giorno per inviare reminder il giorno prima della riconsegna
 // Può essere chiamato da un servizio esterno (cron-job.org, Railway cron, ecc.)
-// Richiede ?token=CRON_SECRET_TOKEN. Su cron-job.org: se il token contiene +, /, = usare URL encoding (es. + → %2B).
+// Richiede header X-Cron-Token.
 r.get('/send-reminders', async (req, res) => {
   try {
     const cronToken = process.env.CRON_SECRET_TOKEN;
-    if (!cronToken || req.query.token !== cronToken) {
+    const providedToken = getCronToken(req);
+    if (!cronToken || providedToken !== cronToken) {
       return res.status(401).json({ error: 'Token non valido' });
     }
 

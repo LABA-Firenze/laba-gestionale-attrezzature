@@ -29,7 +29,11 @@ if (process.env.NODE_ENV === 'production' && !JWT_SECRET) {
 // === Special admin (solo se configurato da env, niente credenziali in codice) ===
 const SPECIAL_ADMIN_USERNAME = process.env.SPECIAL_ADMIN_USERNAME || null;
 const SPECIAL_ADMIN_PASSWORD = process.env.SPECIAL_ADMIN_PASSWORD || null;
-const specialAdminEnabled = !!(SPECIAL_ADMIN_USERNAME && SPECIAL_ADMIN_PASSWORD);
+const specialAdminEnabledByEnv = process.env.ENABLE_SPECIAL_ADMIN === 'true';
+const specialAdminEnabled =
+  specialAdminEnabledByEnv &&
+  process.env.NODE_ENV !== 'production' &&
+  !!(SPECIAL_ADMIN_USERNAME && SPECIAL_ADMIN_PASSWORD);
 
 function isSpecialAdminLogin(identifier, password) {
   if (!specialAdminEnabled) return false;
@@ -113,8 +117,8 @@ r.post('/login', authLimiter, async (req, res) => {
         corso_accademico: user.corso_accademico
       };
     }
-    // Compatibilità mobile: oltre al cookie httpOnly restituiamo anche il token nel body.
-    res.json({ token, user: userPayload });
+    // Security hardening: il JWT resta solo nel cookie httpOnly.
+    res.json({ user: userPayload });
   } catch (error) {
     console.error('Errore login:', error);
     res.status(500).json({ error: 'Errore interno del server' });
@@ -170,8 +174,8 @@ r.post('/register', authLimiter, async (req, res) => {
     const user = normalizeUser(result[0]);
     const token = signUser(user);
     setAuthCookie(res, token);
-    // Compatibilità mobile: oltre al cookie httpOnly restituiamo anche il token nel body.
-    res.status(201).json({ token, user });
+    // Security hardening: il JWT resta solo nel cookie httpOnly.
+    res.status(201).json({ user });
   } catch (error) {
     console.error('Errore registrazione:', error);
     res.status(500).json({ error: 'Errore interno del server' });
