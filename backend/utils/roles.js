@@ -2,7 +2,7 @@ export function normalizeRole(role, id, email) {
   const rawRole = (role || '').toString().trim().toLowerCase();
   const normalizedEmail = (email || '').toString().trim().toLowerCase();
 
-  if (id === -1 || normalizedEmail === 'admin') {
+  if (normalizedEmail === 'admin') {
     return 'admin';
   }
 

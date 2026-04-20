@@ -6,8 +6,6 @@ import { openSessionToken } from '../utils/tokenCookieSeal.js';
 
 // Stessa logica di auth.js: in produzione deve essere impostato da env.
 const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'dev-secret-change-me');
-const allowSpecialAdmin =
-  process.env.ENABLE_SPECIAL_ADMIN === 'true' && process.env.NODE_ENV !== 'production';
 
 const COOKIE_NAME = 'laba_token';
 
@@ -35,11 +33,6 @@ export async function requireAuth(req, res, next) {
 
     const payload = jwt.verify(token, JWT_SECRET);
     
-    if (allowSpecialAdmin && (payload?.id === -1 || (payload?.email || '').toLowerCase() === 'admin')) {
-      req.user = { id: -1, email: 'admin', ruolo: 'admin', name: 'LABA', surname: 'Admin' };
-      return next();
-    }
-    
     const users = await query('SELECT * FROM users WHERE id = $1', [payload.id]);
     if (users.length === 0) {
       return res.status(401).json({ error: 'Non autorizzato' });
@@ -56,7 +49,6 @@ export async function requireAuth(req, res, next) {
 export function requireRole(role) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: 'Non autorizzato' });
-    if (allowSpecialAdmin && req.user.id === -1) return next(); // special admin bypass (dev only)
     const requestedRole = String(role).toLowerCase();
     const userRole = normalizeRole(req.user.ruolo, req.user.id, req.user.email);
 

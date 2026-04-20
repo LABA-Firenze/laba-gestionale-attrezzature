@@ -22,7 +22,6 @@ function skipSunday(dateStr) {
 
 function isAdminUser(u) {
   if (!u) return false;
-  if (u.id === -1) return true;
   const role = (u.ruolo || '').toLowerCase();
   return role === 'admin' || role === 'supervisor';
 }

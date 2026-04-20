@@ -43,10 +43,8 @@ const assignPenalty = async (userId, prestitoId, delayDays, createdBy = null) =>
     const strikes = calculateStrikes(delayDays);
     const motivo = `Ritardo di ${delayDays} giorno/i nella restituzione`;
     
-    // Gestisci created_by: se l'admin speciale (id = -1), usa NULL invece di -1
-    // perché -1 non esiste nella tabella users
-    const createdById = createdBy === -1 ? null : createdBy;
-    const blockedById = createdBy === -1 ? null : createdBy;
+    const createdById = createdBy;
+    const blockedById = createdBy;
     
     // Inserisci la penalità dettagliata
     await client.query(
@@ -138,7 +136,7 @@ router.get('/user/:userId', requireAuth, async (req, res) => {
     
     // Verifica che l'utente possa vedere queste informazioni
     const userRole = normalizeRole(req.user.ruolo, req.user.id, req.user.email);
-    const isAdmin = req.user.id === -1 || userRole === 'admin' || userRole === 'supervisor';
+    const isAdmin = userRole === 'admin' || userRole === 'supervisor';
     
     if (!isAdmin && req.user.id !== parseInt(userId)) {
       return res.status(403).json({ error: 'Non autorizzato' });
@@ -227,10 +225,8 @@ router.post('/assign-manual', requireAuth, requireRole('admin'), async (req, res
     
     await client.query('BEGIN');
     
-    // Gestisci created_by: se l'admin speciale (id = -1), usa NULL invece di -1
-    // perché -1 non esiste nella tabella users
-    const createdById = req.user.id === -1 ? null : req.user.id;
-    const blockedById = req.user.id === -1 ? null : req.user.id;
+    const createdById = req.user.id;
+    const blockedById = req.user.id;
     
     // Inserisci la penalità manuale (prestito_id può essere NULL)
     await client.query(
@@ -480,7 +476,7 @@ router.put('/:penaltyId', requireAuth, requireRole('admin'), async (req, res) =>
           [userId]
         );
       } else if (!wasBlocked && newTotalStrikes >= 3) {
-        const blockedById = req.user.id === -1 ? null : req.user.id;
+        const blockedById = req.user.id;
         await client.query(
           `UPDATE users 
            SET is_blocked = TRUE, blocked_reason = 'Utente bloccato per aver accumulato 3 o più penalità',

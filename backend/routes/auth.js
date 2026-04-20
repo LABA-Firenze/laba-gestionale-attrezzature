@@ -26,32 +26,6 @@ if (process.env.NODE_ENV === 'production' && !JWT_SECRET) {
   console.error('❌ JWT_SECRET mancante. Impostalo in produzione.');
 }
 
-// === Special admin (solo se configurato da env, niente credenziali in codice) ===
-const SPECIAL_ADMIN_USERNAME = process.env.SPECIAL_ADMIN_USERNAME || null;
-const SPECIAL_ADMIN_PASSWORD = process.env.SPECIAL_ADMIN_PASSWORD || null;
-const specialAdminEnabledByEnv = process.env.ENABLE_SPECIAL_ADMIN === 'true';
-const specialAdminEnabled =
-  specialAdminEnabledByEnv &&
-  process.env.NODE_ENV !== 'production' &&
-  !!(SPECIAL_ADMIN_USERNAME && SPECIAL_ADMIN_PASSWORD);
-
-function isSpecialAdminLogin(identifier, password) {
-  if (!specialAdminEnabled) return false;
-  const id = (identifier || '').trim().toLowerCase();
-  const pw = (password ?? '').toString().normalize('NFKC').replace(/\u00A0/g, ' ').trim();
-  return id === SPECIAL_ADMIN_USERNAME.toLowerCase() && pw === SPECIAL_ADMIN_PASSWORD;
-}
-function specialAdminUser() {
-  return {
-    id: -1,
-    email: SPECIAL_ADMIN_USERNAME,
-    ruolo: 'admin',
-    name: 'LABA',
-    surname: 'Admin',
-    corso_accademico: null,
-  };
-}
-
 function signUser(user) {
   if (!JWT_SECRET) throw new Error('JWT_SECRET non configurato');
   const u = normalizeUser(user);
@@ -90,33 +64,25 @@ r.post('/login', authLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Email e password richiesti' });
     }
 
-    let userPayload;
-    let token;
-    if (isSpecialAdminLogin(email, password)) {
-      token = signUser(specialAdminUser());
-      setAuthCookie(res, token);
-      userPayload = specialAdminUser();
-    } else {
-      const result = await query('SELECT * FROM users WHERE email = $1', [email]);
-      if (result.length === 0) {
-        return res.status(401).json({ error: 'Credenziali non valide' });
-      }
-      const user = normalizeUser(result[0]);
-      const isValid = bcrypt.compareSync(password, user.password_hash);
-      if (!isValid) {
-        return res.status(401).json({ error: 'Credenziali non valide' });
-      }
-      token = signUser(user);
-      setAuthCookie(res, token);
-      userPayload = {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        surname: user.surname,
-        ruolo: user.ruolo,
-        corso_accademico: user.corso_accademico
-      };
+    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.length === 0) {
+      return res.status(401).json({ error: 'Credenziali non valide' });
     }
+    const user = normalizeUser(result[0]);
+    const isValid = bcrypt.compareSync(password, user.password_hash);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Credenziali non valide' });
+    }
+    const token = signUser(user);
+    setAuthCookie(res, token);
+    const userPayload = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      surname: user.surname,
+      ruolo: user.ruolo,
+      corso_accademico: user.corso_accademico
+    };
     // Security hardening: il JWT resta solo nel cookie httpOnly.
     res.json({ user: userPayload });
   } catch (error) {
@@ -156,7 +122,9 @@ r.post('/register', authLimiter, async (req, res) => {
         const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
         if (token) {
           const payload = jwt.verify(token, JWT_SECRET);
-          const isAdmin = payload?.id === -1 || (payload?.ruolo || '').toLowerCase() === 'admin' || (payload?.ruolo || '').toLowerCase() === 'supervisor';
+          const isAdmin =
+            (payload?.ruolo || '').toLowerCase() === 'admin' ||
+            (payload?.ruolo || '').toLowerCase() === 'supervisor';
           if (isAdmin && ruolo != null && ruolo !== '') {
             const userRole = normalizeRole(ruolo, null, email);
             storedRole = userRole === 'admin' ? 'supervisor' : userRole;
@@ -379,9 +347,6 @@ r.delete('/password-reset-requests/:email', requireAuth, requireRole('admin'), a
 // GET /api/auth/me/export - Export dati personali (GDPR portabilità)
 r.get('/me/export', requireAuth, async (req, res) => {
   try {
-    if (req.user.id === -1) {
-      return res.status(400).json({ error: 'Account speciale non esportabile' });
-    }
     const [userRow, loans, requests, reports] = await Promise.all([
       query('SELECT id, email, name, surname, phone, matricola, corso_accademico, ruolo, created_at FROM users WHERE id = $1', [req.user.id]),
       query(`
@@ -412,9 +377,6 @@ r.get('/me/export', requireAuth, async (req, res) => {
 // POST /api/auth/me/delete-account - Elimina account (diritto all'oblio GDPR)
 r.post('/me/delete-account', requireAuth, async (req, res) => {
   try {
-    if (req.user.id === -1) {
-      return res.status(403).json({ error: 'Impossibile eliminare l\'account amministratore' });
-    }
     const userId = req.user.id;
 
     // Verifica prestiti attivi
