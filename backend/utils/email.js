@@ -259,7 +259,7 @@ export async function sendApprovalEmail({ to, studentName, itemName, startDate, 
           <p>La tua richiesta di noleggio è stata <strong>approvata</strong>!</p>
           
           <div class="info-box">
-            <p style="margin: 0;"><strong>Puoi ritirare l'attrezzatura presso la segreteria.</strong></p>
+            <p style="margin: 0;"><strong>Puoi ritirare l'attrezzatura presso il Service.</strong></p>
           </div>
           
           <h2 style="color: #033157; margin-top: 30px;">Dettagli del Noleggio</h2>
@@ -292,7 +292,7 @@ export async function sendApprovalEmail({ to, studentName, itemName, startDate, 
           
           <div class="footer">
             <p>LABA Firenze - Gestionale Attrezzature</p>
-            <p>Per domande o assistenza, contatta la segreteria.</p>
+            <p>Per domande o assistenza, contatta il Service.</p>
           </div>
         </div>
       </body>
@@ -306,7 +306,7 @@ Ciao ${studentName},
 
 La tua richiesta di noleggio è stata approvata!
 
-Puoi ritirare l'attrezzatura presso la segreteria.
+Puoi ritirare l'attrezzatura presso il Service.
 
 Dettagli del Noleggio:
 - Oggetto: ${itemName}
@@ -317,7 +317,7 @@ ${notes ? `- Note: ${notes}` : ''}
 ⚠️ Importante: Ricorda di riconsegnare l'attrezzatura entro la data di fine indicata per evitare penalità.
 
 LABA Firenze - Gestionale Attrezzature
-Per domande o assistenza, contatta la segreteria.
+Per domande o assistenza, contatta il Service.
   `.trim();
 
   // Prova prima con Mailgun API REST, poi fallback a SMTP
@@ -742,12 +742,12 @@ export async function sendRejectionEmail({ to, studentName, itemName, startDate,
         </div>
         
         <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b; margin-top: 20px;">
-          <p style="margin: 0;"><strong>💡 Suggerimento:</strong> Se hai domande sul motivo del rifiuto, contatta la segreteria.</p>
+          <p style="margin: 0;"><strong>💡 Suggerimento:</strong> Se hai domande sul motivo del rifiuto, contatta il Service.</p>
         </div>
         
         <div class="footer">
           <p>LABA Firenze - Gestionale Attrezzature</p>
-          <p>Per domande o assistenza, contatta la segreteria.</p>
+          <p>Per domande o assistenza, contatta il Service.</p>
         </div>
       </div>
     </body>
@@ -768,10 +768,10 @@ Dettagli della Richiesta:
 - Data Inizio Richiesta: ${formattedStartDate}
 - Data Fine Richiesta: ${formattedEndDate}
 
-💡 Suggerimento: Se hai domande sul motivo del rifiuto, contatta la segreteria.
+💡 Suggerimento: Se hai domande sul motivo del rifiuto, contatta il Service.
 
 LABA Firenze - Gestionale Attrezzature
-Per domande o assistenza, contatta la segreteria.
+Per domande o assistenza, contatta il Service.
   `.trim();
 
   // Prova prima con Mailgun API REST, poi fallback a SMTP
@@ -937,7 +937,7 @@ export async function sendPenaltyEmail({ to, studentName, itemName, delayDays, s
         ${isBlocked ? `
         <div class="info-box">
           <p style="margin: 0;"><strong>🚫 Il tuo account è stato bloccato</strong> per aver accumulato 3 o più penalità per ritardi nella restituzione degli oggetti.</p>
-          <p style="margin: 10px 0 0 0;">Non puoi più effettuare nuove richieste di noleggio fino a quando non ti rechi di persona presso la segreteria per sbloccare il tuo account.</p>
+          <p style="margin: 10px 0 0 0;">Non puoi più effettuare nuove richieste di noleggio fino a quando non ti rechi di persona presso il Service per sbloccare il tuo account.</p>
         </div>
         ` : `
         <p>Ti è stata assegnata una <strong>penalità</strong> per ritardo nella restituzione dell'attrezzatura.</p>
@@ -1000,13 +1000,13 @@ export async function sendPenaltyEmail({ to, studentName, itemName, delayDays, s
         
         ${isBlocked ? `
         <div class="info-box" style="background: #fee2e2; border-left-color: #dc2626; margin-top: 20px;">
-          <p style="margin: 0;"><strong>🔓 Per sbloccare il tuo account:</strong> Recati di persona presso la segreteria.</p>
+          <p style="margin: 0;"><strong>🔓 Per sbloccare il tuo account:</strong> Recati di persona presso il Service.</p>
         </div>
         ` : ''}
         
         <div class="footer">
           <p>LABA Firenze - Gestionale Attrezzature</p>
-          <p>Per domande o assistenza, contatta la segreteria.</p>
+          <p>Per domande o assistenza, contatta il Service.</p>
         </div>
       </div>
     </body>
@@ -1019,7 +1019,7 @@ ${isBlocked ? 'Account Bloccato' : 'Penalità Assegnata'} - LABA Firenze
 Ciao ${studentName},
 
 ${isBlocked ? 
-  'Il tuo account è stato bloccato per aver accumulato 3 o più penalità per ritardi nella restituzione degli oggetti. Non puoi più effettuare nuove richieste di noleggio fino a quando non ti rechi di persona presso la segreteria per sbloccare il tuo account.' :
+  'Il tuo account è stato bloccato per aver accumulato 3 o più penalità per ritardi nella restituzione degli oggetti. Non puoi più effettuare nuove richieste di noleggio fino a quando non ti rechi di persona presso il Service per sbloccare il tuo account.' :
   'Ti è stata assegnata una penalità per ritardo nella restituzione dell\'attrezzatura.' + (totalStrikes >= 2 ? ` ATTENZIONE: Hai accumulato ${totalStrikes} penalità. Con un altro ritardo, il tuo account verrà bloccato automaticamente.` : '')
 }
 
@@ -1038,10 +1038,10 @@ Sistema di Penalità:
 - 8+ giorni di ritardo = 3 strike (blocco immediato)
 - 3 strike totali = blocco account
 
-${isBlocked ? 'Per sbloccare il tuo account: Recati di persona presso la segreteria.' : ''}
+${isBlocked ? 'Per sbloccare il tuo account: Recati di persona presso il Service.' : ''}
 
 LABA Firenze - Gestionale Attrezzature
-Per domande o assistenza, contatta la segreteria.
+Per domande o assistenza, contatta il Service.
   `.trim();
 
   // Prova prima con Mailgun API REST, poi fallback a SMTP
@@ -1244,17 +1244,17 @@ export async function sendReminderEmail({ to, studentName, itemName, returnDate,
           <ul style="margin: 10px 0 0 0; padding-left: 20px;">
             <li>Riconsegna l'attrezzatura <strong>entro domani</strong></li>
             <li>Ritardi nella riconsegna comportano penalità</li>
-            <li>Se hai bisogno di prorogare, contatta la segreteria prima della scadenza</li>
+            <li>Se hai bisogno di prorogare, contatta il Service prima della scadenza</li>
           </ul>
         </div>
         
         <div class="info-box">
-          <p style="margin: 0;"><strong>💡 Ricorda:</strong> La riconsegna deve avvenire presso la segreteria durante gli orari di apertura.</p>
+          <p style="margin: 0;"><strong>💡 Ricorda:</strong> La riconsegna deve avvenire presso il Service durante gli orari di apertura.</p>
         </div>
         
         <div class="footer">
           <p>LABA Firenze - Gestionale Attrezzature</p>
-          <p>Per domande o assistenza, contatta la segreteria.</p>
+          <p>Per domande o assistenza, contatta il Service.</p>
         </div>
       </div>
     </body>
@@ -1278,12 +1278,12 @@ ${formattedStartDate ? `- Data Inizio Prestito: ${formattedStartDate}` : ''}
 ⚠️ IMPORTANTE:
 - Riconsegna l'attrezzatura entro domani
 - Ritardi nella riconsegna comportano penalità
-- Se hai bisogno di prorogare, contatta la segreteria prima della scadenza
+- Se hai bisogno di prorogare, contatta il Service prima della scadenza
 
-💡 Ricorda: La riconsegna deve avvenire presso la segreteria durante gli orari di apertura.
+💡 Ricorda: La riconsegna deve avvenire presso il Service durante gli orari di apertura.
 
 LABA Firenze - Gestionale Attrezzature
-Per domande o assistenza, contatta la segreteria.
+Per domande o assistenza, contatta il Service.
   `.trim();
 
   // Prova prima con Mailgun API REST, poi fallback a SMTP
